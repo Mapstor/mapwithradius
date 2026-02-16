@@ -1,0 +1,10 @@
+# robots.txt for mapwithradius.com
+
+User-agent: *
+Allow: /
+
+# Disallow embed pages from indexing
+Disallow: /embed
+
+# Sitemap location
+Sitemap: https://mapwithradius.com/sitemap.xml

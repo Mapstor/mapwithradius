@@ -1,0 +1,259 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Leaflet CSS overrides for better integration */
+.leaflet-container {
+  font-family: inherit;
+}
+
+.leaflet-popup-content-wrapper {
+  @apply rounded-lg shadow-lg;
+}
+
+.leaflet-popup-content {
+  @apply m-3;
+}
+
+/* Custom scrollbar for controls panel */
+.controls-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.controls-panel::-webkit-scrollbar-track {
+  @apply bg-slate-100 rounded;
+}
+
+.controls-panel::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded hover:bg-slate-400;
+}
+
+/* Map controls styling */
+.map-control-button {
+  @apply px-4 py-2 bg-white border border-slate-200 rounded-lg shadow-sm hover:bg-slate-50 transition-all duration-200 text-sm font-medium;
+}
+
+.map-control-button:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.map-control-button.active {
+  @apply bg-accent text-white border-accent hover:bg-accent-600;
+}
+
+/* Color swatches */
+.color-swatch {
+  @apply w-7 h-7 rounded-full border-2 border-white shadow-md cursor-pointer hover:scale-110 transition-all duration-200;
+}
+
+.color-swatch.selected {
+  @apply ring-2 ring-accent ring-offset-2;
+}
+
+/* Preset buttons */
+.preset-button {
+  @apply px-3 py-1.5 text-sm bg-slate-100 hover:bg-accent-50 hover:text-accent-600 rounded-lg transition-all duration-200 font-medium border border-transparent hover:border-accent-200;
+}
+
+/* Section headings with accent bar */
+.section-heading {
+  @apply relative text-2xl font-bold text-slate-900 pl-4;
+}
+
+.section-heading::before {
+  content: '';
+  @apply absolute left-0 top-0 bottom-0 w-1 bg-accent rounded-full;
+}
+
+/* Step cards */
+.step-card {
+  @apply bg-white rounded-xl p-6 border border-slate-200 shadow-card hover:shadow-lg transition-shadow duration-200;
+}
+
+.step-number {
+  @apply inline-flex items-center justify-center w-8 h-8 rounded-full bg-accent text-white text-sm font-bold mb-3;
+}
+
+/* FAQ cards */
+.faq-card {
+  @apply bg-white rounded-xl border border-slate-200 overflow-hidden transition-all duration-200 hover:border-accent-200;
+}
+
+.faq-card summary {
+  @apply flex justify-between items-center cursor-pointer p-5 font-medium text-slate-900 hover:bg-slate-50 transition-colors duration-200;
+}
+
+.faq-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-card .faq-chevron {
+  @apply transition-transform duration-200;
+}
+
+.faq-card[open] .faq-chevron {
+  @apply rotate-180;
+}
+
+.faq-card .faq-content {
+  @apply px-5 pb-5 text-slate-600;
+}
+
+/* Table styling */
+.styled-table {
+  @apply w-full text-sm text-left border border-slate-200 rounded-xl overflow-hidden;
+}
+
+.styled-table thead {
+  @apply bg-slate-900 text-white;
+}
+
+.styled-table thead th {
+  @apply px-4 py-3 font-semibold;
+}
+
+.styled-table tbody tr {
+  @apply border-b border-slate-200 last:border-b-0;
+}
+
+.styled-table tbody tr:nth-child(even) {
+  @apply bg-slate-50;
+}
+
+.styled-table tbody td {
+  @apply px-4 py-3 text-slate-700;
+}
+
+/* Hero search bar styling */
+.hero-search-container {
+  @apply bg-primary-900;
+}
+
+.hero-search-input {
+  @apply w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-200;
+}
+
+.hero-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Controls panel overlay */
+.controls-overlay {
+  @apply bg-white rounded-xl shadow-controls border border-slate-200 p-5 space-y-5 overflow-y-auto;
+}
+
+/* Section labels in controls */
+.control-section-label {
+  @apply text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2;
+}
+
+/* Input groups */
+.input-group {
+  @apply flex gap-2;
+}
+
+.input-group input,
+.input-group select {
+  @apply px-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-200 bg-white;
+}
+
+.input-group input:hover,
+.input-group select:hover {
+  @apply border-slate-300;
+}
+
+/* Primary button */
+.btn-primary {
+  @apply px-4 py-2.5 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2;
+}
+
+.btn-primary:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Secondary button */
+.btn-secondary {
+  @apply px-4 py-2.5 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 text-slate-700;
+}
+
+.btn-secondary:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Alternating sections */
+.section-white {
+  @apply bg-white;
+}
+
+.section-gray {
+  @apply bg-slate-50;
+}
+
+/* Link styling */
+.content-link {
+  @apply text-accent hover:text-accent-600 hover:underline transition-colors duration-200;
+}
+
+/* Header sticky shadow */
+.header-scrolled {
+  @apply shadow-header;
+}
+
+/* Focus visible utility */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2;
+}
+
+/* User location marker - pulsing blue dot */
+.user-location-marker {
+  background: transparent !important;
+  border: none !important;
+}
+
+.user-location-dot {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-location-center {
+  width: 12px;
+  height: 12px;
+  background-color: #4285F4;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(66, 133, 244, 0.5);
+  z-index: 2;
+}
+
+.user-location-pulse {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-color: rgba(66, 133, 244, 0.3);
+  border-radius: 50%;
+  animation: pulse 2s ease-out infinite;
+  z-index: 1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
