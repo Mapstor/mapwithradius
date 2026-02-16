@@ -86,24 +86,6 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
     }
   }, []);
 
-  // Update selected circle when radius/unit/color changes
-  useEffect(() => {
-    if (!selectedCircleId) return;
-
-    setCircles((prev) =>
-      prev.map((c) =>
-        c.id === selectedCircleId
-          ? {
-              ...c,
-              radiusMeters: toMeters(radius, unit),
-              color,
-              unit,
-            }
-          : c
-      )
-    );
-  }, [radius, unit, color, selectedCircleId]);
-
   // Helper to fit map to circle bounds
   const fitToCircle = useCallback((lat: number, lng: number, radiusMeters: number) => {
     if (!mapRef.current) return;
@@ -113,6 +95,36 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
     const bounds = center.toBounds(radiusMeters * 2);
     mapRef.current.fitBounds(bounds, { padding: [50, 50] });
   }, []);
+
+  // Update selected circle when radius/unit/color changes
+  useEffect(() => {
+    if (!selectedCircleId) return;
+
+    const newRadiusMeters = toMeters(radius, unit);
+
+    setCircles((prev) => {
+      const selectedCircle = prev.find((c) => c.id === selectedCircleId);
+
+      // Fit map to the updated circle (using coords from current state)
+      if (selectedCircle) {
+        // Use setTimeout to avoid calling during render
+        setTimeout(() => {
+          fitToCircle(selectedCircle.lat, selectedCircle.lng, newRadiusMeters);
+        }, 0);
+      }
+
+      return prev.map((c) =>
+        c.id === selectedCircleId
+          ? {
+              ...c,
+              radiusMeters: newRadiusMeters,
+              color,
+              unit,
+            }
+          : c
+      );
+    });
+  }, [radius, unit, color, selectedCircleId, fitToCircle]);
 
   const handleMapClick = useCallback(
     (lat: number, lng: number) => {

@@ -117,10 +117,11 @@ export default function RadiusMap({
 
     // Touch support
     map.on('touchmove', (e: L.LeafletEvent) => {
-      const touchEvent = e as unknown as { touches: TouchList; originalEvent: TouchEvent };
-      if (touchEvent.touches && touchEvent.touches.length === 1) {
-        const touch = touchEvent.touches[0];
-        const latlng = map.containerPointToLatLng(L.point(touch.clientX - map.getContainer().getBoundingClientRect().left, touch.clientY - map.getContainer().getBoundingClientRect().top));
+      const touchEvent = e as unknown as { originalEvent: TouchEvent };
+      if (touchEvent.originalEvent && touchEvent.originalEvent.touches && touchEvent.originalEvent.touches.length === 1) {
+        const touch = touchEvent.originalEvent.touches[0];
+        const rect = map.getContainer().getBoundingClientRect();
+        const latlng = map.containerPointToLatLng(L.point(touch.clientX - rect.left, touch.clientY - rect.top));
         handleMouseMove(latlng);
       }
     });
@@ -420,13 +421,15 @@ export default function RadiusMap({
     });
   }, [circles, selectedCircleId, isMapReady, createPopupContent, mapRef]);
 
-  // Add CSS for custom cursors
+  // Add CSS for custom cursors and touch support
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      .cursor-grab { cursor: grab !important; }
+      .cursor-grab { cursor: grab !important; touch-action: none; }
       .cursor-grab:active { cursor: grabbing !important; }
-      .cursor-ew-resize { cursor: ew-resize !important; }
+      .cursor-ew-resize { cursor: ew-resize !important; touch-action: none; }
+      .leaflet-interactive.cursor-grab,
+      .leaflet-interactive.cursor-ew-resize { touch-action: none; }
     `;
     document.head.appendChild(style);
     return () => { document.head.removeChild(style); };
