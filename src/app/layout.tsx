@@ -30,21 +30,12 @@ export const metadata: Metadata = {
     title: 'Map With Radius — Draw a Radius Circle on Any Map (Free)',
     description:
       'Free radius map tool. Draw circles on a map by distance, find what\'s within your radius, and share your map.',
-    images: [
-      {
-        url: '/images/hero-og.png',
-        width: 1200,
-        height: 630,
-        alt: 'Map With Radius tool showing a 25-mile radius circle drawn around Chicago on an OpenStreetMap',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Map With Radius — Draw a Radius Circle on Any Map (Free)',
     description:
       'Free radius map tool. Draw circles on a map by distance, find what\'s within your radius, and share your map.',
-    images: ['/images/hero-og.png'],
   },
   robots: {
     index: true,
