@@ -68,9 +68,18 @@ export default function MapControls({
   const [suggestions, setSuggestions] = useState<GeocodingResult[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const [radiusInputValue, setRadiusInputValue] = useState(formatRadiusDisplay(radius));
+  const [isRadiusInputFocused, setIsRadiusInputFocused] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+
+  // Sync radius input with prop when not focused
+  useEffect(() => {
+    if (!isRadiusInputFocused) {
+      setRadiusInputValue(formatRadiusDisplay(radius));
+    }
+  }, [radius, isRadiusInputFocused]);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -298,15 +307,28 @@ export default function MapControls({
           <input
             type="text"
             inputMode="decimal"
-            value={formatRadiusDisplay(radius)}
+            value={radiusInputValue}
             onChange={(e) => {
-              // Replace comma with dot and parse
+              // Allow free typing - replace comma with dot
               const value = e.target.value.replace(',', '.');
+              setRadiusInputValue(value);
+
+              // Only update radius if valid number >= 0.1
               const parsed = parseFloat(value);
               if (!isNaN(parsed) && parsed >= 0.1) {
                 onRadiusChange(parsed);
-              } else if (value === '' || value === '0' || value === '0.') {
+              }
+            }}
+            onFocus={() => setIsRadiusInputFocused(true)}
+            onBlur={() => {
+              setIsRadiusInputFocused(false);
+              // On blur, enforce minimum and sync display
+              const parsed = parseFloat(radiusInputValue);
+              if (isNaN(parsed) || parsed < 0.1) {
                 onRadiusChange(0.1);
+                setRadiusInputValue('0.1');
+              } else {
+                setRadiusInputValue(formatRadiusDisplay(parsed));
               }
             }}
             className="w-1/2"
@@ -333,6 +355,7 @@ export default function MapControls({
                 onClick={() => {
                   onRadiusChange(preset);
                   onUnitChange('miles');
+                  setRadiusInputValue(String(preset));
                 }}
                 className="preset-button"
               >
@@ -347,6 +370,7 @@ export default function MapControls({
                 onClick={() => {
                   onRadiusChange(preset);
                   onUnitChange('kilometers');
+                  setRadiusInputValue(String(preset));
                 }}
                 className="preset-button"
               >
