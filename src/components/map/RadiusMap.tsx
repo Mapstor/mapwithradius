@@ -32,6 +32,8 @@ interface RadiusMapProps {
   onCircleSelect: (id: string | null) => void;
   onMapClick: (lat: number, lng: number) => void;
   onRadiusChange: (radius: number) => void;
+  onDragStart?: () => void;
+  onDragEnd?: () => void;
   mapRef: React.MutableRefObject<L.Map | null>;
   skipAutoGeolocation?: boolean;
 }
@@ -50,11 +52,13 @@ export default function RadiusMap({
   onCircleSelect,
   onMapClick,
   onRadiusChange,
+  onDragStart,
+  onDragEnd,
   mapRef,
   skipAutoGeolocation = false,
 }: RadiusMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const circleLayersRef = useRef<Map<string, { circle: L.Circle; centerMarker: L.CircleMarker; edgeMarker: L.CircleMarker }>>(new Map());
+  const circleLayersRef = useRef<Map<string, { circle: L.Circle; centerMarker: L.Marker; edgeMarker: L.Marker }>>(new Map());
   const userLocationMarkerRef = useRef<L.Marker | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
 
@@ -67,6 +71,8 @@ export default function RadiusMap({
   const onCircleUpdateRef = useRef(onCircleUpdate);
   const onCircleSelectRef = useRef(onCircleSelect);
   const onRadiusChangeRef = useRef(onRadiusChange);
+  const onDragStartRef = useRef(onDragStart);
+  const onDragEndRef = useRef(onDragEnd);
   const currentUnitRef = useRef(currentUnit);
   const circlesRef = useRef(circles);
 
@@ -74,6 +80,8 @@ export default function RadiusMap({
   useEffect(() => { onCircleUpdateRef.current = onCircleUpdate; }, [onCircleUpdate]);
   useEffect(() => { onCircleSelectRef.current = onCircleSelect; }, [onCircleSelect]);
   useEffect(() => { onRadiusChangeRef.current = onRadiusChange; }, [onRadiusChange]);
+  useEffect(() => { onDragStartRef.current = onDragStart; }, [onDragStart]);
+  useEffect(() => { onDragEndRef.current = onDragEnd; }, [onDragEnd]);
   useEffect(() => { currentUnitRef.current = currentUnit; }, [currentUnit]);
   useEffect(() => { circlesRef.current = circles; }, [circles]);
 
@@ -105,30 +113,156 @@ export default function RadiusMap({
       }
     });
 
-    // Global mousemove handler for drag operations
+    // Global mousemove handler for drag operations (desktop)
     map.on('mousemove', (e: L.LeafletMouseEvent) => {
       handleMouseMove(e.latlng);
     });
 
-    // Global mouseup handler to end drag operations
+    // Global mouseup handler to end drag operations (desktop)
     map.on('mouseup', () => {
       handleMouseUp();
     });
 
-    // Touch support
-    map.on('touchmove', (e: L.LeafletEvent) => {
-      const touchEvent = e as unknown as { originalEvent: TouchEvent };
-      if (touchEvent.originalEvent && touchEvent.originalEvent.touches && touchEvent.originalEvent.touches.length === 1) {
-        const touch = touchEvent.originalEvent.touches[0];
-        const rect = map.getContainer().getBoundingClientRect();
-        const latlng = map.containerPointToLatLng(L.point(touch.clientX - rect.left, touch.clientY - rect.top));
-        handleMouseMove(latlng);
-      }
-    });
+    // =========================================
+    // MOBILE TOUCH HANDLING - Pure DOM events
+    // =========================================
+    // Using document-level touch events for smooth, unthrottled handling
+    // Do NOT use Leaflet's touch events - they can be throttled/delayed
 
-    map.on('touchend', () => {
-      handleMouseUp();
-    });
+    // Helper: Convert touch coordinates to LatLng
+    const touchToLatLng = (touch: Touch): L.LatLng => {
+      const rect = map.getContainer().getBoundingClientRect();
+      const point = L.point(touch.clientX - rect.left, touch.clientY - rect.top);
+      return map.containerPointToLatLng(point);
+    };
+
+    // Helper: Check if touch is on a center marker
+    const getCenterMarkerCircleId = (target: HTMLElement, touch: Touch): string | null => {
+      const centerMarkerIcon = target.closest('.center-marker-icon') as HTMLElement;
+      const centerMarkerInner = target.closest('.center-marker-inner') as HTMLElement;
+
+      if (centerMarkerIcon || centerMarkerInner) {
+        // Try data attribute first
+        const circleId = centerMarkerInner?.getAttribute('data-circle-id') ||
+                        centerMarkerIcon?.getAttribute('data-circle-id');
+        if (circleId && circleLayersRef.current.has(circleId)) {
+          return circleId;
+        }
+
+        // Fallback: find closest by position
+        const touchLatLng = touchToLatLng(touch);
+        let closestId: string | null = null;
+        let closestDist = Infinity;
+        circleLayersRef.current.forEach((layers, id) => {
+          const pos = layers.centerMarker.getLatLng();
+          const dist = touchLatLng.distanceTo(pos);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closestId = id;
+          }
+        });
+        return closestId;
+      }
+      return null;
+    };
+
+    // Helper: Check if touch is on or near an edge marker (within 30px)
+    const getEdgeMarkerCircleId = (target: HTMLElement, touch: Touch): string | null => {
+      const edgeMarkerIcon = target.closest('.edge-marker-icon') as HTMLElement;
+      const edgeMarkerInner = target.closest('.edge-marker-inner') as HTMLElement;
+
+      // Direct hit on edge marker element
+      if (edgeMarkerIcon || edgeMarkerInner) {
+        const circleId = edgeMarkerInner?.getAttribute('data-circle-id') ||
+                        edgeMarkerIcon?.getAttribute('data-circle-id');
+        if (circleId && circleLayersRef.current.has(circleId)) {
+          return circleId;
+        }
+      }
+
+      // Proximity check: find edge marker within 30px of touch point
+      const TOUCH_RADIUS = 30; // pixels
+      const rect = map.getContainer().getBoundingClientRect();
+      const touchX = touch.clientX - rect.left;
+      const touchY = touch.clientY - rect.top;
+
+      let closestId: string | null = null;
+      let closestDist = Infinity;
+
+      circleLayersRef.current.forEach((layers, id) => {
+        const edgeLatLng = layers.edgeMarker.getLatLng();
+        const edgePoint = map.latLngToContainerPoint(edgeLatLng);
+        const dx = edgePoint.x - touchX;
+        const dy = edgePoint.y - touchY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < TOUCH_RADIUS && dist < closestDist) {
+          closestDist = dist;
+          closestId = id;
+        }
+      });
+
+      return closestId;
+    };
+
+    // TOUCHSTART: Start drag operation
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return;
+
+      const target = e.target as HTMLElement;
+      const touch = e.touches[0];
+
+      // Check for edge marker first (higher z-index, larger touch area)
+      const edgeCircleId = getEdgeMarkerCircleId(target, touch);
+      if (edgeCircleId) {
+        e.preventDefault();
+        e.stopPropagation();
+        isDraggingEdgeRef.current = edgeCircleId;
+        map.dragging.disable();
+        onCircleSelectRef.current(edgeCircleId);
+        onDragStartRef.current?.();
+        return;
+      }
+
+      // Check for center marker
+      const centerCircleId = getCenterMarkerCircleId(target, touch);
+      if (centerCircleId) {
+        e.preventDefault();
+        e.stopPropagation();
+        isDraggingCenterRef.current = centerCircleId;
+        map.dragging.disable();
+        onCircleSelectRef.current(centerCircleId);
+        onDragStartRef.current?.();
+        return;
+      }
+    };
+
+    // TOUCHMOVE: Handle drag - called on EVERY touch move for smooth updates
+    const handleTouchMove = (e: TouchEvent) => {
+      // Only handle if we're dragging something
+      if (!isDraggingCenterRef.current && !isDraggingEdgeRef.current) return;
+      if (e.touches.length !== 1) return;
+
+      // Prevent scrolling/zooming during drag
+      e.preventDefault();
+
+      const latlng = touchToLatLng(e.touches[0]);
+      handleMouseMove(latlng);
+    };
+
+    // TOUCHEND: End drag operation
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (isDraggingCenterRef.current || isDraggingEdgeRef.current) {
+        e.preventDefault();
+        handleMouseUp();
+      }
+    };
+
+    // Add touch listeners with passive: false to allow preventDefault
+    document.addEventListener('touchstart', handleTouchStart, { passive: false });
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd, { passive: false });
+    document.addEventListener('touchcancel', handleTouchEnd, { passive: false });
 
     mapRef.current = map;
     setIsMapReady(true);
@@ -165,6 +299,10 @@ export default function RadiusMap({
     }
 
     return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('touchcancel', handleTouchEnd);
       map.remove();
       mapRef.current = null;
     };
@@ -234,6 +372,8 @@ export default function RadiusMap({
     const map = mapRef.current;
     if (!map) return;
 
+    const wasDragging = isDraggingCenterRef.current || isDraggingEdgeRef.current;
+
     // End center drag
     if (isDraggingCenterRef.current) {
       const layers = circleLayersRef.current.get(isDraggingCenterRef.current);
@@ -263,6 +403,11 @@ export default function RadiusMap({
       isDraggingEdgeRef.current = null;
       map.dragging.enable();
       document.body.style.cursor = '';
+    }
+
+    // Notify parent that drag ended
+    if (wasDragging) {
+      onDragEndRef.current?.();
     }
   }, []);
 
@@ -323,15 +468,32 @@ export default function RadiusMap({
           fillOpacity: 0.15,
         });
 
-        existing.centerMarker.setStyle({
-          fillColor: circleData.color,
-          color: 'white',
+        // Update center marker icon with new color
+        const newCenterIcon = L.divIcon({
+          className: 'center-marker-icon cursor-grab',
+          html: `<div class="center-marker-inner" data-circle-id="${circleData.id}" style="background-color: ${circleData.color}; border: 2px solid white; width: 16px; height: 16px; border-radius: 50%; cursor: grab;"></div>`,
+          iconSize: [44, 44],
+          iconAnchor: [22, 22],
         });
+        existing.centerMarker.setIcon(newCenterIcon);
+        const centerElement = existing.centerMarker.getElement();
+        if (centerElement) {
+          centerElement.setAttribute('data-circle-id', circleData.id);
+        }
 
-        existing.edgeMarker.setStyle({
-          fillColor: 'white',
-          color: circleData.color,
+        // Update edge marker icon with new color
+        const newEdgeIcon = L.divIcon({
+          className: 'edge-marker-icon',
+          html: `<div class="edge-marker-inner" data-circle-id="${circleData.id}" style="background-color: white; border: 2px solid ${circleData.color}; width: 16px; height: 16px; border-radius: 50%; cursor: ew-resize;"></div>`,
+          iconSize: [40, 40],
+          iconAnchor: [20, 20],
         });
+        existing.edgeMarker.setIcon(newEdgeIcon);
+        // Set data attribute for circle ID after icon update
+        const edgeElement = existing.edgeMarker.getElement();
+        if (edgeElement) {
+          edgeElement.setAttribute('data-circle-id', circleData.id);
+        }
 
         existing.circle.setPopupContent(createPopupContent(circleData));
       } else {
@@ -352,31 +514,33 @@ export default function RadiusMap({
           onCircleSelectRef.current(circleData.id);
         });
 
-        // Create center marker (using CircleMarker, NOT draggable marker)
-        const centerMarker = L.circleMarker([circleData.lat, circleData.lng], {
-          radius: 8,
-          fillColor: circleData.color,
-          color: 'white',
-          weight: 2,
-          opacity: 1,
-          fillOpacity: 1,
-          className: 'cursor-grab',
+        // Create center marker using DivIcon for large touch target (like edge marker)
+        const centerIcon = L.divIcon({
+          className: 'center-marker-icon cursor-grab',
+          html: `<div class="center-marker-inner" data-circle-id="${circleData.id}" style="background-color: ${circleData.color}; border: 2px solid white; width: 16px; height: 16px; border-radius: 50%; cursor: grab;"></div>`,
+          iconSize: [44, 44],  // Large touch target (44pt recommended minimum)
+          iconAnchor: [22, 22],
+        });
+        const centerMarker = L.marker([circleData.lat, circleData.lng], {
+          icon: centerIcon,
+          draggable: false,
+          bubblingMouseEvents: false,
         }).addTo(map);
 
-        // Center marker: mousedown/touchstart starts drag
+        // Set data attribute when added
+        centerMarker.on('add', () => {
+          const el = centerMarker.getElement();
+          if (el) el.setAttribute('data-circle-id', circleData.id);
+        });
+
+        // Center marker: mousedown starts drag (touch handled at document level)
         centerMarker.on('mousedown', (e: L.LeafletMouseEvent) => {
           L.DomEvent.stopPropagation(e);
           isDraggingCenterRef.current = circleData.id;
           map.dragging.disable();
           document.body.style.cursor = 'grabbing';
           onCircleSelectRef.current(circleData.id);
-        });
-
-        centerMarker.on('touchstart', (e: L.LeafletEvent) => {
-          L.DomEvent.stopPropagation(e as unknown as L.LeafletMouseEvent);
-          isDraggingCenterRef.current = circleData.id;
-          map.dragging.disable();
-          onCircleSelectRef.current(circleData.id);
+          onDragStartRef.current?.();
         });
 
         centerMarker.on('click', (e: L.LeafletMouseEvent) => {
@@ -384,32 +548,34 @@ export default function RadiusMap({
           onCircleSelectRef.current(circleData.id);
         });
 
-        // Create edge marker at north point
+        // Create edge marker at north point - using DivIcon for better touch support
         const edgePoint = calculateNorthPoint(circleData.lat, circleData.lng, radiusMeters);
-        const edgeMarker = L.circleMarker([edgePoint.lat, edgePoint.lng], {
-          radius: 6,
-          fillColor: 'white',
-          color: circleData.color,
-          weight: 2,
-          opacity: 1,
-          fillOpacity: 1,
-          className: 'cursor-ew-resize',
+        const edgeIcon = L.divIcon({
+          className: 'edge-marker-icon',
+          html: `<div class="edge-marker-inner" data-circle-id="${circleData.id}" style="background-color: white; border: 2px solid ${circleData.color}; width: 16px; height: 16px; border-radius: 50%; cursor: ew-resize;"></div>`,
+          iconSize: [40, 40],  // Large touch target
+          iconAnchor: [20, 20],
+        });
+        const edgeMarker = L.marker([edgePoint.lat, edgePoint.lng], {
+          icon: edgeIcon,
+          draggable: false,
+          bubblingMouseEvents: false,
         }).addTo(map);
 
-        // Edge marker: mousedown/touchstart starts resize
+        // Set data attribute on parent element when available
+        edgeMarker.on('add', () => {
+          const el = edgeMarker.getElement();
+          if (el) el.setAttribute('data-circle-id', circleData.id);
+        });
+
+        // Edge marker: mousedown starts resize (touch handled at document level)
         edgeMarker.on('mousedown', (e: L.LeafletMouseEvent) => {
           L.DomEvent.stopPropagation(e);
           isDraggingEdgeRef.current = circleData.id;
           map.dragging.disable();
           document.body.style.cursor = 'ew-resize';
           onCircleSelectRef.current(circleData.id);
-        });
-
-        edgeMarker.on('touchstart', (e: L.LeafletEvent) => {
-          L.DomEvent.stopPropagation(e as unknown as L.LeafletMouseEvent);
-          isDraggingEdgeRef.current = circleData.id;
-          map.dragging.disable();
-          onCircleSelectRef.current(circleData.id);
+          onDragStartRef.current?.();
         });
 
         circleLayersRef.current.set(circleData.id, {
@@ -430,6 +596,30 @@ export default function RadiusMap({
       .cursor-ew-resize { cursor: ew-resize !important; touch-action: none; }
       .leaflet-interactive.cursor-grab,
       .leaflet-interactive.cursor-ew-resize { touch-action: none; }
+      .center-marker-icon {
+        background: transparent !important;
+        border: none !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        touch-action: none;
+      }
+      .center-marker-inner {
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        touch-action: none;
+      }
+      .edge-marker-icon {
+        background: transparent !important;
+        border: none !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        touch-action: none;
+      }
+      .edge-marker-inner {
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        touch-action: none;
+      }
     `;
     document.head.appendChild(style);
     return () => { document.head.removeChild(style); };

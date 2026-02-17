@@ -309,12 +309,12 @@ export default function MapControls({
                 onRadiusChange(0.1);
               }
             }}
-            className="flex-1"
+            className="w-1/2"
           />
           <select
             value={unit}
             onChange={(e) => onUnitChange(e.target.value as DistanceUnit)}
-            className="w-28"
+            className="w-1/2"
           >
             <option value="miles">Miles</option>
             <option value="kilometers">Kilometers</option>

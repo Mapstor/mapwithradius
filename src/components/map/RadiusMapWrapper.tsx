@@ -35,6 +35,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
   const [isAddingCircle, setIsAddingCircle] = useState(true); // Start in "add mode"
   const [hasUrlParams, setHasUrlParams] = useState(false);
   const [tooltipDismissed, setTooltipDismissed] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const mapRef = useRef<L.Map | null>(null);
 
   // Parse URL params on mount
@@ -86,14 +87,31 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
     }
   }, []);
 
-  // Helper to fit map to circle bounds
+  // Helper to fit map to circle bounds - gentle zoom that shows context around the circle
   const fitToCircle = useCallback((lat: number, lng: number, radiusMeters: number) => {
     if (!mapRef.current) return;
 
     const L = (window as unknown as { L: typeof import('leaflet') }).L;
+    const map = mapRef.current;
     const center = L.latLng(lat, lng);
-    const bounds = center.toBounds(radiusMeters * 2);
-    mapRef.current.fitBounds(bounds, { padding: [50, 50] });
+
+    // Check if circle fits in current view
+    const circleBounds = center.toBounds(radiusMeters * 2);
+    const currentBounds = map.getBounds();
+    const circleIsVisible = currentBounds.contains(circleBounds);
+
+    if (circleIsVisible) {
+      // Circle fits - just pan to center it, don't change zoom
+      map.panTo(center, { animate: true, duration: 0.25 });
+    } else {
+      // Circle doesn't fit - zoom out to show it with generous padding
+      const paddedBounds = center.toBounds(radiusMeters * 2.5);
+      map.fitBounds(paddedBounds, {
+        padding: [60, 60],
+        animate: true,
+        duration: 0.3
+      });
+    }
   }, []);
 
   // Update selected circle when radius/unit/color changes
@@ -105,8 +123,8 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
     setCircles((prev) => {
       const selectedCircle = prev.find((c) => c.id === selectedCircleId);
 
-      // Fit map to the updated circle (using coords from current state)
-      if (selectedCircle) {
+      // Fit map to the updated circle - but NOT during drag operations
+      if (selectedCircle && !isDragging) {
         // Use setTimeout to avoid calling during render
         setTimeout(() => {
           fitToCircle(selectedCircle.lat, selectedCircle.lng, newRadiusMeters);
@@ -124,7 +142,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
           : c
       );
     });
-  }, [radius, unit, color, selectedCircleId, fitToCircle]);
+  }, [radius, unit, color, selectedCircleId, fitToCircle, isDragging]);
 
   const handleMapClick = useCallback(
     (lat: number, lng: number) => {
@@ -290,6 +308,14 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
     setIsAddingCircle(true);
   }, []);
 
+  const handleDragStart = useCallback(() => {
+    setIsDragging(true);
+  }, []);
+
+  const handleDragEnd = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
   const handleCopyLink = useCallback(() => {
     const circleParams: CircleParams[] = circles.map((c) => ({
       lat: c.lat,
@@ -389,13 +415,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
               <div className="flex justify-between">
                 <span>Area:</span>
                 <span className="font-medium text-slate-900">
-                  {formatArea(areaMiles, 'miles')}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span>Center:</span>
-                <span className="font-medium text-slate-900 font-mono text-xs">
-                  {selectedCircle.lat.toFixed(5)}, {selectedCircle.lng.toFixed(5)}
+                  {formatArea(areaMiles, 'miles')} / {formatArea(areaKm, 'kilometers')}
                 </span>
               </div>
             </div>
@@ -417,6 +437,8 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
             onCircleSelect={handleCircleSelect}
             onMapClick={handleMapClick}
             onRadiusChange={setRadius}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
             mapRef={mapRef}
             skipAutoGeolocation={hasUrlParams}
           />
