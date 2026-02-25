@@ -257,3 +257,43 @@
     opacity: 0;
   }
 }
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe area utilities for iOS */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mb-safe {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.h-safe-bottom {
+  height: env(safe-area-inset-bottom, 0px);
+}
+
+/* Mobile bottom sheet styling */
+.mobile-bottom-sheet {
+  touch-action: none;
+}
+
+.mobile-bottom-sheet-handle {
+  @apply w-10 h-1 bg-slate-300 rounded-full mx-auto;
+}
+
+/* Touch-friendly tap targets */
+@layer utilities {
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

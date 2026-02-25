@@ -628,8 +628,8 @@ export default function RadiusMap({
   return (
     <div
       ref={containerRef}
-      className="w-full h-[60vh] lg:h-[75vh] overflow-hidden"
-      style={{ minHeight: '300px' }}
+      className="w-full h-[calc(100vh-180px)] lg:h-[75vh] overflow-hidden"
+      style={{ minHeight: '350px' }}
     />
   );
 }
