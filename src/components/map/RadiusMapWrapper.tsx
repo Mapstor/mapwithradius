@@ -379,12 +379,15 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
 
   // Get selected circle info for the info card
   const selectedCircle = selectedCircleId ? circles.find((c) => c.id === selectedCircleId) : null;
-  const circleInfo = selectedCircle ? {
-    radiusMiles: fromMeters(selectedCircle.radiusMeters, 'miles'),
-    radiusKm: fromMeters(selectedCircle.radiusMeters, 'kilometers'),
-    areaMiles: calculateCircleArea(fromMeters(selectedCircle.radiusMeters, 'miles'), 'miles'),
-    areaKm: calculateCircleArea(fromMeters(selectedCircle.radiusMeters, 'kilometers'), 'kilometers'),
-    color: selectedCircle.color,
+
+  // For info card: show selected circle, or fallback to first circle
+  const infoCardCircle = selectedCircle || circles[0] || null;
+  const circleInfo = infoCardCircle ? {
+    radiusMiles: fromMeters(infoCardCircle.radiusMeters, 'miles'),
+    radiusKm: fromMeters(infoCardCircle.radiusMeters, 'kilometers'),
+    areaMiles: calculateCircleArea(fromMeters(infoCardCircle.radiusMeters, 'miles'), 'miles'),
+    areaKm: calculateCircleArea(fromMeters(infoCardCircle.radiusMeters, 'kilometers'), 'kilometers'),
+    color: infoCardCircle.color,
   } : null;
 
   return (
