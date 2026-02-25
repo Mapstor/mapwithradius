@@ -377,16 +377,14 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
     downloadKML(kmlCircles);
   }, [circles]);
 
-  // Get circle info for the info card - show selected circle or first circle
-  const displayCircle = selectedCircleId
-    ? circles.find((c) => c.id === selectedCircleId)
-    : circles[0] || null;
-  const circleInfo = displayCircle ? {
-    radiusMiles: fromMeters(displayCircle.radiusMeters, 'miles'),
-    radiusKm: fromMeters(displayCircle.radiusMeters, 'kilometers'),
-    areaMiles: calculateCircleArea(fromMeters(displayCircle.radiusMeters, 'miles'), 'miles'),
-    areaKm: calculateCircleArea(fromMeters(displayCircle.radiusMeters, 'kilometers'), 'kilometers'),
-    color: displayCircle.color,
+  // Get selected circle info for the info card
+  const selectedCircle = selectedCircleId ? circles.find((c) => c.id === selectedCircleId) : null;
+  const circleInfo = selectedCircle ? {
+    radiusMiles: fromMeters(selectedCircle.radiusMeters, 'miles'),
+    radiusKm: fromMeters(selectedCircle.radiusMeters, 'kilometers'),
+    areaMiles: calculateCircleArea(fromMeters(selectedCircle.radiusMeters, 'miles'), 'miles'),
+    areaKm: calculateCircleArea(fromMeters(selectedCircle.radiusMeters, 'kilometers'), 'kilometers'),
+    color: selectedCircle.color,
   } : null;
 
   return (
