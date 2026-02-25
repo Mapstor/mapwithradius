@@ -410,31 +410,31 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
         </div>
       )}
 
-      {/* Circle Info Card - Desktop: bottom-left, Mobile: top-left */}
+      {/* Circle Info Card - Desktop: bottom-left, Mobile: top-right */}
       {circleInfo && (
-        <div className="absolute top-4 left-3 lg:bottom-20 lg:top-auto z-[1000] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200 p-3 text-sm min-w-[180px] lg:min-w-[200px]">
+        <div className="absolute top-4 right-3 lg:left-4 lg:right-auto lg:bottom-20 lg:top-auto z-[1000] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200 p-3 text-sm min-w-[160px] lg:min-w-[200px]">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-semibold text-slate-900">Circle Info</span>
+            <span className="font-semibold text-slate-900 text-xs lg:text-sm">Circle Info</span>
             <div
-              className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+              className="w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full border-2 border-white shadow-sm"
               style={{ backgroundColor: circleInfo.color }}
             />
           </div>
-          <div className="space-y-1.5 text-slate-600">
-            <div className="flex justify-between gap-3">
+          <div className="space-y-1 lg:space-y-1.5 text-slate-600 text-xs lg:text-sm">
+            <div className="flex justify-between gap-2 lg:gap-3">
               <span>Radius:</span>
               <span className="font-medium text-slate-900 text-right">
-                <span className="block lg:inline">{formatDistance(circleInfo.radiusMiles, 'miles')}</span>
-                <span className="text-slate-400 mx-1 hidden lg:inline">/</span>
-                <span className="block lg:inline text-slate-500 lg:text-slate-900">{formatDistance(circleInfo.radiusKm, 'kilometers')}</span>
+                {formatDistance(circleInfo.radiusMiles, 'miles')}
+                <span className="text-slate-400 mx-0.5 lg:mx-1">/</span>
+                <span className="text-slate-500 lg:text-slate-900">{formatDistance(circleInfo.radiusKm, 'kilometers')}</span>
               </span>
             </div>
-            <div className="flex justify-between gap-3">
+            <div className="flex justify-between gap-2 lg:gap-3">
               <span>Area:</span>
               <span className="font-medium text-slate-900 text-right">
-                <span className="block lg:inline">{formatArea(circleInfo.areaMiles, 'miles')}</span>
-                <span className="text-slate-400 mx-1 hidden lg:inline">/</span>
-                <span className="block lg:inline text-slate-500 lg:text-slate-900">{formatArea(circleInfo.areaKm, 'kilometers')}</span>
+                {formatArea(circleInfo.areaMiles, 'miles')}
+                <span className="text-slate-400 mx-0.5 lg:mx-1">/</span>
+                <span className="text-slate-500 lg:text-slate-900">{formatArea(circleInfo.areaKm, 'kilometers')}</span>
               </span>
             </div>
           </div>
