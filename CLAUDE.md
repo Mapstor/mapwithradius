@@ -1,4 +1,4 @@
-# CLAUDE.md — Map With Radius
+# CLAUDE.md — Map With Radius.
 
 ## Project Overview
 Map With Radius (mapwithradius.com) is a free online radius map tool. Users draw circles on a map by entering an address and distance. The site targets 1,341 keywords with 285K monthly search volume.
