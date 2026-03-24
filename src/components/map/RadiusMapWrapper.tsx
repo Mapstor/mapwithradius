@@ -89,7 +89,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
     }
   }, []);
 
-  // Helper to fit map to circle bounds - gentle zoom that shows context around the circle
+  // Helper to fit map to circle bounds - always zoom to show circle with ~40 miles context
   const fitToCircle = useCallback((lat: number, lng: number, radiusMeters: number) => {
     if (!mapRef.current) return;
 
@@ -97,23 +97,18 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams 
     const map = mapRef.current;
     const center = L.latLng(lat, lng);
 
-    // Check if circle fits in current view
-    const circleBounds = center.toBounds(radiusMeters * 2);
-    const currentBounds = map.getBounds();
-    const circleIsVisible = currentBounds.contains(circleBounds);
+    // Always zoom to show the circle with good context
+    // For a 10-mile radius, we want ~40 miles total view, so use ~4x the radius
+    // This ensures the circle is nicely visible with surrounding context
+    const viewMultiplier = 4; // Shows circle with ~2x radius padding on each side
+    const paddedBounds = center.toBounds(radiusMeters * viewMultiplier);
 
-    if (circleIsVisible) {
-      // Circle fits - just pan to center it, don't change zoom
-      map.panTo(center, { animate: true, duration: 0.25 });
-    } else {
-      // Circle doesn't fit - zoom out to show it with generous padding
-      const paddedBounds = center.toBounds(radiusMeters * 2.5);
-      map.fitBounds(paddedBounds, {
-        padding: [60, 60],
-        animate: true,
-        duration: 0.3
-      });
-    }
+    map.fitBounds(paddedBounds, {
+      padding: [40, 40],
+      animate: true,
+      duration: 0.3,
+      maxZoom: 14 // Don't zoom in too far for very small radii
+    });
   }, []);
 
   // Update selected circle when radius/unit/color changes
