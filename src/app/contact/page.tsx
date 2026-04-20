@@ -66,6 +66,66 @@ export default function ContactPage() {
           }),
         }}
       />
+      {/* FAQPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'Is Map With Radius free to use?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Yes, all of our mapping tools are completely free. There are no hidden fees, no premium tiers, and no account required. We're supported by minimal, non-intrusive advertising.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'How accurate are the distance calculations?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Our radius calculations use the Haversine formula, which accounts for the Earth's curvature and is accurate to within a few meters for most purposes. However, for critical applications, we recommend verifying measurements independently.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: "Why isn't my location working?",
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Location access requires your browser's permission. Check that you've allowed location access for our site. If you're on a desktop without GPS, the location may be less accurate. You can always search for an address manually instead.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Can I embed the map on my website?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'We\'re working on an embeddable widget. In the meantime, you can share maps using the "Copy Link" feature, which creates a URL that opens the map with your exact configuration.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'How do I export my radius map?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'You can export your map in two ways: Download as PNG (image) for use in documents or presentations, or Export as KML for use in Google Earth, ArcGIS, and other mapping software. Both options are available in the controls panel.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Do you store my data?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "No. We don't require accounts, don't track your location, and don't store your map data. Everything happens in your browser. When you share a link, the coordinates are encoded directly in the URL — nothing is saved on our servers. See our Privacy Policy for details.",
+                },
+              },
+            ],
+          }),
+        }}
+      />
 
       <main className="max-w-4xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Contact Us</h1>
