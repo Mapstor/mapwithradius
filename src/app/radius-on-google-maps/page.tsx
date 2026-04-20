@@ -55,13 +55,7 @@ export default function RadiusOnGoogleMapsPage() {
               {
                 '@type': 'ListItem',
                 position: 2,
-                name: 'Guides',
-                item: 'https://mapwithradius.com/guides',
-              },
-              {
-                '@type': 'ListItem',
-                position: 3,
-                name: 'Radius on Google Maps',
+                name: 'How to Draw a Radius on Google Maps',
                 item: 'https://mapwithradius.com/radius-on-google-maps',
               },
             ],
@@ -174,11 +168,7 @@ export default function RadiusOnGoogleMapsPage() {
               </Link>
             </li>
             <li className="text-slate-400">/</li>
-            <li>
-              <span className="text-slate-400">Guides</span>
-            </li>
-            <li className="text-slate-400">/</li>
-            <li className="text-slate-900 font-medium">Radius on Google Maps</li>
+            <li className="text-slate-900 font-medium">How to Draw a Radius on Google Maps</li>
           </ol>
         </div>
       </nav>
