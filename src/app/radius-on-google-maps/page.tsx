@@ -34,7 +34,7 @@ const MiniRadiusMap = dynamic(() => import('@/components/map/MiniRadiusMap'), {
 });
 
 export default function RadiusOnGoogleMapsPage() {
-  const currentDate = '2026-02-16';
+  const currentDate = '2026-02-16T00:00:00+00:00';
 
   return (
     <>
@@ -74,11 +74,12 @@ export default function RadiusOnGoogleMapsPage() {
             description:
               "Google Maps has no built-in radius tool. Here are 3 ways to draw a radius circle on Google Maps — plus a free alternative.",
             image: 'https://mapwithradius.com/opengraph-image',
-            datePublished: '2026-01-15',
+            datePublished: '2026-01-15T00:00:00+00:00',
             dateModified: currentDate,
             author: {
               '@type': 'Organization',
               name: 'Map With Radius',
+              url: 'https://mapwithradius.com',
             },
             publisher: {
               '@type': 'Organization',
