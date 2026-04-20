@@ -46,7 +46,7 @@ export default function AboutPage() {
             '@type': 'Organization',
             name: 'Map With Radius',
             url: 'https://mapwithradius.com',
-            logo: 'https://mapwithradius.com/logo.png',
+            logo: 'https://mapwithradius.com/apple-icon',
             description: 'Free online mapping tools for drawing radius circles, measuring distances, and visualizing geographic areas.',
             sameAs: [],
             contactPoint: {
