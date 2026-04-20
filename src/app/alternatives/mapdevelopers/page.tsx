@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: 'MapDevelopers & CalcMaps Radius Tool — Best Alternatives (2026)',
   description:
     'Comparing MapDevelopers, CalcMaps, and Smappen radius tools. See how Map With Radius compares — free, modern, no API limits.',
+  alternates: {
+    canonical: '/alternatives/mapdevelopers',
+  },
   keywords: [
     'mapdevelopers draw circle tool',
     'calcmaps radius',

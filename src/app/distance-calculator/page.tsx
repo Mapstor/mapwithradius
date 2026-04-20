@@ -5,6 +5,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Distance Between Two Points on a Map — Free Calculator',
   description: 'Measure the straight-line or driving distance between any two points on a map. Shows both "as the crow flies" and road distance.',
+  alternates: {
+    canonical: '/distance-calculator',
+  },
   keywords: ['distance between two points', 'distance between two addresses', 'distance calculator', 'as the crow flies', 'road distance'],
   openGraph: {
     title: 'Distance Between Two Points on a Map — Free Calculator',

@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'How to Draw a Radius on Google Maps (2026 Guide + Free Tool)',
   description:
     "Google Maps has no built-in radius tool. Here are 3 ways to draw a radius circle on Google Maps — plus a free alternative that works instantly.",
+  alternates: {
+    canonical: '/radius-on-google-maps',
+  },
   keywords: [
     'radius on google maps',
     'google maps radius',

@@ -5,6 +5,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'KM Radius Map — Draw a Kilometer Radius Circle on a Map (Free)',
   description: 'Draw a radius in kilometers on any map. Free metric radius tool — enter an address and distance in km. No signup, no limits.',
+  alternates: {
+    canonical: '/km-radius-map',
+  },
   keywords: ['km radius map', 'kilometer radius tool', '5 km radius from me', '10 km radius map', 'metric radius', 'radius map europe', 'radius map australia'],
   openGraph: {
     title: 'KM Radius Map — Draw a Kilometer Radius Circle on a Map (Free)',

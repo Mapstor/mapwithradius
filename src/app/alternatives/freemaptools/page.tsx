@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: 'FreeMapTools Radius Alternative — Faster & Modern (2026)',
   description:
     'Looking for a FreeMapTools radius alternative? Map With Radius offers the same features with a modern interface, mobile support, and no Google Maps dependency.',
+  alternates: {
+    canonical: '/alternatives/freemaptools',
+  },
   keywords: [
     'freemaptools radius',
     'free map tools radius',

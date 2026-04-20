@@ -5,6 +5,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Drive Time Map — See How Far You Can Drive, Walk, or Cycle (Free)',
   description: 'Free drive time radius map. Enter a location and time limit to see how far you can actually travel by car, foot, or bike. Uses real road data.',
+  alternates: {
+    canonical: '/drive-time-map',
+  },
   keywords: ['drive time radius map', 'isochrone map', 'travel time map', 'commute time map', 'driving distance map', 'drive time map'],
   openGraph: {
     title: 'Drive Time Map — See How Far You Can Drive, Walk, or Cycle (Free)',

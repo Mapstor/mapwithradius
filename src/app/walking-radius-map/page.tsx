@@ -5,6 +5,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Walking & Cycling Radius Map — How Far Can You Walk or Bike? (Free)',
   description: 'See how far you can walk or cycle in 5, 10, 15, or 30 minutes. Shows real walking/biking area based on actual roads and paths.',
+  alternates: {
+    canonical: '/walking-radius-map',
+  },
   keywords: ['walking radius map', 'walking distance calculator', 'bike radius map', 'cycling distance map', '15 minute walk', '15 minute city', 'walkability map', 'isochrone map'],
   openGraph: {
     title: 'Walking & Cycling Radius Map — How Far Can You Walk or Bike? (Free)',

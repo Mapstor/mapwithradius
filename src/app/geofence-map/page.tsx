@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: 'Geofence Map Tool — Create a Radius Geofence (Free)',
   description:
     'Learn what geofencing is and use our free radius tool to create a basic geofence around any location. No coding or app required.',
+  alternates: {
+    canonical: '/geofence-map',
+  },
   keywords: ['geofence map tool', 'google map geofencing', 'geofence radius', 'create geofence'],
   openGraph: {
     title: 'Geofence Map Tool — Create a Radius Geofence (Free)',

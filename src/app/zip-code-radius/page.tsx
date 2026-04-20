@@ -5,6 +5,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Zip Code Radius Map — Find Zip Codes Within a Radius (Free)',
   description: 'Enter a zip code and distance to find all zip codes within that radius. Export the list as CSV. Free, no signup.',
+  alternates: {
+    canonical: '/zip-code-radius',
+  },
   keywords: ['zip code radius tool', 'radius around zip code', 'zip radius map', 'zip code finder radius', 'zip codes within radius'],
   openGraph: {
     title: 'Zip Code Radius Map — Find Zip Codes Within a Radius (Free)',

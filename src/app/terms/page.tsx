@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Terms of Use — Map With Radius',
   description: 'Terms of use and conditions for using Map With Radius mapping tools. Read our policies on usage, data, and liability.',
+  alternates: {
+    canonical: '/terms',
+  },
 };
 
 export default function TermsPage() {

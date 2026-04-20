@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Contact Us — Map With Radius',
   description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
+  alternates: {
+    canonical: '/contact',
+  },
 };
 
 export default function ContactPage() {

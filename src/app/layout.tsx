@@ -8,6 +8,7 @@ import Footer from '@/components/layout/Footer';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://mapwithradius.com'),
   title: {
     default: 'Map With Radius — Draw a Radius Circle on Any Map (Free)',
     template: '%s | Map With Radius',

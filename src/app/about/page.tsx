@@ -4,6 +4,9 @@ import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'About Map With Radius — Free Online Radius Map Tool',
   description: 'Learn about Map With Radius, a free online mapping tool for drawing radius circles, measuring distances, and visualizing travel time areas. No signup required.',
+  alternates: {
+    canonical: '/about',
+  },
 };
 
 export default function AboutPage() {
