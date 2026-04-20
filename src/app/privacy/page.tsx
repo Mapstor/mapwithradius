@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy — Map With Radius',
-  description: 'Privacy policy for Map With Radius. Learn how we protect your privacy, what data we collect, and your rights regarding personal information.',
+  description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
   alternates: {
     canonical: '/privacy',
   },

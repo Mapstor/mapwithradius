@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Geofence Map Tool — Create a Radius Geofence (Free)',
   description:
-    'Learn what geofencing is and use our free radius tool to create a basic geofence around any location. No coding or app required.',
+    'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
   alternates: {
     canonical: '/geofence-map',
   },
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Geofence Map Tool — Create a Radius Geofence (Free)',
     description:
-      'Learn what geofencing is and use our free radius tool to visualize and plan geofence boundaries.',
+      'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
     url: 'https://mapwithradius.com/geofence-map',
   },
 };
@@ -29,7 +29,7 @@ export default function GeofenceMapPage() {
             '@type': 'WebPage',
             name: 'Geofence Map Tool',
             description:
-              'Learn what geofencing is and use our free radius tool to create a basic geofence around any location.',
+              'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
             url: 'https://mapwithradius.com/geofence-map',
           }),
         }}

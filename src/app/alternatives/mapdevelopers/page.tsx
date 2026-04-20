@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'MapDevelopers & CalcMaps Radius Tool — Best Alternatives (2026)',
   description:
-    'Comparing MapDevelopers, CalcMaps, and Smappen radius tools. See how Map With Radius compares — free, modern, no API limits.',
+    'MapDevelopers radius tool alternative — drag-to-resize circles, KML export, no Google Maps API costs. Compared side-by-side with CalcMaps and Smappen.',
   alternates: {
     canonical: '/alternatives/mapdevelopers',
   },
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'MapDevelopers & CalcMaps Radius Tool — Best Alternatives (2026)',
     description:
-      'Comparing MapDevelopers, CalcMaps, and Smappen radius tools. See how Map With Radius compares.',
+      'MapDevelopers radius tool alternative — drag-to-resize circles, KML export, no Google Maps API costs. Compared side-by-side with CalcMaps and Smappen.',
     url: 'https://mapwithradius.com/alternatives/mapdevelopers',
   },
 };
@@ -33,7 +33,7 @@ export default function MapDevelopersAlternativePage() {
             '@context': 'https://schema.org',
             '@type': 'WebPage',
             name: 'MapDevelopers & CalcMaps Radius Tool Alternatives',
-            description: 'Comparing MapDevelopers, CalcMaps, and Smappen radius tools. See how Map With Radius compares — free, modern, no API limits.',
+            description: 'MapDevelopers radius tool alternative — drag-to-resize circles, KML export, no Google Maps API costs. Compared side-by-side with CalcMaps and Smappen.',
             url: 'https://mapwithradius.com/alternatives/mapdevelopers',
             isPartOf: {
               '@type': 'WebSite',

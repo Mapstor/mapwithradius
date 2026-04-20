@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'About Map With Radius — Free Online Radius Map Tool',
-  description: 'Learn about Map With Radius, a free online mapping tool for drawing radius circles, measuring distances, and visualizing travel time areas. No signup required.',
+  description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
   alternates: {
     canonical: '/about',
   },

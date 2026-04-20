@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Terms of Use — Map With Radius',
-  description: 'Terms of use and conditions for using Map With Radius mapping tools. Read our policies on usage, data, and liability.',
+  description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
   alternates: {
     canonical: '/terms',
   },

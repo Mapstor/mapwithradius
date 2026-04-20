@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'FreeMapTools Radius Alternative — Faster & Modern (2026)',
   description:
-    'Looking for a FreeMapTools radius alternative? Map With Radius offers the same features with a modern interface, mobile support, and no Google Maps dependency.',
+    'FreeMapTools radius alternative — modern, mobile-friendly, with full address search and instant KML/PNG export. Free, no Google API, no account required.',
   alternates: {
     canonical: '/alternatives/freemaptools',
   },
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'FreeMapTools Radius Alternative — Faster & Modern (2026)',
     description:
-      'Looking for a FreeMapTools radius alternative? Map With Radius offers the same features with a modern interface.',
+      'FreeMapTools radius alternative — modern, mobile-friendly, with full address search and instant KML/PNG export. Free, no Google API, no account required.',
     url: 'https://mapwithradius.com/alternatives/freemaptools',
   },
 };
@@ -33,7 +33,7 @@ export default function FreeMapToolsAlternativePage() {
             '@context': 'https://schema.org',
             '@type': 'WebPage',
             name: 'FreeMapTools Radius Alternative',
-            description: 'Looking for a FreeMapTools radius alternative? Map With Radius offers the same features with a modern interface, mobile support, and no Google Maps dependency.',
+            description: 'FreeMapTools radius alternative — modern, mobile-friendly, with full address search and instant KML/PNG export. Free, no Google API, no account required.',
             url: 'https://mapwithradius.com/alternatives/freemaptools',
             isPartOf: {
               '@type': 'WebSite',
