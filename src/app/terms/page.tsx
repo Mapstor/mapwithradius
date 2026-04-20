@@ -7,6 +7,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/terms',
   },
+  openGraph: {
+    type: 'website',
+    url: '/terms',
+    title: 'Terms of Use — Map With Radius',
+    description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Terms of Use — Map With Radius',
+    description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
+  },
 };
 
 export default function TermsPage() {

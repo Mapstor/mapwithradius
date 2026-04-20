@@ -7,6 +7,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/about',
   },
+  openGraph: {
+    type: 'website',
+    url: '/about',
+    title: 'About Map With Radius — Free Online Radius Map Tool',
+    description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'About Map With Radius — Free Online Radius Map Tool',
+    description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
+  },
 };
 
 export default function AboutPage() {

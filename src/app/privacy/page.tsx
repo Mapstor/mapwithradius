@@ -7,6 +7,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/privacy',
   },
+  openGraph: {
+    type: 'website',
+    url: '/privacy',
+    title: 'Privacy Policy — Map With Radius',
+    description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Privacy Policy — Map With Radius',
+    description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
+  },
 };
 
 export default function PrivacyPage() {

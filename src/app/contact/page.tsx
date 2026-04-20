@@ -7,6 +7,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/contact',
   },
+  openGraph: {
+    type: 'website',
+    url: '/contact',
+    title: 'Contact Us — Map With Radius',
+    description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Contact Us — Map With Radius',
+    description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
+  },
 };
 
 export default function ContactPage() {
