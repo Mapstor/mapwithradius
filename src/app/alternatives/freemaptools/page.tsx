@@ -20,6 +20,12 @@ export const metadata: Metadata = {
       'FreeMapTools radius alternative — modern, mobile-friendly, with full address search and instant KML/PNG export. Free, no Google API, no account required.',
     url: 'https://mapwithradius.com/alternatives/freemaptools',
   },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FreeMapTools Radius Alternative — Faster & Modern (2026)',
+    description:
+      'FreeMapTools radius alternative — modern, mobile-friendly, with full address search and instant KML/PNG export. Free, no Google API, no account required.',
+  },
 };
 
 export default function FreeMapToolsAlternativePage() {
@@ -33,7 +39,8 @@ export default function FreeMapToolsAlternativePage() {
             '@context': 'https://schema.org',
             '@type': 'WebPage',
             name: 'FreeMapTools Radius Alternative',
-            description: 'FreeMapTools radius alternative — modern, mobile-friendly, with full address search and instant KML/PNG export. Free, no Google API, no account required.',
+            description:
+              'FreeMapTools radius alternative — modern, mobile-friendly, with full address search and instant KML/PNG export. Free, no Google API, no account required.',
             url: 'https://mapwithradius.com/alternatives/freemaptools',
             isPartOf: {
               '@type': 'WebSite',
@@ -75,6 +82,59 @@ export default function FreeMapToolsAlternativePage() {
         }}
       />
 
+      {/* FAQPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'Is FreeMapTools free?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. FreeMapTools is a long-running free web tool and requires no account. The site displays ads.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Can FreeMapTools import a CSV of points?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. FreeMapTools supports CSV bulk import, letting you upload hundreds of points and draw radius circles around each. This is its strongest unique feature. Map With Radius does not currently support CSV bulk import.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Does FreeMapTools export KML?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes. FreeMapTools offers KML export from its radius tool. Map With Radius also exports KML — the difference is in mobile UX and map engine, not export format.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Why would I use Map With Radius over FreeMapTools?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: "Map With Radius is fully mobile-optimized and runs on OpenStreetMap rather than Google Maps. FreeMapTools' interface dates to 2011 and was not built for phones. If you are drawing a radius on mobile, Map With Radius handles it more cleanly.",
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Is FreeMapTools or Map With Radius better for shareable URLs?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Both support shareable URLs. Map With Radius encodes coordinates, radius, and unit directly in the URL query string (for example, ?lat=40.7&lng=-74&r=10mi), which is copy-paste friendly. FreeMapTools also generates a shareable URL from its interface.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
+
       {/* Breadcrumb navigation */}
       <nav className="bg-slate-50 border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -86,7 +146,9 @@ export default function FreeMapToolsAlternativePage() {
             </li>
             <li className="text-slate-400">/</li>
             <li>
-              <span className="text-slate-400">Alternatives</span>
+              <Link href="/alternatives" className="hover:text-slate-900">
+                Alternatives
+              </Link>
             </li>
             <li className="text-slate-400">/</li>
             <li className="text-slate-900 font-medium">FreeMapTools</li>
@@ -219,6 +281,109 @@ export default function FreeMapToolsAlternativePage() {
           </div>
         </section>
 
+        {/* FAQ */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
+            Frequently Asked Questions
+          </h2>
+          <div className="space-y-4">
+            <details className="faq-card">
+              <summary>
+                Is FreeMapTools free?
+                <svg
+                  className="w-5 h-5 faq-chevron"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div className="faq-content">
+                Yes. FreeMapTools is a long-running free web tool and requires no account. The site
+                displays ads.
+              </div>
+            </details>
+
+            <details className="faq-card">
+              <summary>
+                Can FreeMapTools import a CSV of points?
+                <svg
+                  className="w-5 h-5 faq-chevron"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div className="faq-content">
+                Yes. FreeMapTools supports CSV bulk import, letting you upload hundreds of points
+                and draw radius circles around each. This is its strongest unique feature. Map With
+                Radius does not currently support CSV bulk import.
+              </div>
+            </details>
+
+            <details className="faq-card">
+              <summary>
+                Does FreeMapTools export KML?
+                <svg
+                  className="w-5 h-5 faq-chevron"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div className="faq-content">
+                Yes. FreeMapTools offers KML export from its radius tool. Map With Radius also
+                exports KML — the difference is in mobile UX and map engine, not export format.
+              </div>
+            </details>
+
+            <details className="faq-card">
+              <summary>
+                Why would I use Map With Radius over FreeMapTools?
+                <svg
+                  className="w-5 h-5 faq-chevron"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div className="faq-content">
+                Map With Radius is fully mobile-optimized and runs on OpenStreetMap rather than
+                Google Maps. FreeMapTools&apos; interface dates to 2011 and was not built for
+                phones. If you are drawing a radius on mobile, Map With Radius handles it more
+                cleanly.
+              </div>
+            </details>
+
+            <details className="faq-card">
+              <summary>
+                Is FreeMapTools or Map With Radius better for shareable URLs?
+                <svg
+                  className="w-5 h-5 faq-chevron"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div className="faq-content">
+                Both support shareable URLs. Map With Radius encodes coordinates, radius, and unit
+                directly in the URL query string (for example,
+                {' '}?lat=40.7&amp;lng=-74&amp;r=10mi), which is copy-paste friendly. FreeMapTools
+                also generates a shareable URL from its interface.
+              </div>
+            </details>
+          </div>
+        </section>
+
         {/* Try Map With Radius CTA */}
         <section className="bg-slate-900 text-white rounded-2xl p-8 text-center">
           <h2 className="text-2xl font-bold mb-3">Try Map With Radius</h2>
@@ -243,8 +408,16 @@ export default function FreeMapToolsAlternativePage() {
               &larr; Main radius tool
             </Link>
             <span className="text-slate-300">·</span>
+            <Link href="/alternatives" className="content-link">
+              All alternatives
+            </Link>
+            <span className="text-slate-300">·</span>
             <Link href="/alternatives/mapdevelopers" className="content-link">
-              MapDevelopers comparison &rarr;
+              MapDevelopers &rarr;
+            </Link>
+            <span className="text-slate-300">·</span>
+            <Link href="/alternatives/calcmaps" className="content-link">
+              CalcMaps &rarr;
             </Link>
           </div>
         </section>

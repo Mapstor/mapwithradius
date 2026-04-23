@@ -2,33 +2,33 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
+  title: 'Maptive Alternative — Free Radius Map, No $250 Plan (2026)',
   description:
-    'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
+    'Maptive alternative for radius mapping — free forever, no 10-day trial, no $250-per-user annual plan. Draw circles on OpenStreetMap, export KML, no account.',
   alternates: {
-    canonical: '/alternatives/mapdevelopers',
+    canonical: '/alternatives/maptive',
   },
   keywords: [
-    'mapdevelopers draw circle alternative',
-    'mapdevelopers radius alternative',
-    'draw circle on map',
-    'radius map tool',
+    'maptive alternative',
+    'maptive free alternative',
+    'free radius map no trial',
+    'radius map without subscription',
   ],
   openGraph: {
-    title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
+    title: 'Maptive Alternative — Free Radius Map, No $250 Plan (2026)',
     description:
-      'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
-    url: 'https://mapwithradius.com/alternatives/mapdevelopers',
+      'Maptive alternative for radius mapping — free forever, no 10-day trial, no $250-per-user annual plan. Draw circles on OpenStreetMap, export KML, no account.',
+    url: 'https://mapwithradius.com/alternatives/maptive',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
+    title: 'Maptive Alternative — Free Radius Map, No $250 Plan (2026)',
     description:
-      'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
+      'Maptive alternative for radius mapping — free forever, no 10-day trial, no $250-per-user annual plan. Draw circles on OpenStreetMap, export KML, no account.',
   },
 };
 
-export default function MapDevelopersAlternativePage() {
+export default function MaptiveAlternativePage() {
   return (
     <>
       {/* WebPage Schema */}
@@ -38,10 +38,10 @@ export default function MapDevelopersAlternativePage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'MapDevelopers Alternative',
+            name: 'Maptive Alternative',
             description:
-              'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
-            url: 'https://mapwithradius.com/alternatives/mapdevelopers',
+              'Maptive alternative for radius mapping — free forever, no 10-day trial, no $250-per-user annual plan. Draw circles on OpenStreetMap, export KML, no account.',
+            url: 'https://mapwithradius.com/alternatives/maptive',
             isPartOf: {
               '@type': 'WebSite',
               name: 'Map With Radius',
@@ -74,8 +74,8 @@ export default function MapDevelopersAlternativePage() {
               {
                 '@type': 'ListItem',
                 position: 3,
-                name: 'MapDevelopers',
-                item: 'https://mapwithradius.com/alternatives/mapdevelopers',
+                name: 'Maptive',
+                item: 'https://mapwithradius.com/alternatives/maptive',
               },
             ],
           }),
@@ -92,42 +92,42 @@ export default function MapDevelopersAlternativePage() {
             mainEntity: [
               {
                 '@type': 'Question',
-                name: 'Is MapDevelopers free?',
+                name: 'Is Maptive free?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Yes. MapDevelopers is free and requires no account. The site displays ads on the tool page. There is no paid tier or subscription.',
+                  text: 'Maptive is a paid product with a 10-day free trial. After the trial ends, the account reverts to a limited free state rather than a genuine free tier. Plans start at $250 per user per year.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Can MapDevelopers export KML?',
+                name: 'What does Maptive cost?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'No. The MapDevelopers Draw Circle Tool does not export KML or PNG. Map With Radius exports both formats for free.',
+                  text: 'Maptive has four to five pricing editions, starting at $250 per user per year and rising to $2,500+ per year for team tiers. Every plan includes every feature; tiers differ only by user count, data capacity, and support level.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Does MapDevelopers work on mobile?',
+                name: 'Can Map With Radius replace Maptive?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Partially. The tool loads on mobile, but the controls are not optimized for touch. Map With Radius is designed mobile-first with touch-friendly drag and resize.',
+                  text: "Not for Maptive's core use case of spreadsheet data mapping and territory management. Map With Radius handles radius drawing and drive-time isochrones only. If you just need those features without the broader data-mapping platform, Map With Radius is free and needs no account.",
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Is MapDevelopers or Map With Radius faster?',
+                name: 'Does Maptive offer a free tier?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Both load quickly. MapDevelopers depends on the Google Maps JavaScript API, which adds bundle size and external script dependencies. Map With Radius uses Leaflet plus OpenStreetMap tiles, which is generally lighter.',
+                  text: 'Not in the consumer sense. The 10-day trial is free, but continued access requires a paid plan starting at $250 per user per year. Map With Radius is free forever, with no trial countdown and no account required.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Can I embed MapDevelopers on my own site?',
+                name: 'What map engine does Maptive use?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'MapDevelopers does not offer an official embed widget. Map With Radius provides an embed endpoint at /embed for integrating the tool into other sites, free of Google Maps API keys and billing.',
+                  text: 'Maptive runs on Google Maps. Map With Radius runs on OpenStreetMap via Leaflet, which removes Google Maps API pricing and quota considerations for anyone embedding the tool.',
                 },
               },
             ],
@@ -151,7 +151,7 @@ export default function MapDevelopersAlternativePage() {
               </Link>
             </li>
             <li className="text-slate-400">/</li>
-            <li className="text-slate-900 font-medium">MapDevelopers</li>
+            <li className="text-slate-900 font-medium">Maptive</li>
           </ol>
         </div>
       </nav>
@@ -160,37 +160,37 @@ export default function MapDevelopersAlternativePage() {
         {/* Header */}
         <header className="mb-10">
           <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
-            MapDevelopers Alternative — Modern Radius Maps with KML Export
+            Maptive Alternative — Free Radius Maps Without a $250 Plan
           </h1>
           <p className="text-lg text-slate-600">
-            MapDevelopers&apos; Draw Circle Tool is one of the most-used radius tools online. It is
-            free and fast, with no KML or PNG export and is built on Google Maps. Here&apos;s how
-            Map With Radius compares.
+            Maptive is a paid data-mapping platform used by sales teams and territory managers. If
+            you need a free radius map without a $250-per-user annual plan or a 10-day trial
+            countdown, here&apos;s how Map With Radius compares.
           </p>
         </header>
 
-        {/* Section 2: What MapDevelopers Is */}
+        {/* Section 2: What Maptive Is */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
-            What MapDevelopers Is
+            What Maptive Is
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed mb-4">
-              MapDevelopers (mapdevelopers.com) is a long-running suite of free web tools for
-              mapping, geocoding, and distance calculation. The Draw Circle Tool is one of its
-              most-used utilities, offering quick radius circle drawing on a Google Maps base with
-              address search, multiple circles, drag-to-reposition, and custom colors. The site is
-              long-running and aimed at casual web users.
+              Maptive is a paid B2B mapping platform headquartered in Denver, Colorado, under CEO
+              Brad Crisp. Its core value proposition is plotting spreadsheet data (CSV, Excel, or
+              Google Sheets) onto a map for sales territory management, route optimization,
+              heatmaps, and clustering. It runs on Google Maps. Radius mapping is one feature inside
+              a broader data-visualization product aimed at business teams.
             </p>
             <p className="text-slate-700 leading-relaxed">
               Source:{' '}
               <a
-                href="https://www.mapdevelopers.com/draw-circle-tool.php"
+                href="https://www.maptive.com/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="content-link"
               >
-                MapDevelopers — Draw a Circle
+                Maptive
               </a>
             </p>
           </div>
@@ -203,10 +203,11 @@ export default function MapDevelopersAlternativePage() {
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed">
-              MapDevelopers is free and requires no account. The site displays ads on the tool
-              page. There is no paid tier, no trial, and no signup flow. The tool runs on the
-              Google Maps JavaScript API, which means it depends on Google&apos;s terms of service
-              and API availability.
+              Maptive is paid-only. There are four to five pricing editions, starting at $250 per
+              user per year and rising to $2,500+ per year for team tiers. A 10-day free trial is
+              available; after it ends, the account reverts to a limited free state rather than a
+              genuine free tier. Every plan includes every feature — tiers differ only by user
+              count, data capacity, and support level. An account is required.
             </p>
           </div>
         </section>
@@ -214,22 +215,32 @@ export default function MapDevelopersAlternativePage() {
         {/* Section 4: Comparison Table */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
-            How MapDevelopers Compares
+            How Maptive Compares
           </h2>
           <div className="overflow-x-auto">
             <table className="styled-table">
               <thead>
                 <tr>
                   <th>Feature</th>
-                  <th>MapDevelopers</th>
+                  <th>Maptive</th>
                   <th>Map With Radius</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="font-medium">Free to use</td>
-                  <td>Yes (ad-supported)</td>
-                  <td className="text-green-700 font-medium">Yes, no ads</td>
+                  <td className="font-medium">Price for radius mapping</td>
+                  <td>From $250/user/year</td>
+                  <td className="text-green-700 font-medium">Free</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Trial</td>
+                  <td>10-day, reverts to limited post-trial</td>
+                  <td className="text-green-700 font-medium">Not applicable (fully free)</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Account required</td>
+                  <td>Yes</td>
+                  <td className="text-green-700 font-medium">No</td>
                 </tr>
                 <tr>
                   <td className="font-medium">Map engine</td>
@@ -237,54 +248,38 @@ export default function MapDevelopersAlternativePage() {
                   <td className="text-green-700 font-medium">OpenStreetMap</td>
                 </tr>
                 <tr>
-                  <td className="font-medium">Multiple circles</td>
+                  <td className="font-medium">Spreadsheet data plotting</td>
+                  <td>Yes (core feature)</td>
+                  <td>Not available</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Territory management</td>
+                  <td>Yes (core feature)</td>
+                  <td>Not available</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Heatmaps and clustering</td>
+                  <td>Yes</td>
+                  <td>Not available</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Radius circle drawing</td>
                   <td>Yes</td>
                   <td className="text-green-700 font-medium">Yes</td>
                 </tr>
                 <tr>
-                  <td className="font-medium">Address search</td>
+                  <td className="font-medium">Drive-time isochrones</td>
                   <td>Yes</td>
-                  <td className="text-green-700 font-medium">Yes</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">Shareable URL</td>
-                  <td>Yes</td>
-                  <td className="text-green-700 font-medium">Yes</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">KML export</td>
-                  <td>
-                    <span className="text-red-600">No</span>
-                  </td>
-                  <td className="text-green-700 font-medium">Free</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">PNG export</td>
-                  <td>
-                    <span className="text-red-600">No</span>
-                  </td>
-                  <td className="text-green-700 font-medium">Free</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">Drive-time / isochrone</td>
-                  <td>
-                    <span className="text-red-600">No</span>
-                  </td>
-                  <td>
+                  <td className="text-green-700 font-medium">
                     <Link href="/drive-time-map" className="content-link font-medium">
                       Yes, on /drive-time-map
                     </Link>
                   </td>
                 </tr>
                 <tr>
-                  <td className="font-medium">Mobile-friendly</td>
-                  <td>Partial</td>
-                  <td className="text-green-700 font-medium">Yes</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">Account required</td>
-                  <td>No</td>
-                  <td>No</td>
+                  <td className="font-medium">KML / PNG export</td>
+                  <td>Yes</td>
+                  <td className="text-green-700 font-medium">Yes, free</td>
                 </tr>
               </tbody>
             </table>
@@ -298,19 +293,17 @@ export default function MapDevelopersAlternativePage() {
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed mb-4">
-              Map With Radius exports KML and PNG for free. MapDevelopers does not export in either
-              format, so anyone who needs to load their radius into Google Earth, a GIS tool, or a
-              document has to screenshot or recreate the shape elsewhere.
+              Maptive assumes you have spreadsheet data to plot and a team to share it with. Map
+              With Radius assumes you have an address and a distance, and is shaped accordingly.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
-              We run on OpenStreetMap via Leaflet, not Google Maps. That matters for anyone
-              embedding the tool into their own site — no Google API key, no quota, no per-load
-              billing.
+              There is no account creation, no trial countdown, and no per-user annual billing. For
+              one-off or occasional radius tasks, no billing commitment is necessary.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              Our tool is designed mobile-first. MapDevelopers works on mobile, but the controls are
-              cramped and the interaction patterns assume a cursor. Drawing a radius on a phone is
-              smoother on Map With Radius.
+              We run on OpenStreetMap via Leaflet rather than Google Maps. For anyone embedding the
+              tool on their own site, that removes the Google Maps API pricing and quota concerns
+              entirely.
             </p>
           </div>
         </section>
@@ -318,14 +311,15 @@ export default function MapDevelopersAlternativePage() {
         {/* Section 6: When competitor wins */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
-            When MapDevelopers Is Still the Right Choice
+            When Maptive Is Still the Right Choice
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed">
-              MapDevelopers is simple, fast, and established. If you need the Google Maps visual
-              style — satellite view, specific POI labels, Street View integration — MapDevelopers
-              delivers it. It also pairs well with other MapDevelopers utilities if you are already
-              mid-workflow on their site for geocoding, distance calculation, or zip-code lookup.
+              Maptive is the right tool when radius mapping is only part of the job. If you need to
+              upload a spreadsheet of customers, plot them on a map, segment them into territories,
+              assign territories to sales reps, and share the result with a team, Maptive&apos;s
+              paid plans are built for that workflow. We do not plot spreadsheet data, do not manage
+              territories, and do not offer team collaboration.
             </p>
           </div>
         </section>
@@ -338,7 +332,7 @@ export default function MapDevelopersAlternativePage() {
           <div className="space-y-4">
             <details className="faq-card">
               <summary>
-                Is MapDevelopers free?
+                Is Maptive free?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -349,14 +343,15 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Yes. MapDevelopers is free and requires no account. The site displays ads on the
-                tool page. There is no paid tier or subscription.
+                Maptive is a paid product with a 10-day free trial. After the trial ends, the
+                account reverts to a limited free state rather than a genuine free tier. Plans start
+                at $250 per user per year.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Can MapDevelopers export KML?
+                What does Maptive cost?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -367,14 +362,15 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                No. The MapDevelopers Draw Circle Tool does not export KML or PNG. Map With Radius
-                exports both formats for free.
+                Maptive has four to five pricing editions, starting at $250 per user per year and
+                rising to $2,500+ per year for team tiers. Every plan includes every feature; tiers
+                differ only by user count, data capacity, and support level.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Does MapDevelopers work on mobile?
+                Can Map With Radius replace Maptive?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -385,14 +381,16 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Partially. The tool loads on mobile, but the controls are not optimized for touch.
-                Map With Radius is designed mobile-first with touch-friendly drag and resize.
+                Not for Maptive&apos;s core use case of spreadsheet data mapping and territory
+                management. Map With Radius handles radius drawing and drive-time isochrones only.
+                If you just need those features without the broader data-mapping platform, Map With
+                Radius is free and needs no account.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Is MapDevelopers or Map With Radius faster?
+                Does Maptive offer a free tier?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -403,15 +401,15 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Both load quickly. MapDevelopers depends on the Google Maps JavaScript API, which
-                adds bundle size and external script dependencies. Map With Radius uses Leaflet
-                plus OpenStreetMap tiles, which is generally lighter.
+                Not in the consumer sense. The 10-day trial is free, but continued access requires a
+                paid plan starting at $250 per user per year. Map With Radius is free forever, with
+                no trial countdown and no account required.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Can I embed MapDevelopers on my own site?
+                What map engine does Maptive use?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -422,12 +420,9 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                MapDevelopers does not offer an official embed widget.{' '}
-                <Link href="/embed" className="content-link">
-                  Map With Radius provides an embed endpoint at /embed
-                </Link>{' '}
-                for integrating the tool into other sites, free of Google Maps API keys and
-                billing.
+                Maptive runs on Google Maps. Map With Radius runs on OpenStreetMap via Leaflet,
+                which removes Google Maps API pricing and quota considerations for anyone embedding
+                the tool.
               </div>
             </details>
           </div>
@@ -437,7 +432,7 @@ export default function MapDevelopersAlternativePage() {
         <section className="bg-slate-900 text-white rounded-2xl p-8 text-center">
           <h2 className="text-2xl font-bold mb-3">Try Map With Radius</h2>
           <p className="text-slate-300 mb-6">
-            Modern, mobile-first, no Google Maps dependency. Export KML and PNG for free.
+            Free forever, no per-user billing, no trial countdown.
           </p>
           <Link
             href="/"
@@ -461,8 +456,8 @@ export default function MapDevelopersAlternativePage() {
               All alternatives
             </Link>
             <span className="text-slate-300">·</span>
-            <Link href="/alternatives/freemaptools" className="content-link">
-              FreeMapTools &rarr;
+            <Link href="/alternatives/smappen" className="content-link">
+              Smappen &rarr;
             </Link>
             <span className="text-slate-300">·</span>
             <Link href="/alternatives/calcmaps" className="content-link">

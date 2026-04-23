@@ -2,33 +2,33 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
+  title: 'CalcMaps Alternative — Free Radius Map, No Prepaid Credits (2026)',
   description:
-    'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
+    'CalcMaps alternative — draw radius circles, export KML and PNG, no prepaid credits, no ads, no account. Free on OpenStreetMap with mobile-first design.',
   alternates: {
-    canonical: '/alternatives/mapdevelopers',
+    canonical: '/alternatives/calcmaps',
   },
   keywords: [
-    'mapdevelopers draw circle alternative',
-    'mapdevelopers radius alternative',
-    'draw circle on map',
-    'radius map tool',
+    'calcmaps alternative',
+    'calcmaps pro alternative',
+    'free radius map without credits',
+    'calcmaps free version',
   ],
   openGraph: {
-    title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
+    title: 'CalcMaps Alternative — Free Radius Map, No Prepaid Credits (2026)',
     description:
-      'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
-    url: 'https://mapwithradius.com/alternatives/mapdevelopers',
+      'CalcMaps alternative — draw radius circles, export KML and PNG, no prepaid credits, no ads, no account. Free on OpenStreetMap with mobile-first design.',
+    url: 'https://mapwithradius.com/alternatives/calcmaps',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
+    title: 'CalcMaps Alternative — Free Radius Map, No Prepaid Credits (2026)',
     description:
-      'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
+      'CalcMaps alternative — draw radius circles, export KML and PNG, no prepaid credits, no ads, no account. Free on OpenStreetMap with mobile-first design.',
   },
 };
 
-export default function MapDevelopersAlternativePage() {
+export default function CalcMapsAlternativePage() {
   return (
     <>
       {/* WebPage Schema */}
@@ -38,10 +38,10 @@ export default function MapDevelopersAlternativePage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'MapDevelopers Alternative',
+            name: 'CalcMaps Alternative',
             description:
-              'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
-            url: 'https://mapwithradius.com/alternatives/mapdevelopers',
+              'CalcMaps alternative — draw radius circles, export KML and PNG, no prepaid credits, no ads, no account. Free on OpenStreetMap with mobile-first design.',
+            url: 'https://mapwithradius.com/alternatives/calcmaps',
             isPartOf: {
               '@type': 'WebSite',
               name: 'Map With Radius',
@@ -74,8 +74,8 @@ export default function MapDevelopersAlternativePage() {
               {
                 '@type': 'ListItem',
                 position: 3,
-                name: 'MapDevelopers',
-                item: 'https://mapwithradius.com/alternatives/mapdevelopers',
+                name: 'CalcMaps',
+                item: 'https://mapwithradius.com/alternatives/calcmaps',
               },
             ],
           }),
@@ -92,42 +92,42 @@ export default function MapDevelopersAlternativePage() {
             mainEntity: [
               {
                 '@type': 'Question',
-                name: 'Is MapDevelopers free?',
+                name: 'Is CalcMaps free?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Yes. MapDevelopers is free and requires no account. The site displays ads on the tool page. There is no paid tier or subscription.',
+                  text: 'The consumer site at calcmaps.com is free and ad-supported, with no account needed. The paid product CalcMaps PRO (calcmapspro.com) uses prepaid credits — one credit equals one day of access, sold in packs of 30, 90, 180, or 365 days.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Can MapDevelopers export KML?',
+                name: 'Does CalcMaps use a subscription?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'No. The MapDevelopers Draw Circle Tool does not export KML or PNG. Map With Radius exports both formats for free.',
+                  text: 'No. CalcMaps PRO uses prepaid credits, not a subscription. Plans never auto-renew, which avoids the recurring-charge trap common in SaaS tools.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Does MapDevelopers work on mobile?',
+                name: 'Can I export KML from CalcMaps without paying?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Partially. The tool loads on mobile, but the controls are not optimized for touch. Map With Radius is designed mobile-first with touch-friendly drag and resize.',
+                  text: 'KML export is a PRO-only feature, so you need to purchase credits. Map With Radius exports KML for free, with no account, no credits, and no ads.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Is MapDevelopers or Map With Radius faster?',
+                name: 'What is the best free alternative to CalcMaps PRO?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Both load quickly. MapDevelopers depends on the Google Maps JavaScript API, which adds bundle size and external script dependencies. Map With Radius uses Leaflet plus OpenStreetMap tiles, which is generally lighter.',
+                  text: "Map With Radius offers unlimited free radius drawing, KML and PNG export, multiple circles, and mobile support — with no prepaid credits, no ads, and no account. It does not replicate CalcMaps' broader tool suite (area, elevation, GPX) but covers the radius use case in full.",
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Can I embed MapDevelopers on my own site?',
+                name: 'Is CalcMaps or Map With Radius better for commercial use?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'MapDevelopers does not offer an official embed widget. Map With Radius provides an embed endpoint at /embed for integrating the tool into other sites, free of Google Maps API keys and billing.',
+                  text: 'CalcMaps PRO grants commercial-use rights as part of its paid packages. Map With Radius is free for commercial use as well, and the tool can be embedded into your own site via the /embed endpoint without any Google Maps API key.',
                 },
               },
             ],
@@ -151,7 +151,7 @@ export default function MapDevelopersAlternativePage() {
               </Link>
             </li>
             <li className="text-slate-400">/</li>
-            <li className="text-slate-900 font-medium">MapDevelopers</li>
+            <li className="text-slate-900 font-medium">CalcMaps</li>
           </ol>
         </div>
       </nav>
@@ -160,37 +160,37 @@ export default function MapDevelopersAlternativePage() {
         {/* Header */}
         <header className="mb-10">
           <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
-            MapDevelopers Alternative — Modern Radius Maps with KML Export
+            CalcMaps Alternative — Free Radius Maps Without Prepaid Credits
           </h1>
           <p className="text-lg text-slate-600">
-            MapDevelopers&apos; Draw Circle Tool is one of the most-used radius tools online. It is
-            free and fast, with no KML or PNG export and is built on Google Maps. Here&apos;s how
-            Map With Radius compares.
+            CalcMaps runs a free consumer site and a separate paid product (CalcMaps PRO) built on
+            prepaid credit packages. If you want to draw radius circles without buying credits or
+            subscribing to anything, here&apos;s how Map With Radius compares.
           </p>
         </header>
 
-        {/* Section 2: What MapDevelopers Is */}
+        {/* Section 2: What CalcMaps Is */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
-            What MapDevelopers Is
+            What CalcMaps Is
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed mb-4">
-              MapDevelopers (mapdevelopers.com) is a long-running suite of free web tools for
-              mapping, geocoding, and distance calculation. The Draw Circle Tool is one of its
-              most-used utilities, offering quick radius circle drawing on a Google Maps base with
-              address search, multiple circles, drag-to-reposition, and custom colors. The site is
-              long-running and aimed at casual web users.
+              CalcMaps (calcmaps.com) is a free, ad-supported suite of browser-based mapping tools —
+              radius, area, distance, and elevation calculators — running on Google Maps. It is
+              aimed at casual consumer users. A separate paid product, CalcMaps PRO
+              (calcmapspro.com), launched in 2021 under the Portuguese company Emptydrops LDA and
+              targets users who need exports, custom icons, and commercial-use rights.
             </p>
             <p className="text-slate-700 leading-relaxed">
               Source:{' '}
               <a
-                href="https://www.mapdevelopers.com/draw-circle-tool.php"
+                href="https://www.calcmaps.com/map-radius/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="content-link"
               >
-                MapDevelopers — Draw a Circle
+                CalcMaps — Map Radius
               </a>
             </p>
           </div>
@@ -203,10 +203,13 @@ export default function MapDevelopersAlternativePage() {
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed">
-              MapDevelopers is free and requires no account. The site displays ads on the tool
-              page. There is no paid tier, no trial, and no signup flow. The tool runs on the
-              Google Maps JavaScript API, which means it depends on Google&apos;s terms of service
-              and API availability.
+              The free calcmaps.com site is ad-supported and requires no account. CalcMaps PRO uses
+              a prepaid credits model, not a subscription — one credit equals one day of access,
+              and you buy packages of 30, 90, 180, or 365 credits (larger packs have a lower
+              per-day cost). A 7-day free trial is available without a credit card. All paid
+              packages include the same feature set: 100 projects, 5 location stores, 200 objects
+              per project, import/export, elevation, GPX export, custom icons, and commercial-use
+              rights. Plans never auto-renew.
             </p>
           </div>
         </section>
@@ -214,22 +217,32 @@ export default function MapDevelopersAlternativePage() {
         {/* Section 4: Comparison Table */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
-            How MapDevelopers Compares
+            How CalcMaps Compares
           </h2>
           <div className="overflow-x-auto">
             <table className="styled-table">
               <thead>
                 <tr>
                   <th>Feature</th>
-                  <th>MapDevelopers</th>
+                  <th>CalcMaps</th>
                   <th>Map With Radius</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="font-medium">Free to use</td>
-                  <td>Yes (ad-supported)</td>
-                  <td className="text-green-700 font-medium">Yes, no ads</td>
+                  <td className="font-medium">Price model</td>
+                  <td>Free (ads) + PRO prepaid credits</td>
+                  <td className="text-green-700 font-medium">Free forever</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Account required</td>
+                  <td>Free site: no / PRO: yes</td>
+                  <td className="text-green-700 font-medium">No</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Ads</td>
+                  <td>Yes (free site)</td>
+                  <td className="text-green-700 font-medium">None</td>
                 </tr>
                 <tr>
                   <td className="font-medium">Map engine</td>
@@ -237,54 +250,34 @@ export default function MapDevelopersAlternativePage() {
                   <td className="text-green-700 font-medium">OpenStreetMap</td>
                 </tr>
                 <tr>
-                  <td className="font-medium">Multiple circles</td>
-                  <td>Yes</td>
-                  <td className="text-green-700 font-medium">Yes</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">Address search</td>
-                  <td>Yes</td>
-                  <td className="text-green-700 font-medium">Yes</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">Shareable URL</td>
-                  <td>Yes</td>
-                  <td className="text-green-700 font-medium">Yes</td>
-                </tr>
-                <tr>
                   <td className="font-medium">KML export</td>
-                  <td>
-                    <span className="text-red-600">No</span>
-                  </td>
+                  <td>PRO only (credits)</td>
                   <td className="text-green-700 font-medium">Free</td>
                 </tr>
                 <tr>
                   <td className="font-medium">PNG export</td>
-                  <td>
-                    <span className="text-red-600">No</span>
-                  </td>
+                  <td>PRO only (credits)</td>
                   <td className="text-green-700 font-medium">Free</td>
                 </tr>
                 <tr>
-                  <td className="font-medium">Drive-time / isochrone</td>
-                  <td>
-                    <span className="text-red-600">No</span>
-                  </td>
-                  <td>
-                    <Link href="/drive-time-map" className="content-link font-medium">
-                      Yes, on /drive-time-map
-                    </Link>
-                  </td>
+                  <td className="font-medium">Multiple radius circles</td>
+                  <td>PRO only (credits)</td>
+                  <td className="text-green-700 font-medium">Free</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Commercial-use rights</td>
+                  <td>PRO only (credits)</td>
+                  <td className="text-green-700 font-medium">Permitted, no gating</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Auto-renewing subscription</td>
+                  <td>No (credits, one-time)</td>
+                  <td className="text-green-700 font-medium">None required</td>
                 </tr>
                 <tr>
                   <td className="font-medium">Mobile-friendly</td>
                   <td>Partial</td>
-                  <td className="text-green-700 font-medium">Yes</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">Account required</td>
-                  <td>No</td>
-                  <td>No</td>
+                  <td className="text-green-700 font-medium">Responsive</td>
                 </tr>
               </tbody>
             </table>
@@ -298,19 +291,21 @@ export default function MapDevelopersAlternativePage() {
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed mb-4">
-              Map With Radius exports KML and PNG for free. MapDevelopers does not export in either
-              format, so anyone who needs to load their radius into Google Earth, a GIS tool, or a
-              document has to screenshot or recreate the shape elsewhere.
+              Map With Radius is free without any credit packages or subscription terms. CalcMaps
+              PRO&apos;s prepaid model is fairer than a surprise auto-renewal, but you still pay per
+              day of access — if you draw a radius twice a month, you are paying for days you did
+              not use. Our tool has no metering, no expiry, and no per-use billing.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
-              We run on OpenStreetMap via Leaflet, not Google Maps. That matters for anyone
-              embedding the tool into their own site — no Google API key, no quota, no per-load
-              billing.
+              The free calcmaps.com site is ad-supported. Map With Radius runs without ads. For
+              someone drawing a radius on a phone during a commute, a property search, or a site
+              visit, ad interruptions add friction to what should be a ten-second task.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              Our tool is designed mobile-first. MapDevelopers works on mobile, but the controls are
-              cramped and the interaction patterns assume a cursor. Drawing a radius on a phone is
-              smoother on Map With Radius.
+              We also run on OpenStreetMap via Leaflet rather than Google Maps. That removes Google
+              Maps API quota risk for anyone embedding the tool, avoids Google account prompts for
+              end users, and means the tool continues to work regardless of Google&apos;s API
+              pricing changes.
             </p>
           </div>
         </section>
@@ -318,14 +313,15 @@ export default function MapDevelopersAlternativePage() {
         {/* Section 6: When competitor wins */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
-            When MapDevelopers Is Still the Right Choice
+            When CalcMaps Is Still the Right Choice
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed">
-              MapDevelopers is simple, fast, and established. If you need the Google Maps visual
-              style — satellite view, specific POI labels, Street View integration — MapDevelopers
-              delivers it. It also pairs well with other MapDevelopers utilities if you are already
-              mid-workflow on their site for geocoding, distance calculation, or zip-code lookup.
+              CalcMaps is broader than a pure radius tool. If you need area calculation, elevation
+              profiles, or GPX route work alongside radius mapping, the paid CalcMaps PRO package
+              covers the whole suite under one purchase. Map With Radius focuses exclusively on
+              radius and drive-time mapping — we do not offer elevation profiles or GPX-route
+              workflows.
             </p>
           </div>
         </section>
@@ -338,7 +334,7 @@ export default function MapDevelopersAlternativePage() {
           <div className="space-y-4">
             <details className="faq-card">
               <summary>
-                Is MapDevelopers free?
+                Is CalcMaps free?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -349,14 +345,15 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Yes. MapDevelopers is free and requires no account. The site displays ads on the
-                tool page. There is no paid tier or subscription.
+                The consumer site at calcmaps.com is free and ad-supported, with no account needed.
+                The paid product CalcMaps PRO (calcmapspro.com) uses prepaid credits — one credit
+                equals one day of access, sold in packs of 30, 90, 180, or 365 days.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Can MapDevelopers export KML?
+                Does CalcMaps use a subscription?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -367,14 +364,14 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                No. The MapDevelopers Draw Circle Tool does not export KML or PNG. Map With Radius
-                exports both formats for free.
+                No. CalcMaps PRO uses prepaid credits, not a subscription. Plans never auto-renew,
+                which avoids the recurring-charge trap common in SaaS tools.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Does MapDevelopers work on mobile?
+                Can I export KML from CalcMaps without paying?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -385,14 +382,14 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Partially. The tool loads on mobile, but the controls are not optimized for touch.
-                Map With Radius is designed mobile-first with touch-friendly drag and resize.
+                KML export is a PRO-only feature, so you need to purchase credits. Map With Radius
+                exports KML for free, with no account, no credits, and no ads.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Is MapDevelopers or Map With Radius faster?
+                What is the best free alternative to CalcMaps PRO?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -403,15 +400,16 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Both load quickly. MapDevelopers depends on the Google Maps JavaScript API, which
-                adds bundle size and external script dependencies. Map With Radius uses Leaflet
-                plus OpenStreetMap tiles, which is generally lighter.
+                Map With Radius offers unlimited free radius drawing, KML and PNG export, multiple
+                circles, and mobile support — with no prepaid credits, no ads, and no account. It
+                does not replicate CalcMaps&apos; broader tool suite (area, elevation, GPX) but
+                covers the radius use case in full.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Can I embed MapDevelopers on my own site?
+                Is CalcMaps or Map With Radius better for commercial use?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -422,12 +420,9 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                MapDevelopers does not offer an official embed widget.{' '}
-                <Link href="/embed" className="content-link">
-                  Map With Radius provides an embed endpoint at /embed
-                </Link>{' '}
-                for integrating the tool into other sites, free of Google Maps API keys and
-                billing.
+                CalcMaps PRO grants commercial-use rights as part of its paid packages. Map With
+                Radius is free for commercial use as well, and the tool can be embedded into your
+                own site via the /embed endpoint without any Google Maps API key.
               </div>
             </details>
           </div>
@@ -437,7 +432,7 @@ export default function MapDevelopersAlternativePage() {
         <section className="bg-slate-900 text-white rounded-2xl p-8 text-center">
           <h2 className="text-2xl font-bold mb-3">Try Map With Radius</h2>
           <p className="text-slate-300 mb-6">
-            Modern, mobile-first, no Google Maps dependency. Export KML and PNG for free.
+            Free, no credit packages, no account, no ads.
           </p>
           <Link
             href="/"
@@ -461,12 +456,12 @@ export default function MapDevelopersAlternativePage() {
               All alternatives
             </Link>
             <span className="text-slate-300">·</span>
-            <Link href="/alternatives/freemaptools" className="content-link">
-              FreeMapTools &rarr;
+            <Link href="/alternatives/mapdevelopers" className="content-link">
+              MapDevelopers &rarr;
             </Link>
             <span className="text-slate-300">·</span>
-            <Link href="/alternatives/calcmaps" className="content-link">
-              CalcMaps &rarr;
+            <Link href="/alternatives/smappen" className="content-link">
+              Smappen &rarr;
             </Link>
           </div>
         </section>

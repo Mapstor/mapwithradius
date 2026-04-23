@@ -2,33 +2,33 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
+  title: 'Smappen Alternative — Free Radius Map Without a Subscription (2026)',
   description:
-    'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
+    'Smappen alternative for simple radius maps — free forever, no signup, no $99-$199 monthly plan. Draw circles, export KML and PNG, share URLs instantly.',
   alternates: {
-    canonical: '/alternatives/mapdevelopers',
+    canonical: '/alternatives/smappen',
   },
   keywords: [
-    'mapdevelopers draw circle alternative',
-    'mapdevelopers radius alternative',
-    'draw circle on map',
-    'radius map tool',
+    'smappen alternative',
+    'oalley alternative',
+    'free radius map no signup',
+    'smappen free alternative',
   ],
   openGraph: {
-    title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
+    title: 'Smappen Alternative — Free Radius Map Without a Subscription (2026)',
     description:
-      'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
-    url: 'https://mapwithradius.com/alternatives/mapdevelopers',
+      'Smappen alternative for simple radius maps — free forever, no signup, no $99-$199 monthly plan. Draw circles, export KML and PNG, share URLs instantly.',
+    url: 'https://mapwithradius.com/alternatives/smappen',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
+    title: 'Smappen Alternative — Free Radius Map Without a Subscription (2026)',
     description:
-      'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
+      'Smappen alternative for simple radius maps — free forever, no signup, no $99-$199 monthly plan. Draw circles, export KML and PNG, share URLs instantly.',
   },
 };
 
-export default function MapDevelopersAlternativePage() {
+export default function SmappenAlternativePage() {
   return (
     <>
       {/* WebPage Schema */}
@@ -38,10 +38,10 @@ export default function MapDevelopersAlternativePage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'MapDevelopers Alternative',
+            name: 'Smappen Alternative',
             description:
-              'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
-            url: 'https://mapwithradius.com/alternatives/mapdevelopers',
+              'Smappen alternative for simple radius maps — free forever, no signup, no $99-$199 monthly plan. Draw circles, export KML and PNG, share URLs instantly.',
+            url: 'https://mapwithradius.com/alternatives/smappen',
             isPartOf: {
               '@type': 'WebSite',
               name: 'Map With Radius',
@@ -74,8 +74,8 @@ export default function MapDevelopersAlternativePage() {
               {
                 '@type': 'ListItem',
                 position: 3,
-                name: 'MapDevelopers',
-                item: 'https://mapwithradius.com/alternatives/mapdevelopers',
+                name: 'Smappen',
+                item: 'https://mapwithradius.com/alternatives/smappen',
               },
             ],
           }),
@@ -92,42 +92,42 @@ export default function MapDevelopersAlternativePage() {
             mainEntity: [
               {
                 '@type': 'Question',
-                name: 'Is MapDevelopers free?',
+                name: 'Is Smappen free?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Yes. MapDevelopers is free and requires no account. The site displays ads on the tool page. There is no paid tier or subscription.',
+                  text: 'Yes, Smappen has a genuinely free-forever tier that lets you draw catchment areas and isochrones. An account is required. Paid plans (Essential at $99 per month, Pro at $199 per month) add demographic data, city and zip-code extracts, and deeper analysis.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Can MapDevelopers export KML?',
+                name: 'Was Smappen previously called Oalley?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'No. The MapDevelopers Draw Circle Tool does not export KML or PNG. Map With Radius exports both formats for free.',
+                  text: "Yes. Oalley was the product's original name; it was rebranded to Smappen. The company positioning shifted toward geomarketing and territory analysis over time.",
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Does MapDevelopers work on mobile?',
+                name: 'Do I need an account to use Smappen?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Partially. The tool loads on mobile, but the controls are not optimized for touch. Map With Radius is designed mobile-first with touch-friendly drag and resize.',
+                  text: 'Yes. Even the free tier requires signing up. Map With Radius does not require an account — you land on the tool and start drawing.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Is MapDevelopers or Map With Radius faster?',
+                name: 'Can Map With Radius replace Smappen for business territory planning?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Both load quickly. MapDevelopers depends on the Google Maps JavaScript API, which adds bundle size and external script dependencies. Map With Radius uses Leaflet plus OpenStreetMap tiles, which is generally lighter.',
+                  text: 'No. Smappen offers demographic overlays, competitor analysis, and territory management that we do not replicate. If you need those business-grade features, Smappen is the right tool. Map With Radius is focused on the radius-drawing and drive-time use case.',
                 },
               },
               {
                 '@type': 'Question',
-                name: 'Can I embed MapDevelopers on my own site?',
+                name: 'Is there a free alternative to Smappen for drive-time maps?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'MapDevelopers does not offer an official embed widget. Map With Radius provides an embed endpoint at /embed for integrating the tool into other sites, free of Google Maps API keys and billing.',
+                  text: "Yes. Our drive-time tool at /drive-time-map generates isochrones (drive-time or walking polygons) without an account, subscription, or credit. It does not include demographic data; for that, Smappen's paid tiers are necessary.",
                 },
               },
             ],
@@ -151,7 +151,7 @@ export default function MapDevelopersAlternativePage() {
               </Link>
             </li>
             <li className="text-slate-400">/</li>
-            <li className="text-slate-900 font-medium">MapDevelopers</li>
+            <li className="text-slate-900 font-medium">Smappen</li>
           </ol>
         </div>
       </nav>
@@ -160,37 +160,37 @@ export default function MapDevelopersAlternativePage() {
         {/* Header */}
         <header className="mb-10">
           <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
-            MapDevelopers Alternative — Modern Radius Maps with KML Export
+            Smappen Alternative — Free Radius Maps Without a Subscription
           </h1>
           <p className="text-lg text-slate-600">
-            MapDevelopers&apos; Draw Circle Tool is one of the most-used radius tools online. It is
-            free and fast, with no KML or PNG export and is built on Google Maps. Here&apos;s how
-            Map With Radius compares.
+            Smappen is a geomarketing platform built for businesses doing territory planning,
+            catchment-area analysis, and demographic lookups. If you need a free radius map without
+            a $99-to-$199 monthly subscription, here&apos;s how Map With Radius compares.
           </p>
         </header>
 
-        {/* Section 2: What MapDevelopers Is */}
+        {/* Section 2: What Smappen Is */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
-            What MapDevelopers Is
+            What Smappen Is
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed mb-4">
-              MapDevelopers (mapdevelopers.com) is a long-running suite of free web tools for
-              mapping, geocoding, and distance calculation. The Draw Circle Tool is one of its
-              most-used utilities, offering quick radius circle drawing on a Google Maps base with
-              address search, multiple circles, drag-to-reposition, and custom colors. The site is
-              long-running and aimed at casual web users.
+              Smappen is a business-focused geomarketing platform, previously known as Oalley before
+              rebranding. It offers catchment-area analysis, drive-time and walking isochrones,
+              demographic overlays, and territory-management tools. It has over 80,000 active
+              monthly users and 700+ paying customers, mostly businesses doing market analysis,
+              retail site selection, and sales territory planning.
             </p>
             <p className="text-slate-700 leading-relaxed">
               Source:{' '}
               <a
-                href="https://www.mapdevelopers.com/draw-circle-tool.php"
+                href="https://www.smappen.com/radius-map/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="content-link"
               >
-                MapDevelopers — Draw a Circle
+                Smappen — Radius Map
               </a>
             </p>
           </div>
@@ -203,10 +203,12 @@ export default function MapDevelopersAlternativePage() {
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed">
-              MapDevelopers is free and requires no account. The site displays ads on the tool
-              page. There is no paid tier, no trial, and no signup flow. The tool runs on the
-              Google Maps JavaScript API, which means it depends on Google&apos;s terms of service
-              and API availability.
+              Smappen has three tiers. The Free plan is genuinely free forever — not a seven-day
+              trap — and lets you draw catchment areas and isochrones after signing up for an
+              account. The Essential plan is $99 per month and adds city and zip-code extracts. The
+              Pro plan is $199 per month and unlocks deeper area analysis. Smappen also offers free
+              access for students on request. All paid plans require an account and credit-card
+              billing.
             </p>
           </div>
         </section>
@@ -214,77 +216,71 @@ export default function MapDevelopersAlternativePage() {
         {/* Section 4: Comparison Table */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
-            How MapDevelopers Compares
+            How Smappen Compares
           </h2>
           <div className="overflow-x-auto">
             <table className="styled-table">
               <thead>
                 <tr>
                   <th>Feature</th>
-                  <th>MapDevelopers</th>
+                  <th>Smappen</th>
                   <th>Map With Radius</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td className="font-medium">Free to use</td>
-                  <td>Yes (ad-supported)</td>
-                  <td className="text-green-700 font-medium">Yes, no ads</td>
+                  <td className="font-medium">Price for basic radius</td>
+                  <td>Free tier (account required)</td>
+                  <td className="text-green-700 font-medium">Free, no account</td>
                 </tr>
                 <tr>
-                  <td className="font-medium">Map engine</td>
-                  <td>Google Maps</td>
-                  <td className="text-green-700 font-medium">OpenStreetMap</td>
+                  <td className="font-medium">Price for demographic data</td>
+                  <td>$99–$199/month</td>
+                  <td>Not available</td>
                 </tr>
                 <tr>
-                  <td className="font-medium">Multiple circles</td>
+                  <td className="font-medium">Account required</td>
                   <td>Yes</td>
+                  <td className="text-green-700 font-medium">No</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Radius circle drawing</td>
+                  <td>Yes (free tier)</td>
                   <td className="text-green-700 font-medium">Yes</td>
                 </tr>
                 <tr>
-                  <td className="font-medium">Address search</td>
-                  <td>Yes</td>
-                  <td className="text-green-700 font-medium">Yes</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">Shareable URL</td>
-                  <td>Yes</td>
-                  <td className="text-green-700 font-medium">Yes</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">KML export</td>
-                  <td>
-                    <span className="text-red-600">No</span>
-                  </td>
-                  <td className="text-green-700 font-medium">Free</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">PNG export</td>
-                  <td>
-                    <span className="text-red-600">No</span>
-                  </td>
-                  <td className="text-green-700 font-medium">Free</td>
-                </tr>
-                <tr>
-                  <td className="font-medium">Drive-time / isochrone</td>
-                  <td>
-                    <span className="text-red-600">No</span>
-                  </td>
-                  <td>
+                  <td className="font-medium">Drive-time isochrones</td>
+                  <td>Yes (free tier)</td>
+                  <td className="text-green-700 font-medium">
                     <Link href="/drive-time-map" className="content-link font-medium">
                       Yes, on /drive-time-map
                     </Link>
                   </td>
                 </tr>
                 <tr>
-                  <td className="font-medium">Mobile-friendly</td>
-                  <td>Partial</td>
-                  <td className="text-green-700 font-medium">Yes</td>
+                  <td className="font-medium">Public-transit isochrones</td>
+                  <td>Yes</td>
+                  <td>Not available</td>
                 </tr>
                 <tr>
-                  <td className="font-medium">Account required</td>
-                  <td>No</td>
-                  <td>No</td>
+                  <td className="font-medium">Demographic overlays</td>
+                  <td>Paid plans</td>
+                  <td>Not available</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Territory / catchment analysis</td>
+                  <td>Yes (business focus)</td>
+                  <td>Not available</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">KML / PNG export</td>
+                  <td>Yes</td>
+                  <td className="text-green-700 font-medium">Yes, free</td>
+                </tr>
+                <tr>
+                  <td className="font-medium">Map engine</td>
+                  <td>Custom isochrone engine</td>
+                  <td className="text-green-700 font-medium">OpenStreetMap</td>
                 </tr>
               </tbody>
             </table>
@@ -298,19 +294,15 @@ export default function MapDevelopersAlternativePage() {
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed mb-4">
-              Map With Radius exports KML and PNG for free. MapDevelopers does not export in either
-              format, so anyone who needs to load their radius into Google Earth, a GIS tool, or a
-              document has to screenshot or recreate the shape elsewhere.
-            </p>
-            <p className="text-slate-700 leading-relaxed mb-4">
-              We run on OpenStreetMap via Leaflet, not Google Maps. That matters for anyone
-              embedding the tool into their own site — no Google API key, no quota, no per-load
-              billing.
+              Map With Radius targets users who want to draw a radius circle and leave. There is no
+              account, no email verification, and no dashboard — the tool loads, you enter an
+              address, and you draw.
             </p>
             <p className="text-slate-700 leading-relaxed">
-              Our tool is designed mobile-first. MapDevelopers works on mobile, but the controls are
-              cramped and the interaction patterns assume a cursor. Drawing a radius on a phone is
-              smoother on Map With Radius.
+              Smappen&apos;s free tier is genuinely usable but is built around their
+              catchment-analysis workflow, which adds steps if you are not doing market sizing or
+              demographic lookups. We run on OpenStreetMap via Leaflet, which avoids the API gating
+              and credential management that come with proprietary or Google-based stacks.
             </p>
           </div>
         </section>
@@ -318,14 +310,16 @@ export default function MapDevelopersAlternativePage() {
         {/* Section 6: When competitor wins */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
-            When MapDevelopers Is Still the Right Choice
+            When Smappen Is Still the Right Choice
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed">
-              MapDevelopers is simple, fast, and established. If you need the Google Maps visual
-              style — satellite view, specific POI labels, Street View integration — MapDevelopers
-              delivers it. It also pairs well with other MapDevelopers utilities if you are already
-              mid-workflow on their site for geocoding, distance calculation, or zip-code lookup.
+              Smappen is a genuinely capable geomarketing tool, and Map With Radius does not replace
+              it. If you need demographic data layered over a catchment area, competitor-location
+              analysis, multi-zone territory planning, or public-transit isochrones, Smappen&apos;s
+              paid tiers are purpose-built for that work. We handle radius drawing and drive-time
+              isochrones only — we do not offer demographics, population overlays, or territory
+              management.
             </p>
           </div>
         </section>
@@ -338,7 +332,7 @@ export default function MapDevelopersAlternativePage() {
           <div className="space-y-4">
             <details className="faq-card">
               <summary>
-                Is MapDevelopers free?
+                Is Smappen free?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -349,14 +343,16 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Yes. MapDevelopers is free and requires no account. The site displays ads on the
-                tool page. There is no paid tier or subscription.
+                Yes, Smappen has a genuinely free-forever tier that lets you draw catchment areas
+                and isochrones. An account is required. Paid plans (Essential at $99 per month, Pro
+                at $199 per month) add demographic data, city and zip-code extracts, and deeper
+                analysis.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Can MapDevelopers export KML?
+                Was Smappen previously called Oalley?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -367,14 +363,14 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                No. The MapDevelopers Draw Circle Tool does not export KML or PNG. Map With Radius
-                exports both formats for free.
+                Yes. Oalley was the product&apos;s original name; it was rebranded to Smappen. The
+                company positioning shifted toward geomarketing and territory analysis over time.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Does MapDevelopers work on mobile?
+                Do I need an account to use Smappen?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -385,14 +381,14 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Partially. The tool loads on mobile, but the controls are not optimized for touch.
-                Map With Radius is designed mobile-first with touch-friendly drag and resize.
+                Yes. Even the free tier requires signing up. Map With Radius does not require an
+                account — you land on the tool and start drawing.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Is MapDevelopers or Map With Radius faster?
+                Can Map With Radius replace Smappen for business territory planning?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -403,15 +399,16 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Both load quickly. MapDevelopers depends on the Google Maps JavaScript API, which
-                adds bundle size and external script dependencies. Map With Radius uses Leaflet
-                plus OpenStreetMap tiles, which is generally lighter.
+                No. Smappen offers demographic overlays, competitor analysis, and territory
+                management that we do not replicate. If you need those business-grade features,
+                Smappen is the right tool. Map With Radius is focused on the radius-drawing and
+                drive-time use case.
               </div>
             </details>
 
             <details className="faq-card">
               <summary>
-                Can I embed MapDevelopers on my own site?
+                Is there a free alternative to Smappen for drive-time maps?
                 <svg
                   className="w-5 h-5 faq-chevron"
                   fill="none"
@@ -422,12 +419,13 @@ export default function MapDevelopersAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                MapDevelopers does not offer an official embed widget.{' '}
-                <Link href="/embed" className="content-link">
-                  Map With Radius provides an embed endpoint at /embed
+                Yes. Our{' '}
+                <Link href="/drive-time-map" className="content-link">
+                  drive-time tool at /drive-time-map
                 </Link>{' '}
-                for integrating the tool into other sites, free of Google Maps API keys and
-                billing.
+                generates isochrones (drive-time or walking polygons) without an account,
+                subscription, or credit. It does not include demographic data; for that,
+                Smappen&apos;s paid tiers are necessary.
               </div>
             </details>
           </div>
@@ -437,7 +435,7 @@ export default function MapDevelopersAlternativePage() {
         <section className="bg-slate-900 text-white rounded-2xl p-8 text-center">
           <h2 className="text-2xl font-bold mb-3">Try Map With Radius</h2>
           <p className="text-slate-300 mb-6">
-            Modern, mobile-first, no Google Maps dependency. Export KML and PNG for free.
+            Free, no signup, no monthly plan. Draw a circle, export KML, share the URL.
           </p>
           <Link
             href="/"
@@ -461,12 +459,12 @@ export default function MapDevelopersAlternativePage() {
               All alternatives
             </Link>
             <span className="text-slate-300">·</span>
-            <Link href="/alternatives/freemaptools" className="content-link">
-              FreeMapTools &rarr;
-            </Link>
-            <span className="text-slate-300">·</span>
             <Link href="/alternatives/calcmaps" className="content-link">
               CalcMaps &rarr;
+            </Link>
+            <span className="text-slate-300">·</span>
+            <Link href="/alternatives/maptive" className="content-link">
+              Maptive &rarr;
             </Link>
           </div>
         </section>
