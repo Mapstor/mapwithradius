@@ -22,13 +22,14 @@ const RadiusMap = dynamic(() => import('./RadiusMap'), {
 
 interface RadiusMapWrapperProps {
   defaultUnit?: DistanceUnit;
+  defaultRadius?: number;
   initialParams?: string;
 }
 
-export default function RadiusMapWrapper({ defaultUnit = 'miles', initialParams }: RadiusMapWrapperProps) {
+export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius = 10, initialParams }: RadiusMapWrapperProps) {
   const [circles, setCircles] = useState<RadiusCircle[]>([]);
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>(null);
-  const [radius, setRadius] = useState(10);
+  const [radius, setRadius] = useState(defaultRadius);
   const [unit, setUnit] = useState<DistanceUnit>(defaultUnit);
   const [color, setColor] = useState('#4285F4');
   const [isLocating, setIsLocating] = useState(false);
