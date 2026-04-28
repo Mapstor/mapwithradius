@@ -1,5 +1,12 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: '/',
+  },
+};
 
 // Dynamic import for the map wrapper (client-side only)
 const RadiusMapWrapper = dynamic(() => import('@/components/map/RadiusMapWrapper'), {
