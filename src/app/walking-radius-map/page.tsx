@@ -953,7 +953,7 @@ export default function WalkingRadiusMapPage() {
                   },
                   {
                     '@type': 'Question',
-                    name: 'What is the difference between walking isochrone and radius?',
+                    name: "What's the difference between walking isochrone and radius?",
                     acceptedAnswer: {
                       '@type': 'Answer',
                       text: 'A walking isochrone shows the actual area reachable by walking along real streets and paths. A straight-line radius is a perfect circle showing distance as the crow flies regardless of roads.',

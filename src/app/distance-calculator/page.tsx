@@ -811,7 +811,7 @@ Where:
                   },
                   {
                     '@type': 'Question',
-                    name: "What's the difference between 'as the crow flies' and geodesic distance?",
+                    name: 'What\'s the difference between "as the crow flies" and geodesic distance?',
                     acceptedAnswer: {
                       '@type': 'Answer',
                       text: "They're the same thing with different names. 'As the crow flies' is the colloquial term, while 'geodesic' and 'great-circle' are technical terms for the shortest distance on Earth's surface.",
