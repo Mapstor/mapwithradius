@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'About Map With Radius — Free Online Radius Map Tool',
+  title: 'About Our Free Radius Map Tools',
   description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
   alternates: {
     canonical: '/about',
@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: '/about',
-    title: 'About Map With Radius — Free Online Radius Map Tool',
+    title: 'About Our Free Radius Map Tools',
     description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'About Map With Radius — Free Online Radius Map Tool',
+    title: 'About Our Free Radius Map Tools',
     description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
   },
 };

@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy — Map With Radius',
+  title: 'Privacy Policy',
   description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
   alternates: {
     canonical: '/privacy',
@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: '/privacy',
-    title: 'Privacy Policy — Map With Radius',
+    title: 'Privacy Policy',
     description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Privacy Policy — Map With Radius',
+    title: 'Privacy Policy',
     description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
   },
 };

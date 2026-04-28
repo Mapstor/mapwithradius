@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Contact Us — Map With Radius',
+  title: 'Contact Us',
   description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
   alternates: {
     canonical: '/contact',
@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: '/contact',
-    title: 'Contact Us — Map With Radius',
+    title: 'Contact Us',
     description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Contact Us — Map With Radius',
+    title: 'Contact Us',
     description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
   },
 };

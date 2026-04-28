@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Terms of Use — Map With Radius',
+  title: 'Terms of Use',
   description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
   alternates: {
     canonical: '/terms',
@@ -10,12 +10,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: '/terms',
-    title: 'Terms of Use — Map With Radius',
+    title: 'Terms of Use',
     description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Terms of Use — Map With Radius',
+    title: 'Terms of Use',
     description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
   },
 };
