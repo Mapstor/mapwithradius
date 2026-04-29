@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'KM Radius Map — Draw a Kilometer Radius Circle on a Map (Free)',
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     title: 'KM Radius Map — Draw a Kilometer Radius Circle on a Map (Free)',
     description: 'Draw a radius in kilometers on any map. Free metric radius tool — enter an address and distance in km.',
     url: 'https://mapwithradius.com/km-radius-map',
+    images: OG_IMAGES,
   },
 };
 

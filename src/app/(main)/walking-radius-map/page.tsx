@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Walking & Cycling Radius Map — How Far Can You Walk or Bike? (Free)',
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     title: 'Walking & Cycling Radius Map — How Far Can You Walk or Bike? (Free)',
     description: 'See how far you can actually walk or cycle in a given time — based on real roads and paths.',
     url: 'https://mapwithradius.com/walking-radius-map',
+    images: OG_IMAGES,
   },
 };
 

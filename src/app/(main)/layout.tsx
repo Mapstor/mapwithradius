@@ -4,6 +4,7 @@ import Script from 'next/script';
 import '../globals.css';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { OG_IMAGES } from '@/lib/og';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -32,12 +33,14 @@ export const metadata: Metadata = {
     title: 'Map With Radius — Draw a Radius Circle on Any Map (Free)',
     description:
       'Free radius map tool. Draw circles on a map by distance, find what\'s within your radius, and share your map.',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Map With Radius — Draw a Radius Circle on Any Map (Free)',
     description:
       'Free radius map tool. Draw circles on a map by distance, find what\'s within your radius, and share your map.',
+    images: OG_IMAGES,
   },
   robots: {
     index: true,

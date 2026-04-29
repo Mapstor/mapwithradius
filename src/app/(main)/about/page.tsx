@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'About Our Free Radius Map Tools',
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
     url: 'https://mapwithradius.com/about',
     title: 'About Our Free Radius Map Tools',
     description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'About Our Free Radius Map Tools',
     description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
+    images: OG_IMAGES,
   },
 };
 

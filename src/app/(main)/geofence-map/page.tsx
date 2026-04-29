@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Geofence Map Tool — Create a Radius Geofence (Free)',
@@ -15,6 +16,7 @@ export const metadata: Metadata = {
     description:
       'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
     url: 'https://mapwithradius.com/geofence-map',
+    images: OG_IMAGES,
   },
 };
 

@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
     url: 'https://mapwithradius.com/privacy',
     title: 'Privacy Policy',
     description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Privacy Policy',
     description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
+    images: OG_IMAGES,
   },
 };
 

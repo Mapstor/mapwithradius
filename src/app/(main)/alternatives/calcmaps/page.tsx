@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'CalcMaps Alternative — Free Radius Map, No Prepaid Credits (2026)',
@@ -19,12 +20,14 @@ export const metadata: Metadata = {
     description:
       'CalcMaps alternative — draw radius circles, export KML and PNG, no prepaid credits, no ads, no account. Free on OpenStreetMap with mobile-first design.',
     url: 'https://mapwithradius.com/alternatives/calcmaps',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'CalcMaps Alternative — Free Radius Map, No Prepaid Credits (2026)',
     description:
       'CalcMaps alternative — draw radius circles, export KML and PNG, no prepaid credits, no ads, no account. Free on OpenStreetMap with mobile-first design.',
+    images: OG_IMAGES,
   },
 };
 

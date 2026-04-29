@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Zip Code Radius Map — Find Zip Codes Within a Radius (Free)',
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     title: 'Zip Code Radius Map — Find Zip Codes Within a Radius (Free)',
     description: 'Enter a zip code and distance to find all zip codes within that radius. Export the list as CSV.',
     url: 'https://mapwithradius.com/zip-code-radius',
+    images: OG_IMAGES,
   },
 };
 

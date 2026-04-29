@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'FreeMapTools Radius Alternative — Faster & Modern (2026)',
@@ -19,12 +20,14 @@ export const metadata: Metadata = {
     description:
       'FreeMapTools radius alternative — modern, mobile-friendly, with full address search and instant KML/PNG export. Free, no Google API, no account required.',
     url: 'https://mapwithradius.com/alternatives/freemaptools',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'FreeMapTools Radius Alternative — Faster & Modern (2026)',
     description:
       'FreeMapTools radius alternative — modern, mobile-friendly, with full address search and instant KML/PNG export. Free, no Google API, no account required.',
+    images: OG_IMAGES,
   },
 };
 

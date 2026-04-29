@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Terms of Use',
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
     url: 'https://mapwithradius.com/terms',
     title: 'Terms of Use',
     description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Terms of Use',
     description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
+    images: OG_IMAGES,
   },
 };
 

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Maptive Alternative — Free Radius Map, No $250 Plan (2026)',
@@ -19,12 +20,14 @@ export const metadata: Metadata = {
     description:
       'Maptive alternative for radius mapping — free forever, no 10-day trial, no $250-per-user annual plan. Draw circles on OpenStreetMap, export KML, no account.',
     url: 'https://mapwithradius.com/alternatives/maptive',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Maptive Alternative — Free Radius Map, No $250 Plan (2026)',
     description:
       'Maptive alternative for radius mapping — free forever, no 10-day trial, no $250-per-user annual plan. Draw circles on OpenStreetMap, export KML, no account.',
+    images: OG_IMAGES,
   },
 };
 

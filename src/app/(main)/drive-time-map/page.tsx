@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Drive Time Map — See How Far You Can Drive, Walk, or Cycle (Free)',
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
     title: 'Drive Time Map — See How Far You Can Drive, Walk, or Cycle (Free)',
     description: 'Enter a location and time limit to see how far you can actually travel.',
     url: 'https://mapwithradius.com/drive-time-map',
+    images: OG_IMAGES,
   },
 };
 

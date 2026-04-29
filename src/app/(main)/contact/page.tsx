@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Contact Us',
@@ -12,11 +13,13 @@ export const metadata: Metadata = {
     url: 'https://mapwithradius.com/contact',
     title: 'Contact Us',
     description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Contact Us',
     description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
+    images: OG_IMAGES,
   },
 };
 

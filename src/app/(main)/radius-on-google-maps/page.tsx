@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'How to Draw a Radius on Google Maps (2026 Guide + Free Tool)',
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
     description:
       "Google Maps has no built-in radius tool. Here are 3 ways to draw a radius circle on Google Maps.",
     url: 'https://mapwithradius.com/radius-on-google-maps',
+    images: OG_IMAGES,
   },
 };
 
@@ -73,7 +75,7 @@ export default function RadiusOnGoogleMapsPage() {
             headline: 'How to Draw a Radius on Google Maps',
             description:
               "Google Maps has no built-in radius tool. Here are 3 ways to draw a radius circle on Google Maps — plus a free alternative.",
-            image: 'https://mapwithradius.com/opengraph-image',
+            image: 'https://mapwithradius.com/og-image.png',
             datePublished: '2026-01-15T00:00:00+00:00',
             dateModified: currentDate,
             author: {
