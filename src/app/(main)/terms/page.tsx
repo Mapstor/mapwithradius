@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    url: '/terms',
+    url: 'https://mapwithradius.com/terms',
     title: 'Terms of Use',
     description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
   },

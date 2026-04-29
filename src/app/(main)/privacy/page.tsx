@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    url: '/privacy',
+    url: 'https://mapwithradius.com/privacy',
     title: 'Privacy Policy',
     description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
   },

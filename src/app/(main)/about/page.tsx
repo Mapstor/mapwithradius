@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    url: '/about',
+    url: 'https://mapwithradius.com/about',
     title: 'About Our Free Radius Map Tools',
     description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
   },

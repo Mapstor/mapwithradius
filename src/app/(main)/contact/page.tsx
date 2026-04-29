@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    url: '/contact',
+    url: 'https://mapwithradius.com/contact',
     title: 'Contact Us',
     description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
   },
