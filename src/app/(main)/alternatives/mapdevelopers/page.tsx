@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
+  title: 'MapDevelopers Draw Circle Alternative',
   description:
     'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
   alternates: {

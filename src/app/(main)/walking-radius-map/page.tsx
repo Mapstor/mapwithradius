@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'Walking & Cycling Radius Map — How Far Can You Walk or Bike? (Free)',
+  title: 'Walking & Cycling Radius Map (Free)',
   description: 'See how far you can walk or cycle in 5, 10, 15, or 30 minutes. Shows real walking/biking area based on actual roads and paths.',
   alternates: {
     canonical: '/walking-radius-map',

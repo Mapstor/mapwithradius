@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'Drive Time Map — See How Far You Can Drive, Walk, or Cycle (Free)',
+  title: 'Drive Time Map — Free Isochrone Tool',
   description: 'Free drive time radius map. Enter a location and time limit to see how far you can actually travel by car, foot, or bike. Uses real road data.',
   alternates: {
     canonical: '/drive-time-map',

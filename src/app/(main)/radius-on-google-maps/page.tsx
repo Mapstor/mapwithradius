@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'How to Draw a Radius on Google Maps (2026 Guide + Free Tool)',
+  title: 'How to Draw a Radius on Google Maps',
   description:
     "Google Maps has no built-in radius tool. Here are 3 ways to draw a radius circle on Google Maps — plus a free alternative that works instantly.",
   alternates: {

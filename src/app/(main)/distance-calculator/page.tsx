@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'Distance Between Two Points on a Map — Free Calculator',
+  title: 'Distance Between Two Points Calculator',
   description: 'Measure the straight-line or driving distance between any two points on a map. Shows both "as the crow flies" and road distance.',
   alternates: {
     canonical: '/distance-calculator',

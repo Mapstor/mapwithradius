@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'CalcMaps Alternative — Free Radius Map, No Prepaid Credits (2026)',
+  title: 'CalcMaps Alternative — Free Radius Map',
   description:
     'CalcMaps alternative — draw radius circles, export KML and PNG, no prepaid credits, no ads, no account. Free on OpenStreetMap with mobile-first design.',
   alternates: {

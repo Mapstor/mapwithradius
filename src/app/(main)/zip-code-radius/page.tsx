@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'Zip Code Radius Map — Find Zip Codes Within a Radius (Free)',
+  title: 'Zip Code Radius Map — Free Tool',
   description: 'Enter a zip code and distance to find all zip codes within that radius. Export the list as CSV. Free, no signup.',
   alternates: {
     canonical: '/zip-code-radius',

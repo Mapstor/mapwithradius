@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'Radius Map Tool Alternatives — Compared Side by Side (2026)',
+  title: 'Radius Map Tool Alternatives Compared',
   description:
     'Compare six radius map tools — FreeMapTools, MapDevelopers, CalcMaps, Smappen, Maptive, and Map With Radius. Pricing, features, and which fits your use case.',
   alternates: {

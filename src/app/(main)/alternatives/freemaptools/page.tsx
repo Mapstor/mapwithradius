@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'FreeMapTools Radius Alternative — Faster & Modern (2026)',
+  title: 'FreeMapTools Radius Alternative',
   description:
     'FreeMapTools radius alternative — modern, mobile-friendly, with full address search and instant KML/PNG export. Free, no Google API, no account required.',
   alternates: {

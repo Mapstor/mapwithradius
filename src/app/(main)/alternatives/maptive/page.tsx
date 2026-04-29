@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'Maptive Alternative — Free Radius Map, No $250 Plan (2026)',
+  title: 'Maptive Alternative — Free Radius Map',
   description:
     'Maptive alternative for radius mapping — free forever, no 10-day trial, no $250-per-user annual plan. Draw circles on OpenStreetMap, export KML, no account.',
   alternates: {

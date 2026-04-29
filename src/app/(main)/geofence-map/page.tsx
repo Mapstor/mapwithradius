@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'Geofence Map Tool — Create a Radius Geofence (Free)',
+  title: 'Geofence Map Tool — Create a Geofence',
   description:
     'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
   alternates: {

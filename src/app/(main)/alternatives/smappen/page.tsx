@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'Smappen Alternative — Free Radius Map Without a Subscription (2026)',
+  title: 'Smappen Alternative — Free Radius Map',
   description:
     'Smappen alternative for simple radius maps — free forever, no signup, no $99-$199 monthly plan. Draw circles, export KML and PNG, share URLs instantly.',
   alternates: {

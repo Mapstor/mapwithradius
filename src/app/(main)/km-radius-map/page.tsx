@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
-  title: 'KM Radius Map — Draw a Kilometer Radius Circle on a Map (Free)',
+  title: 'KM Radius Map — Free Metric Radius Tool',
   description: 'Draw a radius in kilometers on any map. Free metric radius tool — enter an address and distance in km. No signup, no limits.',
   alternates: {
     canonical: '/km-radius-map',
