@@ -96,6 +96,23 @@ export default function RootLayout({
             }),
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              '@id': 'https://mapwithradius.com/#website',
+              name: 'Map With Radius',
+              url: 'https://mapwithradius.com',
+              description: 'Free online tool to draw radius circles on a map. No signup required, no limits.',
+              inLanguage: 'en-US',
+              publisher: {
+                '@id': 'https://mapwithradius.com/#organization',
+              },
+            }),
+          }}
+        />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
