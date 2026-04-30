@@ -15,6 +15,7 @@
 ## Guides
 
 - [How to Draw a Radius on Google Maps](https://mapwithradius.com/radius-on-google-maps): Google Maps has no built-in radius tool. Three workarounds (My Maps, third-party extensions, this tool) plus a comparison.
+- [Map & Radius Glossary](https://mapwithradius.com/glossary): Plain-English definitions of 40+ terms — radius, isochrone, geofence, geocoding, KML, WGS 84, Mercator, Haversine formula, and more.
 
 ## Comparisons
 
