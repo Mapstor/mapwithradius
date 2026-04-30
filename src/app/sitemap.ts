@@ -16,6 +16,7 @@ const routes: Array<{
   { path: '/geofence-map',                   changeFrequency: 'monthly', priority: 0.8 },
   { path: '/radius-on-google-maps',          changeFrequency: 'monthly', priority: 0.8 },
   { path: '/glossary',                       changeFrequency: 'monthly', priority: 0.7 },
+  { path: '/use-cases',                      changeFrequency: 'monthly', priority: 0.7 },
   { path: '/alternatives',                   changeFrequency: 'monthly', priority: 0.7 },
   { path: '/alternatives/calcmaps',          changeFrequency: 'monthly', priority: 0.7 },
   { path: '/alternatives/freemaptools',      changeFrequency: 'monthly', priority: 0.7 },
