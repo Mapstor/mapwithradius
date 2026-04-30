@@ -23,10 +23,10 @@ const RadiusMap = dynamic(() => import('./RadiusMap'), {
 interface RadiusMapWrapperProps {
   defaultUnit?: DistanceUnit;
   defaultRadius?: number;
-  initialParams?: string;
+  initialCenter?: { lat: number; lng: number };
 }
 
-export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius = 10, initialParams }: RadiusMapWrapperProps) {
+export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius = 10, initialCenter }: RadiusMapWrapperProps) {
   const [circles, setCircles] = useState<RadiusCircle[]>([]);
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>(null);
   const [radius, setRadius] = useState(defaultRadius);
@@ -87,6 +87,23 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
     // Handle locate param
     if (params.locate) {
       handleUseMyLocation();
+    }
+
+    // Fallback to initialCenter prop if no URL circles were provided
+    if (params.circles.length === 0 && initialCenter) {
+      const radiusMeters = toMeters(defaultRadius, defaultUnit);
+      const newCircle: RadiusCircle = {
+        id: `circle-${Date.now()}`,
+        lat: initialCenter.lat,
+        lng: initialCenter.lng,
+        radiusMeters,
+        color: '#4285F4',
+        unit: defaultUnit,
+      };
+      setCircles([newCircle]);
+      setSelectedCircleId(newCircle.id);
+      setIsAddingCircle(false);
+      setTimeout(() => fitToCircle(initialCenter.lat, initialCenter.lng, radiusMeters), 500);
     }
   }, []);
 

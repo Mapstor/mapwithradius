@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { CITIES } from '@/data/cities';
 
 const BASE = 'https://mapwithradius.com';
 
@@ -15,6 +16,7 @@ const routes: Array<{
   { path: '/walking-radius-map',             changeFrequency: 'monthly', priority: 0.9 },
   { path: '/geofence-map',                   changeFrequency: 'monthly', priority: 0.8 },
   { path: '/radius-on-google-maps',          changeFrequency: 'monthly', priority: 0.8 },
+  { path: '/radius-map',                     changeFrequency: 'monthly', priority: 0.8 },
   { path: '/glossary',                       changeFrequency: 'monthly', priority: 0.7 },
   { path: '/use-cases',                      changeFrequency: 'monthly', priority: 0.7 },
   { path: '/alternatives',                   changeFrequency: 'monthly', priority: 0.7 },
@@ -31,10 +33,17 @@ const routes: Array<{
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return routes.map((r) => ({
+  const baseEntries = routes.map((r) => ({
     url: `${BASE}${r.path}`,
     lastModified: now,
     changeFrequency: r.changeFrequency,
     priority: r.priority,
   }));
+  const cityEntries = CITIES.map((c) => ({
+    url: `${BASE}/radius-map/${c.slug}`,
+    lastModified: now,
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }));
+  return [...baseEntries, ...cityEntries];
 }
