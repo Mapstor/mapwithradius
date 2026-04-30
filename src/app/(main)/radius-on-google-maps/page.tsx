@@ -719,6 +719,55 @@ new google.maps.Circle({
           />
         </section>
 
+        {/* Related Tools Section */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">Related Tools</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Link
+              href="/"
+              className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              <div className="font-semibold text-slate-900">Radius Map (Miles)</div>
+              <div className="text-sm text-slate-600">Draw a radius circle by address and distance</div>
+            </Link>
+            <Link
+              href="/km-radius-map"
+              className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              <div className="font-semibold text-slate-900">KM Radius Map</div>
+              <div className="text-sm text-slate-600">Same tool with kilometers as default</div>
+            </Link>
+            <Link
+              href="/drive-time-map"
+              className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              <div className="font-semibold text-slate-900">Drive Time Map</div>
+              <div className="text-sm text-slate-600">See how far you can drive in X minutes</div>
+            </Link>
+            <Link
+              href="/distance-calculator"
+              className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              <div className="font-semibold text-slate-900">Distance Calculator</div>
+              <div className="text-sm text-slate-600">Measure distance between two points</div>
+            </Link>
+            <Link
+              href="/alternatives"
+              className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              <div className="font-semibold text-slate-900">Tool Alternatives</div>
+              <div className="text-sm text-slate-600">Compare six radius map tools side-by-side</div>
+            </Link>
+            <Link
+              href="/zip-code-radius"
+              className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+            >
+              <div className="font-semibold text-slate-900">Zip Code Radius</div>
+              <div className="text-sm text-slate-600">Find every zip code within a radius</div>
+            </Link>
+          </div>
+        </section>
+
         {/* CTA Section */}
         <section className="bg-slate-900 text-white rounded-2xl p-8 text-center">
           <h2 className="text-2xl font-bold mb-3">Ready to draw your radius?</h2>
