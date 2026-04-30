@@ -4,6 +4,9 @@ import Image from 'next/image';
 import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
+const PUBLISHED_DATE = '2026-01-15T00:00:00+00:00';
+const MODIFIED_DATE = '2026-02-16T00:00:00+00:00';
+
 export const metadata: Metadata = {
   title: 'How to Draw a Radius on Google Maps',
   description:
@@ -19,11 +22,15 @@ export const metadata: Metadata = {
     'google maps circle tool',
   ],
   openGraph: {
+    type: 'article',
     title: 'How to Draw a Radius on Google Maps (2026 Guide + Free Tool)',
     description:
       "Google Maps has no built-in radius tool. Here are 3 ways to draw a radius circle on Google Maps.",
     url: 'https://mapwithradius.com/radius-on-google-maps',
     images: OG_IMAGES,
+    publishedTime: PUBLISHED_DATE,
+    modifiedTime: MODIFIED_DATE,
+    authors: ['https://mapwithradius.com'],
   },
 };
 
@@ -36,8 +43,6 @@ const MiniRadiusMap = dynamic(() => import('@/components/map/MiniRadiusMap'), {
 });
 
 export default function RadiusOnGoogleMapsPage() {
-  const currentDate = '2026-02-16T00:00:00+00:00';
-
   return (
     <>
       {/* Breadcrumb Schema */}
@@ -76,8 +81,8 @@ export default function RadiusOnGoogleMapsPage() {
             description:
               "Google Maps has no built-in radius tool. Here are 3 ways to draw a radius circle on Google Maps — plus a free alternative.",
             image: 'https://mapwithradius.com/og-image.png',
-            datePublished: '2026-01-15T00:00:00+00:00',
-            dateModified: currentDate,
+            datePublished: PUBLISHED_DATE,
+            dateModified: MODIFIED_DATE,
             author: {
               '@type': 'Organization',
               name: 'Map With Radius',
@@ -194,7 +199,7 @@ export default function RadiusOnGoogleMapsPage() {
             How to Draw a Radius on Google Maps
           </h1>
           <p className="text-lg text-slate-600">
-            Updated {new Date(currentDate).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            Updated {new Date(MODIFIED_DATE).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
         </header>
 
