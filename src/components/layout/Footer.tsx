@@ -10,10 +10,11 @@ const toolsLinks = [
 ];
 
 const resourcesLinks = [
+  { href: '/use-cases', label: 'Use Cases' },
+  { href: '/glossary', label: 'Glossary' },
+  { href: '/radius-map', label: 'City Radius Maps' },
   { href: '/radius-on-google-maps', label: 'Radius on Google Maps' },
-  { href: '/geofence-map', label: 'Geofence Map' },
-  { href: '/alternatives/freemaptools', label: 'FreeMapTools Alternative' },
-  { href: '/alternatives/mapdevelopers', label: 'MapDevelopers Alternative' },
+  { href: '/alternatives', label: 'Tool Alternatives' },
 ];
 
 const legalLinks = [
