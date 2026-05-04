@@ -801,6 +801,49 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* City Radius Maps Section */}
+      <section className="section-white py-12 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-3">Try a Radius on a Popular City</h2>
+          <p className="text-slate-600 mb-8">
+            Skip the address search. Each link opens this tool already centered on the city,
+            with a starting radius that fits the city&apos;s scale and a deep guide to what&apos;s
+            within each radius.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Link href="/radius-map/new-york-city" className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+              <div className="font-semibold text-slate-900">New York City</div>
+              <div className="text-sm text-slate-600">United States · 5 mi default</div>
+            </Link>
+            <Link href="/radius-map/london" className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+              <div className="font-semibold text-slate-900">London</div>
+              <div className="text-sm text-slate-600">United Kingdom · 10 km default</div>
+            </Link>
+            <Link href="/radius-map/los-angeles" className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+              <div className="font-semibold text-slate-900">Los Angeles</div>
+              <div className="text-sm text-slate-600">United States · 10 mi default</div>
+            </Link>
+            <Link href="/radius-map/paris" className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+              <div className="font-semibold text-slate-900">Paris</div>
+              <div className="text-sm text-slate-600">France · 10 km default</div>
+            </Link>
+            <Link href="/radius-map/tokyo" className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+              <div className="font-semibold text-slate-900">Tokyo</div>
+              <div className="text-sm text-slate-600">Japan · 10 km default</div>
+            </Link>
+            <Link href="/radius-map/sydney" className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors">
+              <div className="font-semibold text-slate-900">Sydney</div>
+              <div className="text-sm text-slate-600">Australia · 15 km default</div>
+            </Link>
+          </div>
+          <p className="text-sm text-slate-500 mt-6">
+            <Link href="/radius-map" className="content-link">
+              See all 12 city radius maps &rarr;
+            </Link>
+          </p>
+        </div>
+      </section>
+
       {/* FAQ Section - Gray Section */}
       <section className="section-gray py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
