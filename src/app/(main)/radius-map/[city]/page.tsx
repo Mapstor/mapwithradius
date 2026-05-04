@@ -325,6 +325,31 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
               </article>
             ))}
           </div>
+
+          {/* See also */}
+          <div className="mt-10 pt-6 border-t border-slate-200">
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-3">See also</h3>
+            <ul className="space-y-2 text-slate-700">
+              <li>
+                <Link href="/use-cases" className="content-link">
+                  Radius Map Use Cases
+                </Link>
+                {' '}— how real estate, delivery, retail, event planning, marketing, and sales-ops teams use radius maps in practice.
+              </li>
+              <li>
+                <Link href="/glossary" className="content-link">
+                  Map &amp; Radius Glossary
+                </Link>
+                {' '}— plain-English definitions of isochrone, geofence, geocoding, KML, and 40+ other terms used on this page.
+              </li>
+              <li>
+                <Link href="/radius-map" className="content-link">
+                  All city radius maps
+                </Link>
+                {' '}— the index of all 12 city pages.
+              </li>
+            </ul>
+          </div>
         </div>
       </section>
 

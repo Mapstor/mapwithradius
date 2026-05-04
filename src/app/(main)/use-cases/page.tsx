@@ -186,6 +186,13 @@ export default function UseCasesPage() {
               suburban Houston covers 8 minutes of driving; the same radius in central
               Manhattan can mean 40 minutes. Show the isochrone where the difference matters.
             </p>
+            <p className="text-sm text-slate-500 mt-4">
+              <strong>Worked example:</strong>{' '}
+              <Link href="/radius-map/new-york-city" className="content-link">
+                NYC radius map
+              </Link>
+              {' '}— mile-by-mile coverage from Times Square, including a comps radius walkthrough.
+            </p>
           </section>
 
           {/* Delivery Zones */}
@@ -224,6 +231,13 @@ export default function UseCasesPage() {
               new dispatch hub). The map that worked last year may quietly cost you on-time
               rates today.
             </p>
+            <p className="text-sm text-slate-500 mt-4">
+              <strong>Worked example:</strong>{' '}
+              <Link href="/radius-map/los-angeles" className="content-link">
+                LA radius map
+              </Link>
+              {' '}— why a 10-mile radius in LA can mean 20 minutes off-peak or an hour at rush.
+            </p>
           </section>
 
           {/* Retail Trade Area */}
@@ -261,6 +275,13 @@ export default function UseCasesPage() {
               law. If the data shows 70% of customers come from within 2.1 miles, that is your
               real primary trade area.
             </p>
+            <p className="text-sm text-slate-500 mt-4">
+              <strong>Worked example:</strong>{' '}
+              <Link href="/radius-map/chicago" className="content-link">
+                Chicago radius map
+              </Link>
+              {' '}— uses a lake-corrected radius math because half of any circle on the lakefront is open water.
+            </p>
           </section>
 
           {/* Event Planning */}
@@ -292,6 +313,13 @@ export default function UseCasesPage() {
               <strong>Pitfall:</strong> measuring straight-line distance to a hotel that is
               physically across a river or highway. A 0.4-mile radius can hide a 1.2-mile walk
               in dense urban grids. Switch to walking distance for anything inside a city.
+            </p>
+            <p className="text-sm text-slate-500 mt-4">
+              <strong>Worked example:</strong>{' '}
+              <Link href="/radius-map/paris" className="content-link">
+                Paris radius map
+              </Link>
+              {' '}— compact-city geometry where a 1 km radius covers most central wedding venues.
             </p>
           </section>
 
@@ -330,6 +358,13 @@ export default function UseCasesPage() {
               radius are the same. Google&apos;s radius is bidder-side; it does not know your
               actual reach. Decide your zone first, then enter it into Ads.
             </p>
+            <p className="text-sm text-slate-500 mt-4">
+              <strong>Worked example:</strong>{' '}
+              <Link href="/radius-map/london" className="content-link">
+                London radius map
+              </Link>
+              {' '}— Tube zones map almost 1:1 to radius bands, a useful trick for local SEO targeting.
+            </p>
           </section>
 
           {/* Sales Territory */}
@@ -364,6 +399,13 @@ export default function UseCasesPage() {
               looking at the map. Zip codes have wildly different sizes — one rep with 50 zip
               codes in Manhattan can have less land than another with 5 zip codes in Wyoming.
               The radius view exposes that immediately.
+            </p>
+            <p className="text-sm text-slate-500 mt-4">
+              <strong>Worked example:</strong>{' '}
+              <Link href="/radius-map/toronto" className="content-link">
+                Toronto radius map
+              </Link>
+              {' '}— shows why a circular radius distorts the linear east-west GTA territory.
             </p>
           </section>
         </div>
