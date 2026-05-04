@@ -14,14 +14,12 @@ export function generateStaticParams(): Params[] {
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const city = getCityBySlug(params.city);
   if (!city) {
-    return {
-      title: 'City Radius Map',
-    };
+    return { title: 'City Radius Map' };
   }
-  const unitWord = city.defaultUnit === 'miles' ? 'Mile' : 'Kilometer';
   const title = `Radius Map of ${city.name}`;
-  const description = `Draw a radius circle on a map centered on ${city.name}, ${city.country}. Free tool — enter any distance in ${city.defaultUnit}, drag to resize, export KML or PNG.`;
+  const description = `What's within a radius of ${city.name}, ${city.country}. Mile-by-mile (or kilometer-by-kilometer) coverage from ${city.centralLandmark}, plus city-specific use cases, geographic quirks, and FAQs. Free interactive map.`;
   const url = `https://mapwithradius.com/radius-map/${city.slug}`;
+  const altNames = city.alternateNames.join(', ').toLowerCase();
   return {
     title,
     description,
@@ -29,8 +27,10 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
     keywords: [
       `radius map ${city.name.toLowerCase()}`,
       `${city.name.toLowerCase()} radius`,
-      `${city.defaultRadius} ${city.defaultUnit} radius ${city.name.toLowerCase()}`,
-      `${unitWord.toLowerCase()} radius map ${city.name.toLowerCase()}`,
+      `5 ${city.defaultUnit} radius ${city.name.toLowerCase()}`,
+      `10 ${city.defaultUnit} radius ${city.name.toLowerCase()}`,
+      `what's within ${city.name.toLowerCase()}`,
+      altNames,
     ],
     openGraph: {
       title,
@@ -63,12 +63,18 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
   }
 
   const unitDisplay = city.defaultUnit === 'miles' ? 'mi' : 'km';
+  const unitWord = city.defaultUnit === 'miles' ? 'miles' : 'kilometers';
   const nearby = getNearbyCitiesByRegion(city.slug, 4);
-  const radiusOptions = city.defaultUnit === 'miles' ? [1, 5, 10, 25, 50] : [1, 5, 10, 25, 50];
+
+  const lastUpdatedDisplay = new Date(city.lastUpdated).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
   return (
     <>
-      {/* BreadcrumbList Schema */}
+      {/* BreadcrumbList */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -94,7 +100,7 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
         }}
       />
 
-      {/* WebPage with mainEntity = Place */}
+      {/* WebPage with Place mainEntity */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -102,12 +108,14 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
             '@context': 'https://schema.org',
             '@type': 'WebPage',
             name: `Radius Map of ${city.name}`,
-            description: `Free radius map tool centered on ${city.name}, ${city.country}.`,
+            description: `What's within a radius of ${city.name}, ${city.country}.`,
             url: `https://mapwithradius.com/radius-map/${city.slug}`,
             isPartOf: { '@id': 'https://mapwithradius.com/#website' },
+            dateModified: city.lastUpdated,
             mainEntity: {
               '@type': 'Place',
               name: city.name,
+              alternateName: city.alternateNames,
               address: {
                 '@type': 'PostalAddress',
                 addressLocality: city.name,
@@ -119,6 +127,25 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
                 longitude: city.lng,
               },
             },
+          }),
+        }}
+      />
+
+      {/* FAQPage */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: city.faqs.map((f) => ({
+              '@type': 'Question',
+              name: f.question,
+              acceptedAnswer: {
+                '@type': 'Answer',
+                text: f.answer,
+              },
+            })),
           }),
         }}
       />
@@ -136,13 +163,9 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
       <section className="section-white py-10 sm:py-14">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav aria-label="Breadcrumb" className="text-sm text-slate-500 mb-4">
-            <Link href="/" className="hover:text-slate-700">
-              Home
-            </Link>
+            <Link href="/" className="hover:text-slate-700">Home</Link>
             <span className="mx-2">/</span>
-            <Link href="/radius-map" className="hover:text-slate-700">
-              City Radius Maps
-            </Link>
+            <Link href="/radius-map" className="hover:text-slate-700">City Radius Maps</Link>
             <span className="mx-2">/</span>
             <span className="text-slate-700">{city.name}</span>
           </nav>
@@ -150,10 +173,12 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
             Radius Map of {city.name}
           </h1>
           <p className="text-lg text-slate-600 mb-6">
-            The map above is centered on <strong>{city.name}</strong>, {city.country}, with a
-            default {city.defaultRadius} {unitDisplay} radius. Drag to move it, search for a
-            different address, or change the radius and unit using the controls.
+            The map above is centered on <strong>{city.name}</strong>, {city.country}, near
+            {' '}{city.centralLandmark}, with a default {city.defaultRadius} {unitDisplay} radius.
+            Drag to move it, search for a different address, or change the radius and unit
+            using the controls.
           </p>
+          <p className="text-slate-700 leading-relaxed mb-6">{city.intro}</p>
 
           {/* City facts */}
           <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4 py-6 border-y border-slate-200">
@@ -176,37 +201,128 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
               <dd className="text-base font-semibold text-slate-900 mt-1">{city.timezone}</dd>
             </div>
           </dl>
+
+          <div className="border-l-4 border-accent pl-4 py-2 bg-slate-50 rounded-r mt-6">
+            <p className="text-sm text-slate-700 italic">{city.fact}</p>
+          </div>
+
+          {city.alternateNames.length > 0 && (
+            <p className="text-sm text-slate-500 mt-4">
+              <strong>Also known as:</strong> {city.alternateNames.join(', ')}.
+            </p>
+          )}
         </div>
       </section>
 
-      {/* Intro paragraph + fact */}
-      <section className="section-white pb-10">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <p className="text-slate-700 leading-relaxed">{city.intro}</p>
-          <div className="border-l-4 border-accent pl-4 py-2 bg-slate-50 rounded-r">
-            <p className="text-sm text-slate-700 italic">{city.fact}</p>
+      {/* Coverage table — what's within each radius */}
+      <section className="section-gray py-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+            What&apos;s within each radius from {city.centralLandmark}
+          </h2>
+          <p className="text-slate-600 mb-8">
+            Real coverage at the most-searched radii, including notable places that fall just
+            outside the circle. Use these as ground truth before relying on a circle for
+            real-estate, retail, or service-area decisions.
+          </p>
+          <div className="space-y-8">
+            {city.coverage.map((c) => (
+              <article key={c.label} className="bg-white rounded-lg p-6 border border-slate-200">
+                <h3 className="text-xl font-bold text-slate-900 mb-2">
+                  {c.label} from {city.centralLandmark}
+                </h3>
+                <p className="text-slate-700 leading-relaxed mb-4">{c.description}</p>
+                <div className="grid sm:grid-cols-2 gap-6 mt-4">
+                  <div>
+                    <h4 className="text-sm font-semibold text-green-700 uppercase tracking-wide mb-2">
+                      Inside the circle
+                    </h4>
+                    <ul className="space-y-1 text-slate-700">
+                      {c.includes.map((p, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-green-600 mt-1">✓</span>
+                          <span>{p}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-2">
+                      Just outside
+                    </h4>
+                    <ul className="space-y-1 text-slate-700">
+                      {c.excludes.map((p, i) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-slate-400 mt-1">✗</span>
+                          <span>{p}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Common radii */}
+      {/* Use cases */}
+      <section className="section-white py-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+            How {city.name} radius maps get used
+          </h2>
+          <p className="text-slate-600 mb-8">
+            City-specific scenarios where a radius is the right tool — and the typical radius
+            sizes professionals use.
+          </p>
+          <div className="space-y-6">
+            {city.useCases.map((u, i) => (
+              <article key={i} className="border-l-4 border-accent pl-4">
+                <h3 className="text-lg font-bold text-slate-900 mb-1">{u.title}</h3>
+                <p className="text-slate-700 leading-relaxed mb-2">{u.description}</p>
+                <p className="text-sm text-slate-500">
+                  <strong className="text-slate-700">Typical radius:</strong> {u.recommendedRadius}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Geographic quirks */}
       <section className="section-gray py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">
-            Common radii from {city.name}
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">
+            Geographic quirks of {city.name} radius mapping
           </h2>
-          <p className="text-slate-700 mb-6">
-            Pick a starting radius. The tool above defaults to {city.defaultRadius} {unitDisplay} —
-            tap a chip to set a different value, or type any number.
+          <p className="text-slate-600 mb-8">
+            Local geography and infrastructure that change how a radius behaves here. Skipping
+            these is the most common reason a radius decision goes sideways.
           </p>
-          <div className="flex flex-wrap gap-2">
-            {radiusOptions.map((r) => (
-              <span
-                key={r}
-                className="inline-flex items-center px-4 py-2 bg-white text-slate-700 text-sm font-medium rounded-full border border-slate-200"
-              >
-                {r} {unitDisplay}
-              </span>
+          <div className="space-y-6">
+            {city.quirks.map((q, i) => (
+              <article key={i} className="bg-white p-5 rounded-lg border border-slate-200">
+                <h3 className="text-lg font-bold text-slate-900 mb-2">{q.title}</h3>
+                <p className="text-slate-700 leading-relaxed">{q.description}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQs */}
+      <section className="section-white py-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-8">
+            FAQ — Radius mapping in {city.name}
+          </h2>
+          <div className="space-y-6">
+            {city.faqs.map((f, i) => (
+              <article key={i}>
+                <h3 className="text-lg font-semibold text-slate-900 mb-2">{f.question}</h3>
+                <p className="text-slate-700 leading-relaxed">{f.answer}</p>
+              </article>
             ))}
           </div>
         </div>
@@ -214,7 +330,7 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
 
       {/* Nearby cities */}
       {nearby.length > 0 && (
-        <section className="section-white py-12">
+        <section className="section-gray py-12">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">
               Other cities in {city.region}
@@ -224,7 +340,7 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
                 <Link
                   key={n.slug}
                   href={`/radius-map/${n.slug}`}
-                  className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                  className="block p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
                 >
                   <div className="font-semibold text-slate-900">{n.name}</div>
                   <div className="text-sm text-slate-600">{n.country}</div>
@@ -236,39 +352,46 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
       )}
 
       {/* Related Tools */}
-      <section className="section-gray py-12">
+      <section className="section-white py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl font-bold text-slate-900 mb-6">Related Tools</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Link
               href="/drive-time-map"
-              className="block p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
+              className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
             >
               <div className="font-semibold text-slate-900">Drive Time Map</div>
               <div className="text-sm text-slate-600">Real-roads isochrone instead of a circle</div>
             </Link>
             <Link
               href="/walking-radius-map"
-              className="block p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
+              className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
             >
               <div className="font-semibold text-slate-900">Walking Radius Map</div>
               <div className="text-sm text-slate-600">Pedestrian and cyclist isochrones</div>
             </Link>
             <Link
               href="/distance-calculator"
-              className="block p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
+              className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
             >
               <div className="font-semibold text-slate-900">Distance Calculator</div>
               <div className="text-sm text-slate-600">Distance between any two points</div>
             </Link>
             <Link
               href="/zip-code-radius"
-              className="block p-4 bg-white rounded-lg hover:shadow-md transition-shadow"
+              className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
             >
               <div className="font-semibold text-slate-900">Zip Code Radius</div>
               <div className="text-sm text-slate-600">Find every zip code within a radius</div>
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* Last updated */}
+      <section className="section-gray py-6">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-sm text-slate-500 text-center">
+          Last updated <time dateTime={city.lastUpdated}>{lastUpdatedDisplay}</time>
         </div>
       </section>
     </>
