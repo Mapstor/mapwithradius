@@ -67,9 +67,64 @@ const toolsLinks = [
   },
 ];
 
+const resourcesLinks = [
+  {
+    href: '/radius-map',
+    label: 'City Radius Maps',
+    description: 'Pre-centered maps for 12 cities',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+      </svg>
+    )
+  },
+  {
+    href: '/use-cases',
+    label: 'Use Cases',
+    description: 'Real estate, delivery, retail, more',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      </svg>
+    )
+  },
+  {
+    href: '/glossary',
+    label: 'Glossary',
+    description: '40+ map and radius terms',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+      </svg>
+    )
+  },
+  {
+    href: '/radius-on-google-maps',
+    label: 'Radius on Google Maps',
+    description: 'Guide for Google Maps users',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+      </svg>
+    )
+  },
+  {
+    href: '/alternatives',
+    label: 'Compare Alternatives',
+    description: 'FreeMapTools, MapDevelopers, more',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+      </svg>
+    )
+  },
+];
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toolsDropdownOpen, setToolsDropdownOpen] = useState(false);
+  const [resourcesDropdownOpen, setResourcesDropdownOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -140,12 +195,41 @@ export default function Header() {
               )}
             </div>
 
-            <Link
-              href="/radius-on-google-maps"
-              className="px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors duration-200 font-medium"
-            >
-              Guide
-            </Link>
+            {/* Resources Dropdown */}
+            <div className="relative">
+              <button
+                className="flex items-center px-4 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors duration-200 font-medium"
+                onClick={() => setResourcesDropdownOpen(!resourcesDropdownOpen)}
+                onBlur={() => setTimeout(() => setResourcesDropdownOpen(false), 150)}
+              >
+                Resources
+                <svg
+                  className={`ml-1.5 h-4 w-4 transition-transform duration-200 ${resourcesDropdownOpen ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {resourcesDropdownOpen && (
+                <div className="absolute top-full left-0 mt-1 w-72 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50">
+                  {resourcesLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 transition-colors duration-200"
+                    >
+                      <span className="text-accent mt-0.5">{link.icon}</span>
+                      <div>
+                        <div className="font-medium text-slate-900">{link.label}</div>
+                        <div className="text-sm text-slate-500">{link.description}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <Link
               href="/about"
@@ -192,16 +276,19 @@ export default function Header() {
                 </Link>
               ))}
               <div className="border-t border-slate-200 my-3" />
-              <Link
-                href="/radius-on-google-maps"
-                className="flex items-center gap-3 px-3 py-2.5 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors duration-200"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-                <span className="font-medium">Guide</span>
-              </Link>
+              <p className="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Resources</p>
+              {resourcesLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="flex items-center gap-3 px-3 py-2.5 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors duration-200"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span className="text-accent">{link.icon}</span>
+                  <span className="font-medium">{link.label}</span>
+                </Link>
+              ))}
+              <div className="border-t border-slate-200 my-3" />
               <Link
                 href="/about"
                 className="flex items-center gap-3 px-3 py-2.5 text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors duration-200"
