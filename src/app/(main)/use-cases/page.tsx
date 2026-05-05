@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
+import { CITIES } from '@/data/cities';
 
 export const metadata: Metadata = {
   title: 'Radius Map Use Cases',
@@ -410,6 +411,40 @@ export default function UseCasesPage() {
           </section>
         </div>
       </article>
+
+      {/* Worked examples by city */}
+      <section className="section-white py-12 border-t border-slate-200">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
+            Worked examples by city
+          </h2>
+          <p className="text-slate-600 mb-6">
+            Each city page applies the use cases above to a specific local geography —
+            real-estate comp radii, delivery isochrones, trade-area math, transit-aware
+            commute filters — calibrated to that city&apos;s scale and quirks.
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {CITIES.map((c) => (
+              <Link
+                key={c.slug}
+                href={`/radius-map/${c.slug}`}
+                className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+              >
+                <div className="font-semibold text-slate-900">{c.name}</div>
+                <div className="text-sm text-slate-600">
+                  {c.country} · default {c.defaultRadius}{' '}
+                  {c.defaultUnit === 'miles' ? 'mi' : 'km'}
+                </div>
+              </Link>
+            ))}
+          </div>
+          <p className="text-sm text-slate-500 mt-6">
+            <Link href="/radius-map" className="content-link">
+              See the full city radius map index &rarr;
+            </Link>
+          </p>
+        </div>
+      </section>
 
       {/* Related Tools */}
       <section className="section-gray py-12">
