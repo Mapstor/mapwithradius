@@ -125,7 +125,7 @@ export default function AlternativesIndexPage() {
         {/* Header */}
         <header className="mb-10">
           <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
-            Best Radius Map Tool Alternatives (2026)
+            Radius Map Tool Alternatives Compared
           </h1>
           <p className="text-lg text-slate-600">
             Five radius-mapping tools are commonly compared online: FreeMapTools, MapDevelopers,
