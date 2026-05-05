@@ -61,7 +61,8 @@ export default function AboutPage() {
             name: 'Map With Radius',
             url: 'https://mapwithradius.com',
             logo: 'https://mapwithradius.com/apple-icon',
-            description: 'Free online mapping tools for drawing radius circles, measuring distances, and visualizing geographic areas.',
+            description:
+              'Free, privacy-first radius mapping tools. Built by an avid traveler who uses maps a lot — no signup, no API keys, no usage limits. Powered by OpenStreetMap and Leaflet.',
             sameAs: [],
             contactPoint: {
               '@type': 'ContactPoint',
@@ -79,76 +80,86 @@ export default function AboutPage() {
           {/* Introduction */}
           <section className="mb-12">
             <p className="text-xl text-gray-700 mb-6 leading-relaxed">
-              Map With Radius is a free, privacy-focused suite of online mapping tools designed to help
-              people visualize distances, draw radius circles, and understand geographic areas. Whether
-              you're a real estate professional, delivery business owner, urban planner, or someone
-              simply trying to find what's within walking distance of your home, our tools are built
-              to be fast, intuitive, and accessible to everyone.
+              I&apos;m an avid traveler who uses maps a lot. Map With Radius started because I
+              wanted a fast, free way to draw a circle on a map — &ldquo;what&apos;s within 5 miles
+              of this hostel?&rdquo;, &ldquo;how far can I get from this Airbnb on foot?&rdquo;,
+              &ldquo;which neighborhoods are within 20 minutes of the office?&rdquo; — and every
+              existing tool either wanted me to sign up, sold an API plan, or buried the feature
+              behind a paywall.
             </p>
             <p className="text-gray-700 mb-6">
-              We believe that mapping tools should be free, easy to use, and respect your privacy.
-              That's why we built Map With Radius from the ground up with these principles in mind.
-              No account required. No personal data collected. No usage limits. Just open the tool
-              and start mapping.
+              So I built one. No account, no usage limits, no location tracking. It runs on
+              OpenStreetMap and Leaflet, which means there are no Google Maps API fees to recoup
+              from you. Whether you&apos;re a real estate agent comparing comps, a planner defining
+              a delivery zone, a couple picking a wedding venue, or just someone curious about a
+              30-minute walk from home — these tools are yours, free.
             </p>
           </section>
 
-          {/* Our Mission */}
+          {/* Principles */}
           <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Mission</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">What this site is and isn&apos;t</h2>
             <p className="text-gray-700 mb-4">
-              Our mission is to democratize geographic visualization by providing professional-grade
-              mapping tools that are completely free and accessible to everyone. We're committed to:
+              A few non-negotiables I held to when building it:
             </p>
             <ul className="list-disc pl-6 space-y-3 text-gray-700 mb-6">
               <li>
-                <strong>Accessibility:</strong> No paywalls, no premium tiers, no feature restrictions.
-                Every tool on our site is 100% free with full functionality.
+                <strong>Free with full functionality.</strong> No paywalls, no premium tiers, no
+                feature gates. Every tool here is the full tool.
               </li>
               <li>
-                <strong>Privacy:</strong> We don't require accounts, don't track your location, and
-                don't sell your data. Your mapping activities stay on your device.
+                <strong>No account, ever.</strong> You shouldn&apos;t need to hand over an email
+                address to draw a circle on a map.
               </li>
               <li>
-                <strong>Simplicity:</strong> Our tools are designed to be intuitive. You shouldn't need
-                a tutorial to draw a circle on a map.
+                <strong>Your location stays in your browser.</strong> If you click &ldquo;Use My
+                Location,&rdquo; the GPS lookup happens locally. The coordinates never leave the
+                page.
               </li>
               <li>
-                <strong>Performance:</strong> Fast loading, responsive design, and smooth interactions
-                across all devices — from phones to desktops.
+                <strong>Mobile-first.</strong> A surprising number of map tools online are still
+                broken on phones. This one isn&apos;t.
               </li>
               <li>
-                <strong>Open Standards:</strong> We build on open-source technologies and open data
-                (OpenStreetMap) to ensure our tools remain independent and sustainable.
+                <strong>Built on open data.</strong> OpenStreetMap and Leaflet, not a paid Google
+                or Mapbox API. That&apos;s what makes &ldquo;free forever&rdquo; sustainable.
               </li>
             </ul>
           </section>
 
-          {/* Why We Built This */}
+          {/* Why I built this */}
           <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Why We Built This</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Why I built this</h2>
             <p className="text-gray-700 mb-4">
               For years, drawing a simple radius circle on a map meant either paying for expensive
-              software, dealing with clunky interfaces, or hitting API usage limits on tools that
-              relied on paid map services.
+              software, dealing with clunky 2010-era interfaces, or hitting API usage limits on
+              tools that relied on paid map services. Most of the existing &ldquo;free radius
+              map&rdquo; sites are built on Google Maps under the hood — which means they pay
+              per-request fees and either show ads aggressively or limit usage.
             </p>
             <p className="text-gray-700 mb-4">
-              We saw a gap: people needed a straightforward way to answer questions like "What's
-              within 10 miles of this location?" or "How far can I drive in 30 minutes?" without
-              signing up for anything or hitting a paywall.
+              The frustrating part: the underlying technology has been free and open-source for
+              over a decade. Leaflet was first released in 2011. OpenStreetMap has full global
+              coverage. Nobody had wrapped them in a clean, mobile-first tool that respects
+              your time.
             </p>
             <p className="text-gray-700 mb-6">
-              Map With Radius was born from this frustration. By leveraging open-source mapping
-              libraries (Leaflet) and open map data (OpenStreetMap), we created a sustainable,
-              free alternative that doesn't compromise on features or user experience.
+              So that&apos;s what this is. A focused wrapper around open-source mapping that
+              answers one question really well — &ldquo;what&apos;s inside this circle?&rdquo; —
+              plus a few related ones (drive time, walking time, distance between two points,
+              zip codes within a radius, geofence planning). I use it constantly when I travel.
+              You should too.
             </p>
           </section>
 
-          {/* Who Uses Our Tools */}
+          {/* Who uses these tools */}
           <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Who Uses Our Tools</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Who actually uses these tools</h2>
             <p className="text-gray-700 mb-4">
-              Map With Radius serves a diverse community of users across many industries and use cases:
+              Beyond travelers like me, the tool has found its way into a few specific
+              communities. The deeper guides on{' '}
+              <Link href="/use-cases" className="text-primary hover:underline">use cases</Link>{' '}
+              go into each in detail; here&apos;s the short version.
             </p>
 
             <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -203,11 +214,12 @@ export default function AboutPage() {
             </div>
           </section>
 
-          {/* Our Tools */}
+          {/* The Tools */}
           <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Tools</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">The tools</h2>
             <p className="text-gray-700 mb-6">
-              We offer a comprehensive suite of free mapping tools, each designed for specific use cases:
+              Each tool below answers a specific question. They share the same map engine, geocoder,
+              and export formats, so muscle memory carries between them.
             </p>
 
             <div className="space-y-4">
@@ -405,32 +417,32 @@ export default function AboutPage() {
             </p>
           </section>
 
-          {/* Future Development */}
+          {/* What's next */}
           <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Future Development</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">What&apos;s next</h2>
             <p className="text-gray-700 mb-4">
-              We're continuously working to improve Map With Radius. Some features on our roadmap include:
+              Some things on the rough roadmap, in no particular order:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li>More export formats (GeoJSON, GPX, Shapefile)</li>
-              <li>Custom map styles and color themes</li>
-              <li>Embeddable widget for websites</li>
-              <li>Measurement tools (area calculation, path distance)</li>
-              <li>Multi-point route optimization</li>
-              <li>Improved international address support</li>
+              <li>An embeddable widget for other sites</li>
+              <li>Area and path-distance measurement</li>
+              <li>Better international address coverage in the geocoder</li>
+              <li>More city-specific landing pages — currently 12, headed for 30+</li>
             </ul>
             <p className="text-gray-700">
-              Have a feature request? <Link href="/contact" className="text-primary hover:underline">Let us know</Link>.
-              We read every message and prioritize based on user feedback.
+              Have something you&apos;d like to see?{' '}
+              <Link href="/contact" className="text-primary hover:underline">Let me know</Link>.
+              I read every message.
             </p>
           </section>
 
           {/* Contact */}
           <section className="mb-8">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Get in Touch</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Get in touch</h2>
             <p className="text-gray-700 mb-4">
-              We love hearing from our users. Whether you have a question, found a bug, or want to
-              suggest a feature, don't hesitate to reach out.
+              Questions, bug reports, feature requests, or interesting use cases — all welcome.
+              I read everything that comes in.
             </p>
             <p className="text-gray-700">
               <strong>Email:</strong>{' '}
@@ -440,7 +452,7 @@ export default function AboutPage() {
             </p>
             <p className="text-gray-700 mt-4">
               <Link href="/contact" className="text-primary hover:underline font-medium">
-                Visit our Contact page →
+                Or use the contact form &rarr;
               </Link>
             </p>
           </section>
