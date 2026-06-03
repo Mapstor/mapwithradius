@@ -388,7 +388,7 @@ export default function AboutPage() {
 
           {/* Privacy Commitment */}
           <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Privacy and how we keep this free</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Privacy and how I keep this free</h2>
             <p className="text-gray-700 mb-4">
               The tool side of this is privacy-respecting by design — the things that matter most for
               a mapping tool (where you searched, where you are) never leave your browser:
@@ -409,45 +409,27 @@ export default function AboutPage() {
               </li>
             </ul>
             <p className="text-gray-700 mb-4">
-              To keep the tool free with no usage limits, we do two things that any honest privacy
+              To keep the tool free with no usage limits, I do two things that any honest privacy
               page should disclose:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li>
-                <strong>Aggregate analytics.</strong> We use Google Analytics 4 to understand which
+                <strong>Aggregate analytics.</strong> I use Google Analytics 4 to understand which
                 pages are useful and where the tool is struggling. It uses cookies.
               </li>
               <li>
-                <strong>Advertising.</strong> We display ads (including Google AdSense). Ad partners
-                may set cookies. For visitors in the EEA, UK, and Switzerland, Google Consent Mode
-                v2 keeps non-essential cookies default-denied, so AdSense serves Limited
-                (non-personalized) ads there; a consent management platform is planned.
+                <strong>Advertising.</strong> I&apos;ve integrated Google AdSense to fund the site
+                — the account is currently in review with Google, so no live ads are serving yet.
+                Once approved, AdSense will display ads and ad partners may set cookies. For
+                visitors in the EEA, UK, and Switzerland, Google Consent Mode v2 keeps
+                non-essential cookies default-denied, so any AdSense ads there will default to
+                Limited (non-personalized); a consent management platform is planned.
               </li>
             </ul>
             <p className="text-gray-700">
               Full details in the{' '}
               <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> —
               including the opt-out link for personalized advertising.
-            </p>
-          </section>
-
-          {/* What's next */}
-          <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">What&apos;s next</h2>
-            <p className="text-gray-700 mb-4">
-              Some things on the rough roadmap, in no particular order:
-            </p>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
-              <li>More export formats (GeoJSON, GPX, Shapefile)</li>
-              <li>An embeddable widget for other sites</li>
-              <li>Area and path-distance measurement</li>
-              <li>Better international address coverage in the geocoder</li>
-              <li>More city-specific landing pages — currently 25, headed for 50+</li>
-            </ul>
-            <p className="text-gray-700">
-              Have something you&apos;d like to see?{' '}
-              <Link href="/contact" className="text-primary hover:underline">Let me know</Link>.
-              I read every message.
             </p>
           </section>
 

@@ -122,7 +122,7 @@ export default function ContactPage() {
                 name: 'Do you store my data?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: "We don't require accounts, don't track your location on our servers, and don't store your map data — everything happens in your browser. When you share a link, the coordinates are encoded directly in the URL, so nothing is saved on our side. The site does run Google Analytics and Google AdSense, which set cookies (subject to Google Consent Mode v2 in the EEA/UK/Switzerland). See our Privacy Policy for the full picture.",
+                  text: "We don't require accounts, don't track your location on our servers, and don't store your map data — everything happens in your browser. When you share a link, the coordinates are encoded directly in the URL, so nothing is saved on our side. The site runs Google Analytics and is integrated with Google AdSense (account in review with Google); these set cookies (subject to Google Consent Mode v2 in the EEA/UK/Switzerland). See our Privacy Policy for the full picture.",
                 },
               },
             ],
@@ -290,8 +290,9 @@ export default function ContactPage() {
                 We don't require accounts, don't track your location on our servers, and don't
                 store your map data — everything happens in your browser. When you share a link,
                 the coordinates are encoded directly in the URL, so nothing is saved on our side.
-                The site does run Google Analytics and Google AdSense, which set cookies (subject
-                to Google Consent Mode v2 in the EEA/UK/Switzerland). See our{' '}
+                The site runs Google Analytics and is integrated with Google AdSense (account in
+                review with Google); these set cookies (subject to Google Consent Mode v2 in the
+                EEA/UK/Switzerland). See our{' '}
                 <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> for the full picture.
               </p>
             </div>

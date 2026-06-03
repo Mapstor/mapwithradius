@@ -141,17 +141,19 @@ export default function PrivacyPage() {
             <p className="text-gray-700 mb-3">
               To fund the service so it can stay free with no usage limits, we do two things that
               involve third-party cookies and require disclosure: we use Google Analytics 4 to
-              measure aggregate traffic, and we display ads through Google AdSense. Sections 3, 4,
-              5, and 9 of this policy describe exactly what that means, what cookies are set, and
-              how you can opt out or block them.
+              measure aggregate traffic, and we&apos;ve integrated Google AdSense to display ads
+              once the account is approved (the AdSense account is currently in review with
+              Google). Sections 3, 4, 5, and 9 of this policy describe exactly what that means,
+              what cookies are set, and how you can opt out or block them.
             </p>
             <p className="text-gray-700">
               In the EEA, UK, and Switzerland, Google Consent Mode v2 keeps non-essential
-              cookies default-denied, so Google Analytics 4 runs in cookieless mode and Google
-              AdSense serves non-personalized (Limited) ads to those visitors. We do not
-              currently display a consent banner; we plan to add a Google-certified consent
-              management platform (CMP) so visitors there can opt in to personalized analytics
-              and advertising. See Section 14 for details on EU/UK rights.
+              cookies default-denied, so Google Analytics 4 runs in cookieless mode for those
+              visitors. When Google AdSense begins serving ads on this site, those ads will be
+              non-personalized (Limited) in these regions due to the default-denied state. We
+              do not currently display a consent banner; we plan to add a Google-certified
+              consent management platform (CMP) so visitors there can opt in to personalized
+              analytics and advertising. See Section 14 for details on EU/UK rights.
             </p>
           </section>
 
@@ -279,9 +281,10 @@ export default function PrivacyPage() {
                 <strong>Advertising cookies (Google AdSense and partners):</strong> Cookies used to
                 serve and measure ads, including ads tailored to your interests based on your
                 previous visits to this and other sites. In the EEA, UK, and Switzerland these are
-                default-denied via Google Consent Mode v2 — until a consent banner is added,
-                AdSense serves Limited (non-personalized) ads to those visitors. See Section 9 for
-                full advertising details and the opt-out link for personalized advertising.
+                default-denied via Google Consent Mode v2 — until a consent banner is added, any
+                AdSense ads served in those regions will be Limited (non-personalized). See
+                Section 9 for full advertising details and the opt-out link for personalized
+                advertising.
               </li>
             </ul>
 
@@ -304,10 +307,11 @@ export default function PrivacyPage() {
               (&lsquo;ad_storage&rsquo;, &lsquo;ad_user_data&rsquo;, &lsquo;ad_personalization&rsquo;,
               &lsquo;analytics_storage&rsquo;) default-denied on every page load. We do not
               currently display a consent banner, so that default-denied state persists for the
-              whole visit — Google Analytics 4 runs in cookieless mode and Google AdSense serves
-              Limited (non-personalized) ads. We plan to add a Google-certified consent management
-              platform (CMP) so visitors in these regions can opt in to personalized analytics
-              and advertising.
+              whole visit — Google Analytics 4 runs in cookieless mode, and once Google AdSense
+              begins serving ads on this site, ads in these regions will be Limited
+              (non-personalized). We plan to add a Google-certified consent management platform
+              (CMP) so visitors in these regions can opt in to personalized analytics and
+              advertising.
             </p>
 
             <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">Managing Cookies</h3>
@@ -418,10 +422,11 @@ export default function PrivacyPage() {
               <div className="border border-gray-200 rounded-lg p-4">
                 <h3 className="font-semibold text-gray-900 mb-2">Google AdSense</h3>
                 <p className="text-gray-600 text-sm mb-2">
-                  We display ads through Google AdSense to keep the tools free. Google and its
-                  advertising partners use cookies to serve ads based on prior visits to this and
-                  other websites. See Section 9 for the full advertising disclosure and the
-                  personalized-advertising opt-out.
+                  We use Google AdSense to fund the tools. The AdSense account is currently in
+                  review with Google; once approved, AdSense will serve ads on this site, and
+                  Google and its advertising partners may use cookies to serve ads based on prior
+                  visits to this and other websites. See Section 9 for the full advertising
+                  disclosure and the personalized-advertising opt-out.
                 </p>
                 <p className="text-gray-600 text-sm">
                   <strong>What it may collect:</strong> Cookie identifiers, IP address, ad
@@ -519,9 +524,11 @@ export default function PrivacyPage() {
           <section id="advertising" className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Advertising</h2>
             <p className="text-gray-700 mb-3">
-              We display ads through Google AdSense to support the free operation of this service.
-              The disclosures in this section are required by AdSense&apos;s program policies and
-              describe how advertising cookies work on Map With Radius.
+              We use Google AdSense to support the free operation of this service. The AdSense
+              account is currently in review with Google; once approved, AdSense will serve ads
+              on the site. The disclosures in this section are required by AdSense&apos;s program
+              policies and describe how advertising cookies work on Map With Radius once ads
+              are live.
             </p>
 
             <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">How third-party advertising cookies work here</h3>
@@ -592,10 +599,10 @@ export default function PrivacyPage() {
               advertising and analytics cookies are blocked by default through Google Consent
               Mode v2 — non-essential storage is set to denied on every page load. We do not
               currently display a consent banner, so that default-denied state persists for the
-              whole visit, and AdSense serves Limited (non-personalized) ads to these visitors.
-              We plan to add a Google-certified consent management platform (CMP) so visitors in
-              these regions can opt in to personalized advertising; until that CMP is in place,
-              there is no consent decision to record or change.
+              whole visit, and any AdSense ads served in these regions will be Limited
+              (non-personalized). We plan to add a Google-certified consent management platform
+              (CMP) so visitors in these regions can opt in to personalized advertising; until
+              that CMP is in place, there is no consent decision to record or change.
             </p>
           </section>
 
@@ -716,10 +723,10 @@ export default function PrivacyPage() {
                 legitimate interests. For analytics and advertising, we run Google Consent Mode v2
                 with non-essential cookie categories default-denied for EEA/UK/Swiss visitors;
                 until a Google-certified consent management platform is added, that default-denied
-                state is maintained for the whole visit, so Google Analytics 4 runs in cookieless
-                mode and Google AdSense serves Limited (non-personalized) ads in these regions.
-                We plan to add a CMP so visitors can grant consent and opt in to personalized
-                analytics and advertising.
+                state is maintained for the whole visit. Google Analytics 4 runs in cookieless
+                mode for those visitors, and once Google AdSense begins serving ads on the site,
+                ads in these regions will be Limited (non-personalized). We plan to add a CMP so
+                visitors can grant consent and opt in to personalized analytics and advertising.
               </li>
               <li>
                 <strong>Data minimization:</strong> We collect only what is technically necessary to
