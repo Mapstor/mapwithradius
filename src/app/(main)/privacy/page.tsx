@@ -4,7 +4,7 @@ import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
+  description: 'Map With Radius privacy policy — no accounts, your location stays in your browser, GDPR and CCPA compliant. How we handle analytics, advertising, and your choices.',
   alternates: {
     canonical: '/privacy',
   },
@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     type: 'website',
     url: 'https://mapwithradius.com/privacy',
     title: 'Privacy Policy',
-    description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
+    description: 'Map With Radius privacy policy — no accounts, your location stays in your browser, GDPR and CCPA compliant. How we handle analytics, advertising, and your choices.',
     images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Privacy Policy',
-    description: 'Map With Radius privacy policy — no accounts, no tracking, no location data sent to servers. GDPR and CCPA compliant. How we handle server logs and analytics.',
+    description: 'Map With Radius privacy policy — no accounts, your location stays in your browser, GDPR and CCPA compliant. How we handle analytics, advertising, and your choices.',
     images: OG_IMAGES,
   },
 };
@@ -53,7 +53,7 @@ export default function PrivacyPage() {
 
       <main className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
-        <p className="text-sm text-gray-500 mb-8">Last updated: February 2026</p>
+        <p className="text-sm text-gray-500 mb-8">Last updated: June 3, 2026</p>
 
         <div className="prose prose-gray max-w-none">
           <p className="text-lg text-gray-700 mb-8">
@@ -102,7 +102,7 @@ export default function PrivacyPage() {
                 <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-gray-700">No personal information collected</span>
+                <span className="text-gray-700">No name, email, or payment info collected</span>
               </div>
               <div className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,7 +114,7 @@ export default function PrivacyPage() {
                 <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-gray-700">No tracking cookies</span>
+                <span className="text-gray-700">EEA/UK ads default to non-personalized</span>
               </div>
               <div className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -134,18 +134,24 @@ export default function PrivacyPage() {
           <section id="overview" className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">1. Privacy Overview</h2>
             <p className="text-gray-700 mb-3">
-              Map With Radius is designed with privacy as a core principle. Unlike many web services,
-              we don't require you to create an account, sign in, or provide any personal information
-              to use our tools.
+              Map With Radius is designed so that the core tool — drawing a radius, searching an
+              address, exporting a map — works without accounts and without any personal data
+              reaching our servers. The processing happens in your browser.
             </p>
             <p className="text-gray-700 mb-3">
-              Our mapping tools work primarily in your browser. When you draw a radius circle, calculate
-              a distance, or export a map, the processing happens on your device. We don't store your
-              maps, locations, or search history on our servers.
+              To fund the service so it can stay free with no usage limits, we do two things that
+              involve third-party cookies and require disclosure: we use Google Analytics 4 to
+              measure aggregate traffic, and we display ads through Google AdSense. Sections 3, 4,
+              5, and 9 of this policy describe exactly what that means, what cookies are set, and
+              how you can opt out or block them.
             </p>
             <p className="text-gray-700">
-              This privacy-first approach means there's minimal data for us to collect, store, or protect —
-              which is exactly how we designed it.
+              In the EEA, UK, and Switzerland, Google Consent Mode v2 keeps non-essential
+              cookies default-denied, so Google Analytics 4 runs in cookieless mode and Google
+              AdSense serves non-personalized (Limited) ads to those visitors. We do not
+              currently display a consent banner; we plan to add a Google-certified consent
+              management platform (CMP) so visitors there can opt in to personalized analytics
+              and advertising. See Section 14 for details on EU/UK rights.
             </p>
           </section>
 
@@ -208,14 +214,33 @@ export default function PrivacyPage() {
                 </p>
               </li>
               <li>
-                <strong>Anonymous analytics:</strong> We may use privacy-respecting analytics tools
-                (such as Plausible Analytics or similar) to understand aggregate usage patterns. These services:
-                <ul className="list-disc pl-6 mt-2 space-y-1">
-                  <li>Do not use cookies</li>
-                  <li>Do not collect personal information</li>
-                  <li>Do not track individual users across sites</li>
-                  <li>Provide only aggregate statistics (page views, popular pages, general geographic regions)</li>
-                </ul>
+                <strong>Google Analytics 4:</strong> We use Google Analytics 4 (GA4) to understand
+                aggregate usage patterns — which pages get traffic, where users come from, what
+                devices and browsers they use. GA4 uses cookies and assigns each browser an anonymous
+                identifier. We have configured GA4 with Google Consent Mode v2 — for visitors in
+                the EEA, UK, and Switzerland, &lsquo;analytics_storage&rsquo; is default-denied, so
+                GA4 runs in cookieless mode and sets no analytics cookies for those visitors (a
+                consent management platform is planned, which will let those visitors opt in to
+                standard analytics). We do not link GA4 data to personally identifying information, because we
+                don&apos;t collect any. See{' '}
+                <a
+                  href="https://policies.google.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Google&apos;s Privacy Policy
+                </a>{' '}
+                for how Google handles this data, and{' '}
+                <a
+                  href="https://tools.google.com/dlpage/gaoptout"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Google Analytics Opt-out
+                </a>{' '}
+                to opt out across all sites.
               </li>
               <li>
                 <strong>Error reports:</strong> If an error occurs while using the site, technical information
@@ -229,43 +254,68 @@ export default function PrivacyPage() {
 
             <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">Cookies We Use</h3>
             <p className="text-gray-700 mb-3">
-              We minimize cookie usage. The cookies that may be present on our site include:
+              We keep cookie usage to the minimum needed to run the site, measure traffic, and fund
+              the tools through advertising:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
               <li>
-                <strong>Essential/Technical cookies:</strong> Cookies necessary for the website to function
-                properly (e.g., session management, security tokens). These do not track you or store
-                personal information.
+                <strong>Essential/technical cookies:</strong> Cookies necessary for the website to
+                function properly (e.g., session management, security tokens). These do not track you
+                or store personal information.
               </li>
               <li>
-                <strong>Preference cookies:</strong> We may store your unit preferences (miles vs. kilometers)
-                in local storage or a cookie so your settings persist between visits. This data stays on
-                your device and is not sent to our servers.
+                <strong>Preference storage:</strong> We may store your unit preferences (miles vs.
+                kilometers) in browser local storage so your settings persist between visits. This
+                data stays on your device and is not sent to our servers.
+              </li>
+              <li>
+                <strong>Analytics cookies (Google Analytics 4):</strong> Cookies set by GA4 to
+                distinguish unique browsers and produce aggregate site statistics. In the EEA, UK,
+                and Switzerland these are default-denied via Google Consent Mode v2 — until a
+                consent banner is added, GA4 stays in cookieless mode for those visitors and sets
+                no analytics cookies (see &ldquo;Consent in the EEA, UK, and Switzerland&rdquo; below).
+              </li>
+              <li>
+                <strong>Advertising cookies (Google AdSense and partners):</strong> Cookies used to
+                serve and measure ads, including ads tailored to your interests based on your
+                previous visits to this and other sites. In the EEA, UK, and Switzerland these are
+                default-denied via Google Consent Mode v2 — until a consent banner is added,
+                AdSense serves Limited (non-personalized) ads to those visitors. See Section 9 for
+                full advertising details and the opt-out link for personalized advertising.
               </li>
             </ul>
 
             <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">Cookies We Do NOT Use</h3>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
               <li>
-                <strong>No advertising cookies:</strong> We do not use cookies to track you for advertising
-                purposes or to serve targeted ads.
+                <strong>No social-media tracking pixels:</strong> We do not embed Facebook Pixel,
+                LinkedIn Insight Tag, TikTok Pixel, or any other social-media tracking script.
               </li>
               <li>
-                <strong>No cross-site tracking:</strong> We do not participate in cross-site tracking networks
-                or use cookies that follow you across different websites.
-              </li>
-              <li>
-                <strong>No social media tracking:</strong> We do not embed social media tracking pixels or
-                buttons that would allow social networks to track your visit.
+                <strong>No data brokers:</strong> We do not pass user data to data brokers, marketing
+                data warehouses, or audience-aggregation networks.
               </li>
             </ul>
 
+            <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">Consent in the EEA, UK, and Switzerland</h3>
+            <p className="text-gray-700 mb-3">
+              For visitors in the European Economic Area, United Kingdom, and Switzerland, we run
+              Google Consent Mode v2 with all non-essential cookie categories
+              (&lsquo;ad_storage&rsquo;, &lsquo;ad_user_data&rsquo;, &lsquo;ad_personalization&rsquo;,
+              &lsquo;analytics_storage&rsquo;) default-denied on every page load. We do not
+              currently display a consent banner, so that default-denied state persists for the
+              whole visit — Google Analytics 4 runs in cookieless mode and Google AdSense serves
+              Limited (non-personalized) ads. We plan to add a Google-certified consent management
+              platform (CMP) so visitors in these regions can opt in to personalized analytics
+              and advertising.
+            </p>
+
             <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">Managing Cookies</h3>
             <p className="text-gray-700">
-              You can control cookies through your browser settings. Most browsers allow you to block
-              or delete cookies. However, blocking all cookies may affect your ability to use certain
-              features of the website. Since we use minimal cookies, most functionality will work even
-              with cookies disabled.
+              You can control cookies through your browser settings. Most browsers let you block or
+              delete cookies, view a list of currently-set cookies, or refuse cookies from
+              third-party domains. Blocking all cookies will not break the core radius tool, but
+              some preferences (like your unit setting) may not persist between visits.
             </p>
           </section>
 
@@ -333,12 +383,66 @@ export default function PrivacyPage() {
                   </a>
                 </p>
               </div>
+
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h3 className="font-semibold text-gray-900 mb-2">Google Analytics 4</h3>
+                <p className="text-gray-600 text-sm mb-2">
+                  We use Google Analytics 4 to measure aggregate traffic to the site. GA4 sets
+                  cookies in your browser and sends pageview and basic interaction data to Google.
+                  We do not link GA4 data to any personally identifying information, because we
+                  don&apos;t collect any.
+                </p>
+                <p className="text-gray-600 text-sm">
+                  <strong>What it may collect:</strong> Anonymous client identifier, page URLs,
+                  referrer, device/browser, approximate geographic region{' '}
+                  <a
+                    href="https://policies.google.com/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    (Google Privacy Policy)
+                  </a>{' '}
+                  ·{' '}
+                  <a
+                    href="https://tools.google.com/dlpage/gaoptout"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Opt out of Google Analytics
+                  </a>
+                </p>
+              </div>
+
+              <div className="border border-gray-200 rounded-lg p-4">
+                <h3 className="font-semibold text-gray-900 mb-2">Google AdSense</h3>
+                <p className="text-gray-600 text-sm mb-2">
+                  We display ads through Google AdSense to keep the tools free. Google and its
+                  advertising partners use cookies to serve ads based on prior visits to this and
+                  other websites. See Section 9 for the full advertising disclosure and the
+                  personalized-advertising opt-out.
+                </p>
+                <p className="text-gray-600 text-sm">
+                  <strong>What it may collect:</strong> Cookie identifiers, IP address, ad
+                  interactions, inferred interests{' '}
+                  <a
+                    href="https://policies.google.com/technologies/ads"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    (How Google uses advertising cookies)
+                  </a>
+                </p>
+              </div>
             </div>
 
             <p className="text-gray-700 mt-4">
-              We choose third-party services that respect user privacy and do not engage in invasive tracking.
-              We do not share any user data with these services beyond what is automatically transmitted
-              through normal web requests.
+              When you load a page on Map With Radius, your browser may make requests directly to
+              the third parties above. We do not share additional user data with them beyond what is
+              transmitted through normal web requests and, for analytics and advertising, the
+              standard signals their scripts collect on your device.
             </p>
           </section>
 
@@ -415,18 +519,83 @@ export default function PrivacyPage() {
           <section id="advertising" className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Advertising</h2>
             <p className="text-gray-700 mb-3">
-              To support the free operation of our service, we may display advertisements. Our approach
-              to advertising prioritizes your privacy:
+              We display ads through Google AdSense to support the free operation of this service.
+              The disclosures in this section are required by AdSense&apos;s program policies and
+              describe how advertising cookies work on Map With Radius.
             </p>
+
+            <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">How third-party advertising cookies work here</h3>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
-              <li>We prefer privacy-respecting ad networks that do not rely on tracking</li>
-              <li>We do not sell or share your data with advertisers</li>
-              <li>We do not show targeted ads based on your browsing history</li>
-              <li>Ads are contextual (related to the page content) rather than behavioral (based on tracking)</li>
+              <li>
+                Third-party vendors, including Google, use cookies to serve ads based on your prior
+                visits to this website and other websites on the internet.
+              </li>
+              <li>
+                Google&apos;s use of advertising cookies enables it and its partners to serve ads to
+                you based on your visits to this site and/or other sites on the internet.
+              </li>
+              <li>
+                Some of these ads may be personalized based on inferred interests; others are
+                contextual (matched to page content) and do not rely on profiling.
+              </li>
+              <li>
+                We do not sell personal information, and we do not share user identifiers with
+                advertisers beyond the standard signals Google&apos;s ad code transmits.
+              </li>
             </ul>
-            <p className="text-gray-700">
-              If we use any advertising services, they will be listed in this policy with links to their
-              respective privacy policies.
+
+            <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">Your choices</h3>
+            <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
+              <li>
+                You may opt out of personalized advertising by visiting{' '}
+                <a
+                  href="https://www.google.com/settings/ads"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Google Ads Settings
+                </a>
+                . You will still see ads — they just won&apos;t be personalized to you.
+              </li>
+              <li>
+                You may opt out of a third-party vendor&apos;s use of cookies for personalized
+                advertising by visiting{' '}
+                <a
+                  href="https://www.aboutads.info/choices/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  www.aboutads.info
+                </a>{' '}
+                (US) or{' '}
+                <a
+                  href="https://www.youronlinechoices.eu/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  www.youronlinechoices.eu
+                </a>{' '}
+                (EU).
+              </li>
+              <li>
+                You can block third-party cookies in your browser settings, which will prevent most
+                ad-targeting cookies from being set in the first place.
+              </li>
+            </ul>
+
+            <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">EEA, UK, and Switzerland consent</h3>
+            <p className="text-gray-700 mb-3">
+              For visitors in the European Economic Area, the United Kingdom, and Switzerland,
+              advertising and analytics cookies are blocked by default through Google Consent
+              Mode v2 — non-essential storage is set to denied on every page load. We do not
+              currently display a consent banner, so that default-denied state persists for the
+              whole visit, and AdSense serves Limited (non-personalized) ads to these visitors.
+              We plan to add a Google-certified consent management platform (CMP) so visitors in
+              these regions can opt in to personalized advertising; until that CMP is in place,
+              there is no consent decision to record or change.
             </p>
           </section>
 
@@ -543,8 +712,14 @@ export default function PrivacyPage() {
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
               <li>
-                <strong>Legal basis:</strong> Our minimal data processing is based on legitimate interests
-                (operating and securing our website) and, where applicable, your consent.
+                <strong>Legal basis:</strong> Essential site operation and security rely on our
+                legitimate interests. For analytics and advertising, we run Google Consent Mode v2
+                with non-essential cookie categories default-denied for EEA/UK/Swiss visitors;
+                until a Google-certified consent management platform is added, that default-denied
+                state is maintained for the whole visit, so Google Analytics 4 runs in cookieless
+                mode and Google AdSense serves Limited (non-personalized) ads in these regions.
+                We plan to add a CMP so visitors can grant consent and opt in to personalized
+                analytics and advertising.
               </li>
               <li>
                 <strong>Data minimization:</strong> We collect only what is technically necessary to
@@ -567,34 +742,61 @@ export default function PrivacyPage() {
           </section>
 
           <section id="ccpa" className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-3">15. CCPA Compliance (California Residents)</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">15. CCPA/CPRA Compliance (California Residents)</h2>
             <p className="text-gray-700 mb-3">
-              For California residents, the California Consumer Privacy Act (CCPA) provides additional
-              rights regarding personal information:
+              For California residents, the California Consumer Privacy Act (as amended by the
+              California Privacy Rights Act) provides additional rights regarding personal information:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
               <li>
                 <strong>Right to know:</strong> You have the right to know what personal information
-                we collect, use, disclose, and sell. As stated throughout this policy, we do not
-                collect personal information.
+                we collect, use, disclose, sell, or share. We do not directly collect personal
+                information beyond what is described in Section 3. The information collected by our
+                third-party analytics and advertising providers is described in Section 5.
               </li>
               <li>
                 <strong>Right to delete:</strong> You have the right to request deletion of personal
-                information. Since we don't collect personal information, there is nothing to delete.
+                information. Because we don&apos;t hold personal information directly, deletion
+                requests for analytics or advertising identifiers should be directed to the relevant
+                third party (Google) using the opt-out and account-management tools they provide.
               </li>
               <li>
-                <strong>Right to opt-out:</strong> You have the right to opt-out of the sale of personal
-                information. We do not sell personal information.
+                <strong>Right to opt out of selling:</strong> We do not sell personal information.
               </li>
               <li>
-                <strong>Right to non-discrimination:</strong> We will not discriminate against you for
-                exercising your CCPA rights.
+                <strong>Right to opt out of sharing:</strong> Under CPRA, the use of advertising
+                cookies that enable cross-context behavioral advertising may constitute &ldquo;sharing&rdquo;.
+                You can opt out of personalized advertising at{' '}
+                <a
+                  href="https://www.google.com/settings/ads"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  Google Ads Settings
+                </a>
+                . We also honor the Global Privacy Control (GPC) browser signal: when GPC is present
+                on a request, we treat it as a signal not to share personal information for
+                cross-context behavioral advertising.
+              </li>
+              <li>
+                <strong>Right to correct:</strong> You have the right to request correction of
+                inaccurate personal information. We do not hold personal information directly.
+              </li>
+              <li>
+                <strong>Right to limit use of sensitive information:</strong> We do not collect
+                sensitive personal information as defined by CPRA.
+              </li>
+              <li>
+                <strong>Right to non-discrimination:</strong> We will not discriminate against you
+                for exercising your CCPA/CPRA rights.
               </li>
             </ul>
             <p className="text-gray-700">
-              <strong>Do Not Sell My Personal Information:</strong> We do not sell personal information
-              as defined by the CCPA. We have not sold personal information in the preceding 12 months
-              and do not intend to do so in the future.
+              <strong>Do Not Sell or Share My Personal Information:</strong> We do not sell personal
+              information. We participate in third-party advertising (Google AdSense) that may
+              involve &ldquo;sharing&rdquo; under CPRA; the opt-out is the Google Ads Settings link above and the
+              Global Privacy Control browser signal.
             </p>
           </section>
 

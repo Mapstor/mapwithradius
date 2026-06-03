@@ -122,7 +122,7 @@ export default function ContactPage() {
                 name: 'Do you store my data?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: "No. We don't require accounts, don't track your location, and don't store your map data. Everything happens in your browser. When you share a link, the coordinates are encoded directly in the URL — nothing is saved on our servers. See our Privacy Policy for details.",
+                  text: "We don't require accounts, don't track your location on our servers, and don't store your map data — everything happens in your browser. When you share a link, the coordinates are encoded directly in the URL, so nothing is saved on our side. The site does run Google Analytics and Google AdSense, which set cookies (subject to Google Consent Mode v2 in the EEA/UK/Switzerland). See our Privacy Policy for the full picture.",
                 },
               },
             ],
@@ -226,6 +226,10 @@ export default function ContactPage() {
               <li>Advertising inquiries</li>
               <li>Enterprise solutions</li>
             </ul>
+            <p className="text-sm text-gray-600 mt-3">
+              Email{' '}
+              <a href="mailto:info@mapwithradius.com" className="text-primary hover:underline">info@mapwithradius.com</a>
+            </p>
           </div>
         </div>
 
@@ -283,10 +287,12 @@ export default function ContactPage() {
             <div className="border border-gray-200 rounded-lg p-5">
               <h3 className="font-semibold text-gray-900 mb-2">Do you store my data?</h3>
               <p className="text-gray-600 text-sm">
-                No. We don't require accounts, don't track your location, and don't store your map data.
-                Everything happens in your browser. When you share a link, the coordinates are encoded
-                directly in the URL — nothing is saved on our servers. See our{' '}
-                <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> for details.
+                We don't require accounts, don't track your location on our servers, and don't
+                store your map data — everything happens in your browser. When you share a link,
+                the coordinates are encoded directly in the URL, so nothing is saved on our side.
+                The site does run Google Analytics and Google AdSense, which set cookies (subject
+                to Google Consent Mode v2 in the EEA/UK/Switzerland). See our{' '}
+                <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> for the full picture.
               </p>
             </div>
           </div>

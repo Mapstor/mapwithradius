@@ -4,7 +4,7 @@ import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'About Our Free Radius Map Tools',
-  description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
+  description: 'Map With Radius — free, privacy-respecting mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
   alternates: {
     canonical: '/about',
   },
@@ -12,13 +12,13 @@ export const metadata: Metadata = {
     type: 'website',
     url: 'https://mapwithradius.com/about',
     title: 'About Our Free Radius Map Tools',
-    description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
+    description: 'Map With Radius — free, privacy-respecting mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
     images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'About Our Free Radius Map Tools',
-    description: 'Map With Radius — free privacy-first mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
+    description: 'Map With Radius — free, privacy-respecting mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
     images: OG_IMAGES,
   },
 };
@@ -62,7 +62,7 @@ export default function AboutPage() {
             url: 'https://mapwithradius.com',
             logo: 'https://mapwithradius.com/apple-icon',
             description:
-              'Free, privacy-first radius mapping tools. Built by an avid traveler who uses maps a lot — no signup, no API keys, no usage limits. Powered by OpenStreetMap and Leaflet.',
+              'Free, privacy-respecting radius mapping tools. Built by an avid traveler who uses maps a lot — no signup, no API keys, no usage limits. Powered by OpenStreetMap and Leaflet.',
             sameAs: [],
             contactPoint: {
               '@type': 'ContactPoint',
@@ -388,32 +388,46 @@ export default function AboutPage() {
 
           {/* Privacy Commitment */}
           <section className="mb-12">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Our Privacy Commitment</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Privacy and how we keep this free</h2>
             <p className="text-gray-700 mb-4">
-              Privacy is not an afterthought for us — it's a core design principle. Here's what
-              makes Map With Radius different:
+              The tool side of this is privacy-respecting by design — the things that matter most for
+              a mapping tool (where you searched, where you are) never leave your browser:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
               <li>
-                <strong>No accounts:</strong> You never need to sign up, log in, or provide any
+                <strong>No accounts.</strong> You never need to sign up, log in, or provide any
                 personal information.
               </li>
               <li>
-                <strong>No location tracking:</strong> When you use "My Location," your coordinates
-                stay in your browser. We never see them.
+                <strong>Your location stays on your device.</strong> When you use &ldquo;My Location,&rdquo;
+                the GPS lookup happens in your browser. Coordinates never reach our servers.
               </li>
               <li>
-                <strong>No advertising trackers:</strong> We don't use Google Analytics, Facebook
-                Pixel, or any tracking cookies.
+                <strong>No map data stored.</strong> The circles you draw, the addresses you search,
+                and the maps you export aren&apos;t saved anywhere on our side. Shareable links
+                encode everything in the URL itself.
+              </li>
+            </ul>
+            <p className="text-gray-700 mb-4">
+              To keep the tool free with no usage limits, we do two things that any honest privacy
+              page should disclose:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
+              <li>
+                <strong>Aggregate analytics.</strong> We use Google Analytics 4 to understand which
+                pages are useful and where the tool is struggling. It uses cookies.
               </li>
               <li>
-                <strong>Shareable links contain everything:</strong> When you share a map, the URL
-                itself contains all the data. Nothing is stored on our servers.
+                <strong>Advertising.</strong> We display ads (including Google AdSense). Ad partners
+                may set cookies. For visitors in the EEA, UK, and Switzerland, Google Consent Mode
+                v2 keeps non-essential cookies default-denied, so AdSense serves Limited
+                (non-personalized) ads there; a consent management platform is planned.
               </li>
             </ul>
             <p className="text-gray-700">
-              Read our full <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> for
-              complete details.
+              Full details in the{' '}
+              <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> —
+              including the opt-out link for personalized advertising.
             </p>
           </section>
 
@@ -428,7 +442,7 @@ export default function AboutPage() {
               <li>An embeddable widget for other sites</li>
               <li>Area and path-distance measurement</li>
               <li>Better international address coverage in the geocoder</li>
-              <li>More city-specific landing pages — currently 12, headed for 30+</li>
+              <li>More city-specific landing pages — currently 25, headed for 50+</li>
             </ul>
             <p className="text-gray-700">
               Have something you&apos;d like to see?{' '}
