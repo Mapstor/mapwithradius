@@ -63,12 +63,21 @@ export default function RootLayout({
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
+            // EEA/UK/Switzerland — default-deny non-essential storage until a CMP is added
             gtag('consent', 'default', {
               ad_storage: 'denied',
               ad_user_data: 'denied',
               ad_personalization: 'denied',
               analytics_storage: 'denied',
+              region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','GB','CH','IS','LI','NO'],
               wait_for_update: 500,
+            });
+            // Rest of world — default-grant so GA4 records standard analytics and AdSense can serve personalized ads once approved
+            gtag('consent', 'default', {
+              ad_storage: 'granted',
+              ad_user_data: 'granted',
+              ad_personalization: 'granted',
+              analytics_storage: 'granted',
             });
           `}
         </Script>
