@@ -66,6 +66,66 @@ const useCases = [
   },
 ];
 
+const FAQS = [
+  {
+    question: "What's the difference between a radius and an isochrone?",
+    answer:
+      'A radius is a straight-line ("as the crow flies") distance from a point — a perfect circle. An isochrone shows how far you can actually travel in a given time, following real roads — usually an irregular shape. Use a radius for geometric questions ("what is within X distance of this point?") and an isochrone for travel questions ("where can I reach in 20 minutes?"). Our Drive Time Map and Walking Radius Map render isochrones; the main Radius Map renders straight-line circles.',
+  },
+  {
+    question: 'When should I use a straight-line radius vs a drive-time isochrone?',
+    answer:
+      'Straight-line for: site selection (the customer is here, the store is X miles away), service zones quoted by distance ("we deliver within 5 miles"), trade-area screening, and the first cut of a commute filter. Drive-time for: actual staffing decisions, delivery promise time (45 min vs 90 min), customer-experience modeling, and any geography where terrain or water blocks travel. A useful rule: if the answer would change once you account for traffic or geography, use drive-time.',
+  },
+  {
+    question: 'How do I share a radius map with my team or client?',
+    answer:
+      'Three ways. (1) Copy link — a URL with the radius encoded; recipients open it and see the exact same map. (2) Download PNG — a static screenshot for decks, PDFs, or email. (3) Export KML — a structured file your MLS, CRM, ArcGIS, Google Earth, or QGIS can import. All three options are on every tool on this site, and everything happens client-side: no account, no server-stored links.',
+  },
+  {
+    question: 'Can I export radius data into my CRM, MLS, or GIS tool?',
+    answer:
+      'KML is your friend. KML files are the de-facto exchange format for radius and polygon data — readable by Google Earth, QGIS, ArcGIS, most CRM systems with mapping plug-ins, and major real-estate MLS systems. Drop the KML file in and the radius appears as a circular boundary or filter. For programmatic integrations, the share-link URL contains the radius as query parameters that any tool can parse.',
+  },
+  {
+    question: "How do I pick a radius for a use case that isn't on this list?",
+    answer:
+      "Start with the question, not a round number. If you can articulate 'people within X distance of Y who do Z,' then X is your radius. Cross-check by drawing it on the map and asking whether the circle contains the right things. Adjust until it does. When data is available (POS records, order history, customer addresses), look at the customer-distance distribution — the radius that captures 70% of activity is your real primary zone, regardless of any rule of thumb.",
+  },
+  {
+    question: "What's the standard for trade-area analysis?",
+    answer:
+      "The classic primary trade area captures ~70% of customers; the secondary picks up another ~20%. Reilly's Law (1929) and Huff's Model (1964) are the academic frameworks, but in practice most operators define the radius based on observed customer-distance distribution from their own data. If you don't have that yet, start with 1-3 miles for neighborhood retail, 10-30 miles for destination retail (furniture, big-box), and revise from real data after a few months of operation.",
+  },
+  {
+    question: 'How do I handle radii that cross water, mountains, or other barriers?',
+    answer:
+      'The radius is geometrically correct ("within X distance of point Y"), but it can mislead for travel questions because half the circle may be unreachable. Two fixes: (1) Switch to a drive-time isochrone, which respects the road network. (2) Use the city pages — each documents the specific geographic quirks (water, mountains, density gradients) and the typical adjustment for that city. Coastal cities, mountain cities, and dense urban grids each have a different right answer.',
+  },
+  {
+    question: 'Is there an industry standard for delivery or service radius?',
+    answer:
+      'Not universal — it depends on the industry. Food delivery typically uses 3-5 mi or 8-12 minute drive. Locksmiths and emergency-response services use 15-25 mi. HVAC, plumbing, and home services use 25-50 mi for non-urgent jobs. Restaurants on Uber Eats / DoorDash default to a 3-7 mi radius depending on density. The right number is the one your team can actually staff at peak demand, not the one a competitor advertises.',
+  },
+];
+
+const QUICK_REFERENCE_ROWS: Array<{
+  job: string;
+  radius: string;
+  tool: { label: string; href: string };
+}> = [
+  { job: 'Real estate comparable sales (1 mi appraiser standard)', radius: '1 mi', tool: { label: 'Radius Map', href: '/' } },
+  { job: 'Commute filter (real driving time)', radius: '20-30 min', tool: { label: 'Drive Time Map', href: '/drive-time-map' } },
+  { job: 'Food delivery zone', radius: '3-5 mi', tool: { label: 'Radius Map', href: '/' } },
+  { job: 'Walking distance (hotel block, urban events)', radius: '0.5 mi / 10-min walk', tool: { label: 'Walking Radius Map', href: '/walking-radius-map' } },
+  { job: 'Retail trade area (neighborhood)', radius: '1-3 mi', tool: { label: 'Radius Map', href: '/' } },
+  { job: 'Retail trade area (destination retailer)', radius: '10-30 mi', tool: { label: 'Radius Map', href: '/' } },
+  { job: 'Service-area zip code list (GBP, direct mail)', radius: 'per zone', tool: { label: 'Zip Code Radius', href: '/zip-code-radius' } },
+  { job: 'Geofenced display advertising', radius: '0.1-0.5 mi', tool: { label: 'Geofence Map', href: '/geofence-map' } },
+  { job: 'Sales territory (dense / urban)', radius: '15-25 mi', tool: { label: 'Drive Time Map', href: '/drive-time-map' } },
+  { job: 'Sales territory (rural / sparse)', radius: '50-100 mi', tool: { label: 'Radius Map', href: '/' } },
+];
+
 export default function UseCasesPage() {
   return (
     <>
@@ -103,11 +163,27 @@ export default function UseCasesPage() {
             '@type': 'CollectionPage',
             name: 'Radius Map Use Cases',
             description:
-              'Concrete examples of how different professions use radius maps to make decisions.',
+              'How real estate agents, delivery teams, retailers, event planners, marketers, and sales managers use radius maps. Worked examples in 25 cities.',
             url: 'https://mapwithradius.com/use-cases',
             isPartOf: {
               '@id': 'https://mapwithradius.com/#website',
             },
+          }),
+        }}
+      />
+
+      {/* FAQPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: FAQS.map((f) => ({
+              '@type': 'Question',
+              name: f.question,
+              acceptedAnswer: { '@type': 'Answer', text: f.answer },
+            })),
           }),
         }}
       />
@@ -125,13 +201,34 @@ export default function UseCasesPage() {
           <h1 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-4">
             Radius Map Use Cases
           </h1>
-          <p className="text-lg text-slate-600 mb-6">
+          <p className="text-lg text-slate-700 leading-relaxed mb-4">
             A radius circle on a map sounds simple, but the same primitive answers very
-            different questions depending on the job. Here is how six fields actually use
-            them — with concrete examples, common pitfalls, and which Map With Radius tool
-            fits each scenario.
+            different questions depending on the job. This page covers six fields that use
+            radius maps daily — with concrete examples, common pitfalls, and which Map With
+            Radius tool fits each scenario.
           </p>
-          <nav aria-label="Use cases" className="flex flex-wrap gap-2 pt-4 border-t border-slate-200">
+          <p className="text-slate-700 leading-relaxed mb-6">
+            If you&apos;re here to pick a number quickly, the quick-reference table below
+            covers the typical radius and recommended tool for ten common jobs. For depth,
+            read the detailed walkthroughs that follow.
+          </p>
+
+          <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200">
+            <div>
+              <div className="text-3xl font-bold text-slate-900">{useCases.length}</div>
+              <div className="text-sm text-slate-600">industries covered</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-slate-900">{CITIES.length}</div>
+              <div className="text-sm text-slate-600">city walkthroughs</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-slate-900">{FAQS.length}</div>
+              <div className="text-sm text-slate-600">common questions</div>
+            </div>
+          </div>
+
+          <nav aria-label="Use cases" className="flex flex-wrap gap-2 pt-6 mt-6 border-t border-slate-200">
             {useCases.map((u) => (
               <a
                 key={u.id}
@@ -145,7 +242,47 @@ export default function UseCasesPage() {
         </div>
       </section>
 
-      <article className="section-white pb-16">
+      {/* Quick reference table */}
+      <section className="section-gray py-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-3">Quick reference: which radius for which job</h2>
+          <p className="text-slate-700 mb-6 leading-relaxed">
+            Scan the table for the typical radius and recommended tool by job. Skip to the
+            detailed walkthroughs below for context, pitfalls, and city-specific examples.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="styled-table">
+              <thead>
+                <tr>
+                  <th>Job</th>
+                  <th>Typical radius</th>
+                  <th>Best tool</th>
+                </tr>
+              </thead>
+              <tbody>
+                {QUICK_REFERENCE_ROWS.map((row) => (
+                  <tr key={row.job}>
+                    <td>{row.job}</td>
+                    <td className="whitespace-nowrap">{row.radius}</td>
+                    <td>
+                      <Link href={row.tool.href} className="content-link">
+                        {row.tool.label}
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-xs text-slate-500 italic mt-4">
+            Ranges are typical starting points — calibrate against your own data
+            (customer-distance distribution, on-time delivery rates, conversion rates) when
+            possible.
+          </p>
+        </div>
+      </section>
+
+      <article className="section-white pb-16 pt-12 sm:pt-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
 
           {/* Real Estate */}
@@ -412,33 +549,88 @@ export default function UseCasesPage() {
         </div>
       </article>
 
-      {/* Worked examples by city */}
-      <section className="section-white py-12 border-t border-slate-200">
+      {/* How to choose the right radius */}
+      <section className="section-gray py-12 sm:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">
-            Worked examples by city
-          </h2>
-          <p className="text-slate-600 mb-6">
+          <h2 className="section-heading mb-6">How to choose the right radius for your use case</h2>
+          <p className="text-slate-700 mb-6 leading-relaxed">
+            The right number is rarely &ldquo;5 miles&rdquo; or &ldquo;10 km&rdquo; — it depends on
+            the question you&apos;re asking. Three quick rules cut through most of the
+            decision:
+          </p>
+          <ol className="list-decimal list-outside pl-6 space-y-4 text-slate-700 mb-6">
+            <li>
+              <strong>Start with the question, not a round number.</strong> &ldquo;People
+              within X distance of Y who do Z&rdquo; — X falls out of Z. A 30-minute commute
+              is different from a 30-mile commute. Decide which constraint matters, then map.
+            </li>
+            <li>
+              <strong>Straight-line for area, time-based for travel.</strong> Use a radius
+              when the question is &ldquo;what fits inside this area?&rdquo; (trade area,
+              comps, geofence). Use an isochrone when the question is &ldquo;how far can I
+              travel?&rdquo; (commute, service response, delivery promise).
+            </li>
+            <li>
+              <strong>Check the result visually.</strong> Draw the radius and ask: does the
+              circle contain the things that belong (and exclude the things that don&apos;t)?
+              If a 5-mile radius around your store includes a competitor&apos;s parking lot,
+              the radius isn&apos;t wrong — your trade-area model is.
+            </li>
+          </ol>
+          <p className="text-slate-700 leading-relaxed mb-6">
+            Cross-check with data when possible. If you have order or POS records, plot the
+            customer-distance distribution. The radius that captures 70% of activity is your
+            real primary zone — regardless of what the rule of thumb says. If you don&apos;t
+            have data yet, start with the table values above and revise after one quarter of
+            real operations.
+          </p>
+          <p className="text-slate-700 leading-relaxed">
+            And remember the city pages. A 10-mile radius isn&apos;t the same job in
+            Manhattan as in Houston as in central London. Each{' '}
+            <Link href="/radius-map" className="content-link">city radius map page</Link>{' '}
+            documents the local quirks (water, mountains, density, transit) that change how
+            a radius behaves there.
+          </p>
+        </div>
+      </section>
+
+      {/* Worked examples by city — RICH CARDS */}
+      <section className="section-white py-12 sm:py-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-3">Worked examples by city</h2>
+          <p className="text-slate-700 mb-8 max-w-2xl">
             Each city page applies the use cases above to a specific local geography —
             real-estate comp radii, delivery isochrones, trade-area math, transit-aware
             commute filters — calibrated to that city&apos;s scale and quirks.
           </p>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {CITIES.map((c) => (
               <Link
                 key={c.slug}
                 href={`/radius-map/${c.slug}`}
-                className="block p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                className="block bg-white rounded-xl border border-slate-200 p-5 hover:border-accent hover:shadow-md transition-all"
               >
-                <div className="font-semibold text-slate-900">{c.name}</div>
-                <div className="text-sm text-slate-600">
-                  {c.country} · default {c.defaultRadius}{' '}
-                  {c.defaultUnit === 'miles' ? 'mi' : 'km'}
+                <div className="flex items-baseline justify-between gap-2 mb-2">
+                  <h3 className="text-xl font-bold text-slate-900">{c.name}</h3>
+                  <span className="text-xs text-slate-500 uppercase tracking-wide whitespace-nowrap">
+                    {c.country}
+                  </span>
+                </div>
+                <p className="text-sm text-slate-600 italic mb-3 line-clamp-4">{c.fact}</p>
+                <div className="text-sm text-slate-500 border-t border-slate-100 pt-3 mt-3">
+                  <div>
+                    Default:{' '}
+                    <strong className="text-slate-900">
+                      {c.defaultRadius} {c.defaultUnit === 'miles' ? 'mi' : 'km'}
+                    </strong>{' '}
+                    from {c.centralLandmark}
+                  </div>
+                  <div className="mt-1 text-xs">Population: {c.populationLabel}</div>
                 </div>
               </Link>
             ))}
           </div>
-          <p className="text-sm text-slate-500 mt-6">
+          <p className="text-sm text-slate-500 mt-8 text-center">
             <Link href="/radius-map" className="content-link">
               See the full city radius map index &rarr;
             </Link>
@@ -446,10 +638,198 @@ export default function UseCasesPage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section className="section-gray py-12 sm:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-6">Frequently asked questions</h2>
+          <div className="space-y-3">
+            {FAQS.map((f) => (
+              <details key={f.question} className="faq-card">
+                <summary>
+                  {f.question}
+                  <svg
+                    className="w-5 h-5 faq-chevron"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <div className="faq-content">{f.answer}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Resources & references */}
+      <section className="section-white py-12 sm:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-6">Resources and references</h2>
+          <p className="text-slate-700 leading-relaxed mb-6">
+            Industry methodology and academic sources behind the use cases above.
+          </p>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="bg-slate-50 p-5 rounded-lg">
+              <h3 className="font-bold text-slate-900 mb-2">Trade-area methodology</h3>
+              <ul className="space-y-2 text-sm text-slate-700">
+                <li>
+                  <a
+                    href="https://en.wikipedia.org/wiki/Reilly%27s_law_of_retail_gravitation"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Reilly&apos;s Law of Retail Gravitation
+                  </a>{' '}
+                  — 1929 foundational trade-area math.
+                </li>
+                <li>
+                  <a
+                    href="https://en.wikipedia.org/wiki/Huff_model"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Huff Model
+                  </a>{' '}
+                  (David Huff, 1964) — gravity-based probabilistic trade-area estimation.
+                </li>
+                <li>
+                  <a
+                    href="https://www.icsc.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    ICSC
+                  </a>{' '}
+                  — International Council of Shopping Centers; site-selection standards.
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 p-5 rounded-lg">
+              <h3 className="font-bold text-slate-900 mb-2">Demographic &amp; overlay data</h3>
+              <ul className="space-y-2 text-sm text-slate-700">
+                <li>
+                  <a
+                    href="https://www.census.gov/data.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    US Census Bureau
+                  </a>{' '}
+                  — population, housing, demographic counts by geography.
+                </li>
+                <li>
+                  <a
+                    href="https://ec.europa.eu/eurostat"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Eurostat
+                  </a>{' '}
+                  — EU statistical office, equivalent data for European cities.
+                </li>
+                <li>
+                  <a
+                    href="https://www.statcan.gc.ca/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Statistics Canada
+                  </a>{' '}
+                  — Canadian census and economic data.
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 p-5 rounded-lg">
+              <h3 className="font-bold text-slate-900 mb-2">Geographic methodology</h3>
+              <ul className="space-y-2 text-sm text-slate-700">
+                <li>
+                  <a
+                    href="https://en.wikipedia.org/wiki/Haversine_formula"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Haversine formula
+                  </a>{' '}
+                  — math used to compute spherical distances on this site.
+                </li>
+                <li>
+                  <a
+                    href="https://en.wikipedia.org/wiki/15-minute_city"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    15-minute city
+                  </a>{' '}
+                  — Carlos Moreno&apos;s chrono-urbanism framework, foundation for
+                  walking-distance planning.
+                </li>
+                <li>
+                  <a
+                    href="https://www.walkscore.com/methodology.shtml"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Walk Score methodology
+                  </a>{' '}
+                  — distance-decay weighting and amenity-catchment standards.
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 p-5 rounded-lg">
+              <h3 className="font-bold text-slate-900 mb-2">Local marketing standards</h3>
+              <ul className="space-y-2 text-sm text-slate-700">
+                <li>
+                  <a
+                    href="https://support.google.com/business/answer/9157481"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Google Business Profile — Service Areas
+                  </a>{' '}
+                  — official guidance for local SEO setup.
+                </li>
+                <li>
+                  <a
+                    href="https://iabtechlab.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    IAB Tech Lab
+                  </a>{' '}
+                  — industry standards for geo-targeted advertising and geofencing.
+                </li>
+                <li>
+                  <Link href="/glossary" className="content-link">
+                    Map &amp; radius glossary
+                  </Link>{' '}
+                  — definitions of isochrone, geofence, trade area, KML, and related terms.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Related Tools */}
       <section className="section-gray py-12">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-slate-900 mb-6">Pick the Tool</h2>
+          <h2 className="text-2xl font-bold text-slate-900 mb-6">Pick the tool</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Link
               href="/"

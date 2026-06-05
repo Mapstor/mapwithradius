@@ -165,10 +165,14 @@ export default function MapDevelopersAlternativePage() {
           <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
             MapDevelopers Alternative — Modern Radius Maps with KML Export
           </h1>
-          <p className="text-lg text-slate-600">
+          <p className="text-lg text-slate-600 mb-4">
             MapDevelopers&apos; Draw Circle Tool is one of the most-used radius tools online. It is
             free and fast, with no KML or PNG export and is built on Google Maps. Here&apos;s how
             Map With Radius compares.
+          </p>
+          <p className="text-sm text-slate-500">
+            By the Map With Radius editorial team · Last reviewed 29 May 2026 · Based on
+            MapDevelopers&apos; public tool as of May 2026
           </p>
         </header>
 
@@ -318,6 +322,66 @@ export default function MapDevelopersAlternativePage() {
           </div>
         </section>
 
+        {/* Technical deep-dive: Google Maps API tier exposure */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
+            What it means that MapDevelopers runs on the Google Maps API
+          </h2>
+          <div className="prose prose-slate max-w-none">
+            <p className="text-slate-700 leading-relaxed mb-4">
+              MapDevelopers&apos; Draw Circle Tool renders its base map using the Google Maps
+              JavaScript API. For a user just sketching a quick radius, that&apos;s invisible — the
+              map loads, you draw a circle. For anyone considering embedding, scripting, or
+              building a workflow on top, it&apos;s a structural fact worth understanding.
+            </p>
+            <p className="text-slate-700 leading-relaxed mb-4">
+              Google&apos;s 2018 pricing change moved the Google Maps API from a generous free tier
+              to a pay-per-load model with $200/month of free credit (covers roughly 28,000 map
+              loads). MapDevelopers absorbs that cost on the tool page and offsets it with display
+              advertising. The implications for users:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 text-slate-700 leading-relaxed mb-4">
+              <li>
+                <strong>You can&apos;t embed the tool yourself for free.</strong> If you wanted to
+                put a radius tool in an internal company app or a public-facing site, replicating
+                MapDevelopers&apos; approach means provisioning a Google Cloud project, billing
+                account, and API key — and absorbing the per-load cost above 28k/month yourself.
+              </li>
+              <li>
+                <strong>Map style and POI labels follow Google&apos;s product roadmap.</strong> When
+                Google changes how restaurants or transit stops are displayed, MapDevelopers
+                changes with it. That&apos;s sometimes welcome (cleaner labels), sometimes not
+                (removed features, deprecated map styles).
+              </li>
+              <li>
+                <strong>Terms of service follow Google&apos;s.</strong> Saving Google Maps map
+                tiles offline, bulk-scraping, or commercial redistribution of derived imagery is
+                restricted by Google&apos;s Maps Platform terms. The same applies to anything you
+                build on top of MapDevelopers.
+              </li>
+              <li>
+                <strong>The data is Google&apos;s.</strong> Place names, road geometry, and POI
+                listings are Google&apos;s proprietary dataset. That&apos;s often the most
+                accurate option for North American businesses; it&apos;s sometimes thin for
+                informal settlements, recent road changes in non-English-speaking markets, or
+                niche POIs.
+              </li>
+            </ul>
+            <p className="text-slate-700 leading-relaxed mb-4">
+              Map With Radius runs on OpenStreetMap via Leaflet. OSM is community-maintained and
+              free to use commercially, with attribution. For embedding, you can iframe the tool
+              into another site without provisioning anything. For accuracy, OSM matches Google
+              closely in dense Western markets and sometimes outperforms it in regions where the
+              local OSM community is active (much of Europe, parts of Asia and Africa).
+            </p>
+            <p className="text-slate-700 leading-relaxed">
+              None of this is an argument that one is universally better. It&apos;s a structural
+              tradeoff: Google&apos;s dataset and visual style versus OSM&apos;s openness and
+              embeddability. Pick the one whose constraints don&apos;t bind on your use case.
+            </p>
+          </div>
+        </section>
+
         {/* Section 6: When competitor wins */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
@@ -436,21 +500,37 @@ export default function MapDevelopersAlternativePage() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="bg-slate-900 text-white rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-bold mb-3">Try Map With Radius</h2>
-          <p className="text-slate-300 mb-6">
-            Modern, mobile-first, no Google Maps dependency. Export KML and PNG for free.
-          </p>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-slate-900 font-medium rounded-lg hover:bg-slate-100 transition-colors"
-          >
-            Open the radius tool
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
+        {/* Side-by-side decision summary — different visual from other alternative pages */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
+            Choose by use case
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="rounded-xl border-2 border-slate-200 p-6">
+              <h3 className="font-semibold text-slate-900 mb-3">Choose MapDevelopers if…</h3>
+              <ul className="list-disc pl-5 space-y-2 text-slate-700 text-sm">
+                <li>You want the Google Maps visual style (satellite, Street View, Google POI labels)</li>
+                <li>You&apos;re already on mapdevelopers.com using their geocoding or zip-code tools</li>
+                <li>You don&apos;t need KML or PNG export</li>
+                <li>You&apos;re using a desktop browser and mobile UX isn&apos;t a priority</li>
+              </ul>
+            </div>
+            <div className="rounded-xl border-2 border-accent p-6 bg-slate-50">
+              <h3 className="font-semibold text-slate-900 mb-3">Choose Map With Radius if…</h3>
+              <ul className="list-disc pl-5 space-y-2 text-slate-700 text-sm">
+                <li>You need KML or PNG export for GIS, presentations, or documentation</li>
+                <li>You&apos;re drawing on a phone or tablet (touch-optimised controls)</li>
+                <li>You want to embed the tool elsewhere without provisioning a Google Cloud API key</li>
+                <li>You also need drive-time, walking, or zip-code radius analysis from one site</li>
+              </ul>
+              <Link
+                href="/"
+                className="inline-flex items-center gap-1 mt-4 text-sm font-medium content-link"
+              >
+                Open the radius tool →
+              </Link>
+            </div>
+          </div>
         </section>
 
         {/* Footer link row */}

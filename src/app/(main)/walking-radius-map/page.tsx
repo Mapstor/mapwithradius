@@ -115,42 +115,42 @@ export default function WalkingRadiusMapPage() {
       {/* Hero Section with Tool */}
       <section className="bg-slate-50">
         {/* Hero header band */}
-        <div className="bg-primary-900 py-6">
+        <div className="bg-primary-900 py-3 lg:py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">Walking & Cycling Radius Map</h1>
-            <p className="text-slate-300">
+            <p className="text-slate-300 hidden lg:block">
               See how far you can actually walk or cycle in a given time — based on real roads and paths.
             </p>
           </div>
         </div>
 
         {/* Map section - defaults to pedestrian mode, no driving option */}
-        <div className="max-w-[1600px] mx-auto">
+        <div className="max-w-[1600px] mx-auto map-tool-page">
           <DriveTimeMap defaultMode="pedestrian" showDrivingOption={false} />
         </div>
       </section>
 
-      {/* How to Use Section */}
-      <section className="section-white py-12 lg:py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-heading text-center mb-8">How to Use the Walking Radius Map</h2>
-          <div className="grid md:grid-cols-5 gap-4">
-            {[
-              { step: 1, title: 'Enter Location', desc: 'Search for any address or click on the map' },
-              { step: 2, title: 'Choose Mode', desc: 'Select walking or cycling travel' },
-              { step: 3, title: 'Set Time', desc: 'Pick 5, 10, 15, 20, or 30 minutes' },
-              { step: 4, title: 'View Area', desc: 'See the reachable zone polygon' },
-              { step: 5, title: 'Explore', desc: 'Check what\'s within your range' },
-            ].map(({ step, title, desc }) => (
-              <div key={step} className="text-center">
-                <div className="w-12 h-12 rounded-full bg-accent text-white text-xl font-bold flex items-center justify-center mx-auto mb-3">
-                  {step}
-                </div>
-                <h3 className="font-semibold text-slate-900 mb-1">{title}</h3>
-                <p className="text-sm text-slate-600">{desc}</p>
-              </div>
-            ))}
+      {/* Byline + intro */}
+      <section className="section-white py-10 lg:py-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-sm text-slate-500 mb-6 pb-6 border-b border-slate-200">
+            By the Map With Radius editorial team · Last reviewed 29 May 2026
           </div>
+          <h2 className="section-heading mb-4">Why pedestrian and cycling isochrones are different</h2>
+          <p className="text-slate-700 mb-4">
+            A walking or cycling isochrone is not just a slower drive-time map. The way a
+            pedestrian or cyclist experiences distance is governed by a different set of variables —
+            sidewalk completeness, signal-crossing waits, hill grade, perceived safety, and the
+            walker&apos;s own physical profile. A 15-minute walking radius drawn naively as
+            &ldquo;5&nbsp;km/h × 15&nbsp;min = 1.25&nbsp;km&rdquo; overstates reachable area in most
+            real cities by 20&ndash;40%. This page is the reference material for using the tool
+            above with that nuance.
+          </p>
+          <p className="text-slate-700">
+            For straight-line radii or driving isochrones, see the{' '}
+            <Link href="/" className="content-link">main radius tool</Link>{' '}
+            or <Link href="/drive-time-map" className="content-link">drive time map</Link>.
+          </p>
         </div>
       </section>
 
@@ -250,36 +250,180 @@ export default function WalkingRadiusMapPage() {
 
           {/* How Walking Distance Is Calculated */}
           <div className="mb-12">
-            <h2 className="section-heading mb-6">How Walking Distance Is Calculated</h2>
+            <h2 className="section-heading mb-6">How walking distance is calculated</h2>
             <p className="text-slate-700 mb-4">
-              The tool uses a default walking speed of 5 km/h (3.1 mph), which is a moderate pace for an
-              average adult. It routes along pedestrian-accessible paths from OpenStreetMap data, excluding
-              highways, motorways, and roads without sidewalks where applicable.
+              The tool uses a default walking speed of 5&nbsp;km/h (3.1&nbsp;mph) and routes along
+              pedestrian-accessible paths from OpenStreetMap data — sidewalks, pedestrian streets,
+              shared paths, and quiet residential streets where sidewalks are implied. It excludes
+              motorways, highway shoulders, and roads explicitly tagged as foot-prohibited.
             </p>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-amber-800 text-sm">
-              <strong>Factors that affect your actual walking radius:</strong>
-              <ul className="mt-2 space-y-1 list-disc list-inside">
-                <li>Terrain and elevation changes</li>
-                <li>Traffic signals and crosswalks (tool does not account for wait times)</li>
-                <li>Weather conditions</li>
-                <li>Personal walking speed and fitness level</li>
-                <li>Carrying loads (groceries, backpack, etc.)</li>
-              </ul>
+            <p className="text-slate-700 mb-4">
+              That 5&nbsp;km/h figure is the average from multiple international studies and is the
+              speed embedded in most planning standards (the 15-minute city framework, the EU&apos;s
+              urban accessibility metrics, the Japanese 80&nbsp;m/min property-listing pace). But
+              the actual distance a real pedestrian covers in 15 minutes deviates from the
+              theoretical 1.25&nbsp;km for at least five reasons that the tool can&apos;t model
+              from OSM data alone:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 text-slate-700 mb-4">
+              <li>
+                <strong>Signal-crossing wait times.</strong> Manhattan&apos;s average pedestrian
+                wait at a signalised crossing is 22&nbsp;seconds; central Tokyo&apos;s is
+                15&nbsp;seconds; a sprawled US suburb with a single pedestrian-actuated signal
+                can hit 90&nbsp;seconds. Across a 15-minute walk that&apos;s 5&ndash;10%
+                effective time loss.
+              </li>
+              <li>
+                <strong>Sidewalk completeness.</strong> OSM tags
+                <code> sidewalk=*</code> when known, but coverage is uneven. In US car-oriented
+                suburbs, missing-sidewalk segments force long detours; in dense European centres
+                the network is effectively complete and the isochrone matches reality.
+              </li>
+              <li>
+                <strong>Hill grade and Tobler&apos;s hiking function.</strong> Tobler&apos;s
+                empirical function gives walking speed as 6·exp(&minus;3.5·|slope&nbsp;+&nbsp;0.05|)
+                km/h. A 5% incline drops speed from 5&nbsp;km/h to ~3.5&nbsp;km/h; 10% drops it to
+                ~2.5&nbsp;km/h. San Francisco isochrones drawn at flat 5&nbsp;km/h overstate reach
+                up Russian Hill by 30&nbsp;m for every metre climbed.
+              </li>
+              <li>
+                <strong>Perceived safety detours.</strong> Real pedestrians avoid unlit
+                underpasses, freeway underbridges, and high-traffic arterials at night, even if
+                they&apos;re technically walkable. Active Living Research surveys consistently
+                show real route choice diverges 10&ndash;25% longer than shortest-path during
+                evening hours.
+              </li>
+              <li>
+                <strong>Personal speed.</strong> Studies of crowd-level pedestrian speed (Knoblauch
+                1996, TRB) find the 15th-percentile walker is at 1.0&nbsp;m/s (3.6&nbsp;km/h) while
+                the 85th-percentile is at 1.5&nbsp;m/s (5.4&nbsp;km/h). The 5&nbsp;km/h default is
+                approximately the mean, not the lower bound.
+              </li>
+            </ul>
+            <p className="text-slate-700">
+              Practical implication: a 15-minute walking circle drawn here is best read as
+              &ldquo;the area a healthy adult can reach in 15 minutes on a complete sidewalk
+              network with no signals or hills.&rdquo; In real cities, subtract 20&ndash;40%
+              from the radius value for a defensible accessibility estimate, especially for
+              service-area or school-zone planning.
+            </p>
+          </div>
+
+          {/* Pedestrian profiles */}
+          <div className="mb-12">
+            <h2 className="section-heading mb-6">Pedestrian profiles: not every walker is &ldquo;average&rdquo;</h2>
+            <p className="text-slate-700 mb-4">
+              The 5&nbsp;km/h default is the working assumption for healthy adult walkers. For
+              accessibility, public-health, or school-catchment analysis, you usually want to model
+              the slower walker, not the average one — because policy decisions made at the
+              average speed exclude the people who most need the access. Reference values from the
+              transportation-engineering and gerontology literature:
+            </p>
+            <div className="overflow-x-auto">
+              <table className="styled-table">
+                <thead>
+                  <tr>
+                    <th>Walker profile</th>
+                    <th>Typical speed</th>
+                    <th>15-min reach</th>
+                    <th>Source / context</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Healthy adult (default)</td>
+                    <td>5.0 km/h</td>
+                    <td>1.25 km</td>
+                    <td>WHO / 15-minute city</td>
+                  </tr>
+                  <tr>
+                    <td>Older adult, 65+</td>
+                    <td>3.6 km/h</td>
+                    <td>900 m</td>
+                    <td>Gerontology literature</td>
+                  </tr>
+                  <tr>
+                    <td>Adult with stroller</td>
+                    <td>3.8 km/h</td>
+                    <td>950 m</td>
+                    <td>Family-mobility studies</td>
+                  </tr>
+                  <tr>
+                    <td>Child 5&ndash;10 with adult</td>
+                    <td>3.2 km/h</td>
+                    <td>800 m</td>
+                    <td>Safe Routes to School</td>
+                  </tr>
+                  <tr>
+                    <td>Manual wheelchair user, flat</td>
+                    <td>3.6&ndash;5.4 km/h</td>
+                    <td>900 m&ndash;1.35 km</td>
+                    <td>Disability-mobility research</td>
+                  </tr>
+                  <tr>
+                    <td>Adult with mobility aid (cane)</td>
+                    <td>2.5&ndash;3.5 km/h</td>
+                    <td>625&ndash;875 m</td>
+                    <td>Pedestrian Signal Timing Guide (FHWA)</td>
+                  </tr>
+                  <tr>
+                    <td>Brisk fitness walk</td>
+                    <td>6.4 km/h</td>
+                    <td>1.6 km</td>
+                    <td>Cardiovascular target zone</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
+            <p className="text-slate-700 mt-4">
+              If you&apos;re designing for inclusive accessibility, use 3.6&nbsp;km/h as the
+              planning value, not 5. The 0.9&nbsp;km/15&nbsp;min reach should be the standard
+              against which you draw school catchments, senior-housing accessibility, and
+              health-clinic walkable zones.
+            </p>
           </div>
 
           {/* How Cycling Distance Is Calculated */}
           <div className="mb-12">
-            <h2 className="section-heading mb-6">How Cycling Distance Is Calculated</h2>
+            <h2 className="section-heading mb-6">How cycling distance is calculated</h2>
             <p className="text-slate-700 mb-4">
-              The cycling mode uses a default speed of 15 km/h (9.3 mph) and prioritizes bike lanes,
-              cycling paths, and bike-friendly roads. It avoids highways and roads typically closed to
-              cyclists.
+              The cycling mode uses a default speed of 15&nbsp;km/h (9.3&nbsp;mph) and prefers
+              OSM-tagged cycle infrastructure: protected lanes, cycle paths, bike-friendly
+              residential streets. It avoids motorways and routes the cyclist around them rather
+              than through them.
             </p>
+            <p className="text-slate-700 mb-4">
+              15&nbsp;km/h is the cruising pace of an unhurried commuter on a hybrid or city
+              bike. The cycling-speed literature shows a much wider distribution than walking,
+              driven by three factors:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 text-slate-700 mb-4">
+              <li>
+                <strong>Equipment.</strong> A heavy Dutch omafiets carrying groceries cruises at
+                12&nbsp;km/h; a road bike with clipless pedals on the same route does 25&nbsp;km/h.
+                E-bikes with pedal assist (legal limit 25&nbsp;km/h EU / 20&nbsp;mph US) effectively
+                let any rider hit the upper end. The default isochrone is approximately the speed
+                of a Class&nbsp;1 e-bike, which is becoming the modal urban bike in 2026 fleets.
+              </li>
+              <li>
+                <strong>Infrastructure quality.</strong> Protected lanes raise average speed by
+                20&ndash;30% because cyclists don&apos;t need to slow at every intersection.
+                Painted-only bike lanes provide negligible speed benefit; sharrows provide none.
+                Copenhagen and Amsterdam consistently model cyclist speed at 18&ndash;20&nbsp;km/h;
+                US cities without protected infrastructure assume 13&ndash;15&nbsp;km/h.
+              </li>
+              <li>
+                <strong>Gradient sensitivity.</strong> Cyclists lose more time to climbs than
+                walkers (in relative terms). A 4% grade roughly halves a casual cyclist&apos;s
+                speed; the same grade drops a walker by ~30%. For hilly cities like San Francisco,
+                Lisbon, or Wellington, the cycling isochrone you draw at flat 15&nbsp;km/h is
+                meaningfully optimistic.
+              </li>
+            </ul>
             <p className="text-slate-700">
-              This speed represents a comfortable cruising pace for most recreational cyclists. Commuters on
-              road bikes may travel faster (20-25 km/h), while those on heavy city bikes with cargo may be
-              slower (10-12 km/h).
+              For analyses that need to distinguish commuter pace from e-bike pace from
+              recreational pace, model three different speeds (12, 18, 25&nbsp;km/h) and compare
+              their isochrones rather than relying on a single default.
             </p>
           </div>
         </div>
@@ -490,6 +634,143 @@ export default function WalkingRadiusMapPage() {
               ))}
             </div>
           </div>
+
+          <p className="text-slate-700 mt-6 mb-3">
+            The framework has critics worth taking seriously. Critics on the planning-research
+            side argue 15 minutes is too permissive for genuine accessibility — Carlos
+            Moreno&apos;s original work proposed a tighter 5-minute &ldquo;chrono-urbanism&rdquo;
+            target for the core daily needs. Critics on the political side note that 15-minute
+            cities have been mischaracterised online as movement-restriction schemes, which they
+            are not; the framework is purely about co-locating amenities, not constraining
+            travel. Both critiques are worth knowing before citing the framework in a planning
+            document.
+          </p>
+        </div>
+      </section>
+
+      {/* Public health: 10-minute walk to park */}
+      <section className="section-white py-12 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-6">The 10-minute-walk-to-park standard in public health</h2>
+          <p className="text-slate-700 mb-4">
+            Independent of the 15-minute city framework, the public-health and parks-policy
+            literature has converged on a tighter walking-radius benchmark: every resident should
+            live within a 10-minute walk (roughly 800&nbsp;m) of a public park or green space.
+            This is the explicit policy goal of the Trust for Public Land&apos;s 10-Minute Walk
+            Campaign, adopted by over 300 US mayors, and underpins the World Health
+            Organization&apos;s urban green-space recommendations.
+          </p>
+          <p className="text-slate-700 mb-4">
+            The 800&nbsp;m figure is grounded in epidemiological research. Studies in the
+            <em> American Journal of Preventive Medicine</em> and similar journals consistently
+            find that park usage drops sharply beyond a 10-minute walking radius — visitors who
+            live within 800&nbsp;m use parks 4&times; as often as those living 1.5&nbsp;km away,
+            controlling for income and demographics. The 800&nbsp;m radius is the operational
+            threshold below which park access produces measurable cardiovascular and mental-health
+            benefits at population scale.
+          </p>
+          <p className="text-slate-700 mb-4">
+            Practical use of the tool: draw a walking isochrone or 800&nbsp;m straight-line
+            radius around each park in a target neighbourhood. The fraction of the neighbourhood
+            <em> outside</em> any of these circles is the park-access deficit. For an equity
+            analysis, overlay the deficit map with demographics (which neighbourhoods have park
+            access; which don&apos;t). This is the standard methodology used by the Trust for
+            Public Land&apos;s ParkScore index, by the WHO&apos;s Urban Health Initiative, and
+            by most municipal parks-strategic-plan documents in 2024&ndash;2026.
+          </p>
+          <p className="text-slate-700">
+            Note the distinction from the 15-minute framework: the 10-minute-to-park standard
+            applies <em>only</em> to green space, not to general amenities, and uses 800&nbsp;m
+            (not 1.25&nbsp;km) as the threshold because health research is more sensitive to
+            distance than amenity-co-location research.
+          </p>
+        </div>
+      </section>
+
+      {/* School walkability and Safe Routes */}
+      <section className="section-gray py-12 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-6">School walkability and Safe Routes to School</h2>
+          <p className="text-slate-700 mb-4">
+            School catchment analysis is the single most common use of walking radius tools by
+            non-specialists. The questions parents and planners ask: how far can a 7-year-old
+            actually walk to school? What proportion of the school district lives close enough
+            to walk? Which crossings need investment to make walking viable?
+          </p>
+          <p className="text-slate-700 mb-4">
+            The reference standards differ by country. US Safe Routes to School treats a half-mile
+            (800&nbsp;m) as the &ldquo;walkable&rdquo; threshold for elementary, and a mile
+            (1.6&nbsp;km) for middle school. Australian school-zone standards in most states use a
+            1.6&nbsp;km radius. UK guidance from the Department for Education uses a tiered
+            approach: 3&nbsp;km for primary, 4.8&nbsp;km for secondary, but these are
+            transport-eligibility thresholds, not walkability assessments. Japan uses
+            2&nbsp;km tsugakku (通学区) boundaries that are nearly always pedestrian.
+          </p>
+          <p className="text-slate-700 mb-4">
+            When you use the tool for a school-walkability check, three modelling choices matter:
+          </p>
+          <ul className="list-disc pl-6 space-y-2 text-slate-700 mb-4">
+            <li>
+              <strong>Use child walking speed, not adult.</strong> 3.2&nbsp;km/h for elementary,
+              not the default 5&nbsp;km/h. The 15-minute reach drops from 1.25&nbsp;km to 800&nbsp;m.
+            </li>
+            <li>
+              <strong>Include the worst crossing in the route.</strong> Active-transport research
+              shows parents&apos; decision to allow walking is dominated by the single worst
+              intersection along the route, not the average. A walkable isochrone that crosses an
+              unsignalised four-lane arterial is not effectively walkable for an 8-year-old, even
+              if the total distance is acceptable.
+            </li>
+            <li>
+              <strong>Layer in time-of-day constraints.</strong> Many school-walk routes are only
+              accessible during daylight, which excludes morning starts in northern-latitude
+              winters. The walking-radius tool draws a geometric isochrone; the operationally
+              walkable subset is smaller during dark months.
+            </li>
+          </ul>
+          <p className="text-slate-700">
+            For municipal-scale Safe Routes planning, the walking radius is the screening step.
+            Routes inside the radius are candidates; the next step is auditing each candidate
+            route&apos;s intersection safety, sidewalk presence, and grade. Tools like this one
+            don&apos;t replace that audit — they tell you which routes are worth auditing.
+          </p>
+        </div>
+      </section>
+
+      {/* Walk Score and Bike Score */}
+      <section className="section-white py-12 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-6">Walk Score, Bike Score, and what they measure</h2>
+          <p className="text-slate-700 mb-4">
+            Walk Score (and its siblings Bike Score and Transit Score) is the most widely cited
+            third-party walkability metric in US real estate listings. Owned by Redfin since 2014,
+            it produces a 0&ndash;100 score for any address by measuring walking distance to
+            amenities across nine categories: grocery, restaurants, shopping, errands, parks,
+            schools, culture/entertainment, coffee, and banks. Distances are decay-weighted: an
+            amenity within 400&nbsp;m counts at full weight, dropping to zero at 1.6&nbsp;km.
+          </p>
+          <p className="text-slate-700 mb-4">
+            What Walk Score does well: it&apos;s a standardised, comparable score that surfaces
+            differences between neighbourhoods that would otherwise be hard to quantify. A score
+            of 90+ (&ldquo;Walker&apos;s Paradise&rdquo;) reliably identifies dense, mixed-use
+            urban cores; a score under 25 (&ldquo;Car-Dependent&rdquo;) reliably identifies
+            exurban or rural patterns.
+          </p>
+          <p className="text-slate-700 mb-4">
+            What it doesn&apos;t do: it treats every category as equally important, which
+            doesn&apos;t match how individual households weight access (a family with school-age
+            children weights school proximity much higher than a young couple does). It also
+            assumes amenity density at the destination, not the quality of the walking
+            infrastructure along the way — a Walk Score of 85 can describe a neighbourhood with
+            many amenities but no sidewalks, which is not walkable in practice. The walking
+            radius tool above is complementary: Walk Score answers &ldquo;what&apos;s near
+            here?&rdquo;; the isochrone answers &ldquo;what can I actually reach on foot?&rdquo;
+          </p>
+          <p className="text-slate-700">
+            Bike Score uses similar methodology over a longer radius, weighting protected
+            infrastructure, hill grade, and amenity density. It correlates strongly with actual
+            bike-commute mode share in cities where it&apos;s been validated against census data.
+          </p>
         </div>
       </section>
 
@@ -773,6 +1054,66 @@ export default function WalkingRadiusMapPage() {
             A 15-minute walk each way to work equals 150 minutes/week — meeting the entire recommendation just
             from your commute.
           </div>
+        </div>
+      </section>
+
+      {/* Methodology and sources */}
+      <section className="section-white py-12 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-6">Methodology and sources</h2>
+          <p className="text-slate-700 mb-4">
+            Speed assumptions, walkability standards, and demographic figures on this page are
+            drawn from publicly available planning and public-health literature. Where a specific
+            value is cited, the underlying source is listed below so you can confirm the figure
+            against the primary document.
+          </p>
+          <ul className="list-disc pl-6 space-y-2 text-slate-700 text-sm">
+            <li>
+              Tobler, W. (1993). <em>Three Presentations on Geographical Analysis and Modeling.</em>{' '}
+              UCSB &mdash; source for the hiking function used in hill-grade modelling.
+            </li>
+            <li>
+              Knoblauch, R. L., et&nbsp;al. (1996). <em>Field Studies of Pedestrian Walking
+              Speed and Start-Up Time.</em> Transportation Research Record &mdash; source for the
+              15th/85th percentile pedestrian speed distribution.
+            </li>
+            <li>
+              Federal Highway Administration (US), <em>Pedestrian Signal Timing Guide</em> &mdash; source for
+              walker-with-mobility-aid speed values.
+            </li>
+            <li>
+              Trust for Public Land, <em>10-Minute Walk Campaign</em> and <em>ParkScore Index
+              Methodology</em> &mdash; source for the 800&nbsp;m park-access threshold and equity overlay
+              methodology.
+            </li>
+            <li>
+              Carlos Moreno, <em>The 15-Minute City</em> (2016) and subsequent publications via
+              the Sorbonne / IAE Paris &mdash; source for the chrono-urbanism framework.
+            </li>
+            <li>
+              National Center for Safe Routes to School (US) and equivalent national programs
+              (Living Streets UK, VicHealth Active Travel AU) &mdash; source for school-walking-distance
+              standards by age group.
+            </li>
+            <li>
+              Walk Score / Redfin, public methodology documentation &mdash; source for amenity-decay
+              weighting and category coverage.
+            </li>
+            <li>
+              World Health Organization, <em>Urban Green Spaces and Health</em> (2016, with 2024
+              updates) &mdash; source for population-scale health benefits of park access.
+            </li>
+            <li>
+              OpenStreetMap pedestrian and bicycle routing tag conventions, OSM Wiki &mdash; source for
+              how the underlying isochrone engine interprets sidewalk and bike-infrastructure data.
+            </li>
+          </ul>
+          <p className="text-slate-500 text-sm mt-4">
+            Isochrone calculation uses OpenStreetMap data via OSRM/Valhalla routing engines.
+            Routes are shortest-path approximations; they don&apos;t account for crossing wait
+            times, real-time signal phases, or perceived-safety detours. Use the radius value as
+            a planning input, not a guarantee of accessibility.
+          </p>
         </div>
       </section>
 

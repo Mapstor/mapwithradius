@@ -166,8 +166,13 @@ export default function FreeMapToolsAlternativePage() {
           <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
             FreeMapTools Radius — Alternative
           </h1>
-          <p className="text-lg text-slate-600">
-            A modern alternative to the classic FreeMapTools radius tool.
+          <p className="text-lg text-slate-600 mb-4">
+            A modern alternative to the classic FreeMapTools radius tool — written for the
+            specific workflow tradeoffs between the two.
+          </p>
+          <p className="text-sm text-slate-500">
+            By the Map With Radius editorial team · Last reviewed 29 May 2026 · Based on
+            FreeMapTools&apos; public documentation as of May 2026
           </p>
         </header>
 
@@ -269,6 +274,59 @@ export default function FreeMapToolsAlternativePage() {
           </div>
         </section>
 
+        {/* Technical deep-dive: CSV bulk import */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
+            Technical deep-dive: the CSV bulk import workflow
+          </h2>
+          <div className="prose prose-slate max-w-none">
+            <p className="text-slate-700 leading-relaxed mb-4">
+              The single feature where FreeMapTools genuinely outperforms most other radius tools
+              is bulk CSV import. The workflow accepts a CSV with one row per point (latitude,
+              longitude, and optionally radius, label, and color) and draws every circle at once.
+              For teams plotting service-area radii around dozens or hundreds of locations — chain
+              restaurants, retail stores, sales territories — this collapses an otherwise tedious
+              one-circle-at-a-time process into a single upload.
+            </p>
+            <p className="text-slate-700 leading-relaxed mb-4">
+              The CSV import has known constraints worth understanding before you commit to it:
+            </p>
+            <ul className="list-disc pl-6 space-y-2 text-slate-700 leading-relaxed mb-4">
+              <li>
+                <strong>No address geocoding.</strong> The CSV must contain pre-computed latitude
+                and longitude — you can&apos;t upload &ldquo;123 Main St, Boston&rdquo; and let
+                the tool geocode in bulk. If your source data is addresses, run them through a
+                geocoder (Nominatim, the Google Geocoding API, or Mapbox) first.
+              </li>
+              <li>
+                <strong>Practical row ceiling.</strong> FreeMapTools renders circles client-side
+                in JavaScript, and browser performance starts to degrade past a few hundred
+                circles on a single map. For 1,000+ point datasets, a desktop GIS tool (QGIS,
+                ArcGIS) gives smoother interaction.
+              </li>
+              <li>
+                <strong>No export back to CSV with computed fields.</strong> The import is
+                one-way: CSV in, visual map out. If you want to compute &ldquo;which points fall
+                within X km of point Y,&rdquo; that&apos;s a different analytical step the
+                FreeMapTools tool doesn&apos;t do.
+              </li>
+              <li>
+                <strong>Shared map only.</strong> Each upload produces a public visualisation; the
+                tool doesn&apos;t persist your dataset across sessions, so re-running an analysis
+                later means re-uploading the CSV.
+              </li>
+            </ul>
+            <p className="text-slate-700 leading-relaxed">
+              Map With Radius doesn&apos;t support CSV bulk import today. The intended workflow for
+              multiple radii is different: URL-encode each individual circle&apos;s coordinates
+              and radius, then either share each URL separately or programmatically generate a
+              batch. For three or four circles that&apos;s fine; for thirty, the CSV approach
+              wins; for three hundred, neither tool is the right answer — that&apos;s a QGIS or
+              ArcGIS workflow.
+            </p>
+          </div>
+        </section>
+
         {/* Who Should Still Use FreeMapTools */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
@@ -276,11 +334,18 @@ export default function FreeMapToolsAlternativePage() {
           </h2>
 
           <div className="prose prose-slate max-w-none">
-            <p className="text-slate-700 leading-relaxed">
-              If you need CSV bulk import (uploading hundreds of radius points at once) or need the
-              exact Google Maps visual style, FreeMapTools remains a solid option. Their tool also
-              offers area calculation within the radius and static map URL generation.
+            <p className="text-slate-700 leading-relaxed mb-4">
+              FreeMapTools is the right choice when:
             </p>
+            <ul className="list-disc pl-6 space-y-2 text-slate-700 leading-relaxed">
+              <li>You have a CSV of pre-geocoded points and need all radii on one map.</li>
+              <li>You specifically want the Google Maps visual style for screenshots or
+                  embeds.</li>
+              <li>You need the in-radius area calculation feature (area in km² or mi² inside the
+                  circle).</li>
+              <li>You&apos;re comfortable with a 2011-era interface and aren&apos;t working from
+                  a phone.</li>
+            </ul>
           </div>
         </section>
 
@@ -387,21 +452,41 @@ export default function FreeMapToolsAlternativePage() {
           </div>
         </section>
 
-        {/* Try Map With Radius CTA */}
-        <section className="bg-slate-900 text-white rounded-2xl p-8 text-center">
-          <h2 className="text-2xl font-bold mb-3">Try Map With Radius</h2>
-          <p className="text-slate-300 mb-6">
-            Modern, mobile-friendly, and free. No Google Maps API needed.
+        {/* Switching from FreeMapTools — closing as a stepped guide, not a CTA box */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
+            If you&apos;re switching from FreeMapTools
+          </h2>
+          <p className="text-slate-700 leading-relaxed mb-4">
+            For a single radius (no CSV bulk), the migration path is essentially zero-friction —
+            the same coordinates and radius value produce the same circle. The change you&apos;ll
+            notice is the address-search behaviour: you can type a street address in
+            Map With Radius and it resolves directly, whereas FreeMapTools wants the coordinates
+            or city name. Here&apos;s the practical hand-over:
           </p>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-white text-slate-900 font-medium rounded-lg hover:bg-slate-100 transition-colors"
-          >
-            Open the radius tool
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
+          <ol className="list-decimal pl-6 space-y-2 text-slate-700 leading-relaxed mb-4">
+            <li>
+              Note your existing radius value and center coordinates from the FreeMapTools URL
+              (look for the lat, lng, and radius query parameters).
+            </li>
+            <li>
+              Open <Link href="/" className="content-link">the main radius tool</Link> and either
+              paste the coordinates into the search box or type the address. The map centers and
+              draws the circle in one step.
+            </li>
+            <li>
+              If you want a different unit, toggle miles ↔ kilometers in the controls — the
+              radius value converts automatically.
+            </li>
+            <li>
+              For a shareable link, click &ldquo;Copy link&rdquo;. The URL now encodes the
+              coordinates and radius directly, which means recipients open the exact map you saw.
+            </li>
+          </ol>
+          <p className="text-slate-700 leading-relaxed">
+            If your FreeMapTools workflow depends on the CSV import — keep using it for that case.
+            For everything else, the modern interface is the upgrade.
+          </p>
         </section>
 
         {/* Links Section */}

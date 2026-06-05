@@ -31,6 +31,49 @@ export const metadata: Metadata = {
   },
 };
 
+const FAQS = [
+  {
+    question: 'Why are most "free" radius tools ad-supported and run on Google Maps?',
+    answer:
+      "Most free tools you'll find online run on the Google Maps Platform, which charges per-request fees once you exceed the free monthly tier. Tool operators show ads to cover those API costs. Map With Radius runs on OpenStreetMap instead — open data with no per-request fees — so we can stay free without aggressive monetization.",
+  },
+  {
+    question: 'Do I need a paid radius tool for casual use?',
+    answer:
+      "Almost certainly not. If you're drawing a few circles on a map, exporting one or two for a slide deck or a CRM, or screening neighborhoods for a home search, any free tool is fine. Paid plans start to pay off when you're (1) mapping spreadsheet datasets of hundreds of points, (2) needing demographic overlays integrated with the map, or (3) collaborating with a team where saved-map state and access control matter.",
+  },
+  {
+    question: 'When does a paid plan actually pay off?',
+    answer:
+      'Three scenarios. (1) Sales-ops teams building territory plans where the cost of bad territory > $99/month. (2) Site-selection consultants charging clients for trade-area analysis — demographic overlays save hours per project. (3) Field-service ops mapping hundreds of jobs daily where CSV bulk import + saved layers compound. Below those bars, free tools are usually enough.',
+  },
+  {
+    question: 'Is it cheaper to build my own with the Google Maps API?',
+    answer:
+      "Probably not for radius tooling alone. The Google Maps Platform has free-tier credits monthly, but you'll burn through them quickly once real users hit the tool. Adding the cost of developer time to build and maintain the integration, you're usually better off with an existing tool than rolling your own. If you need a custom integration with internal data, the calculation changes — but for pure radius work, off-the-shelf wins.",
+  },
+  {
+    question: 'How do these tools handle export to my CRM, MLS, or GIS?',
+    answer:
+      "KML is the universal exchange format. Most tools (Map With Radius, FreeMapTools, CalcMaps) export KML, which imports cleanly into Google Earth, QGIS, ArcGIS, most CRMs with mapping modules, and major MLS systems. Maptive and Smappen lean toward their own dashboards rather than file export. Always check the export options before committing — fewer formats means more lock-in.",
+  },
+  {
+    question: 'Why does one tool show different radii than another for the same input?',
+    answer:
+      "The underlying geometry should match — a 10 km radius is 10 km regardless of tool. What can differ: (1) which projection is used for display (Web Mercator distorts visual size), (2) whether the tool uses Haversine on a spherical Earth or Vincenty's formulae on the WGS 84 ellipsoid (differences are < 0.3% at 1,000 km), (3) where the center is anchored. Cross-check by entering identical lat/lng and radius; if numbers diverge, it's a tool bug.",
+  },
+  {
+    question: "What's the difference between a paid tool and a paid plan within a free tool?",
+    answer:
+      "Smappen and CalcMaps have free tiers and paid upgrades. Maptive is paid-only. The free tiers usually limit map saves, demographic overlays, or simultaneous map count — useful for trying the workflow before committing. If you only need basic radius drawing, you'll likely never hit the free-tier limits and won't need to upgrade.",
+  },
+  {
+    question: 'Are any of these tools likely to disappear or change pricing soon?',
+    answer:
+      "Hard to predict, but the long-running free tools (FreeMapTools dating to 2011, MapDevelopers) have shown durability. Newer or paid ones (Smappen — formerly Oalley — and Maptive) are commercial products with ongoing operations risk. Map With Radius is the youngest entrant; the bet on OpenStreetMap means cost structure stays low even at scale. Your safest insurance: pick a tool with good KML or CSV export, so you can switch later without re-creating work.",
+  },
+];
+
 export default function AlternativesIndexPage() {
   return (
     <>
@@ -106,6 +149,22 @@ export default function AlternativesIndexPage() {
         }}
       />
 
+      {/* FAQPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: FAQS.map((f) => ({
+              '@type': 'Question',
+              name: f.question,
+              acceptedAnswer: { '@type': 'Answer', text: f.answer },
+            })),
+          }),
+        }}
+      />
+
       {/* Breadcrumb navigation */}
       <nav className="bg-slate-50 border-b border-slate-200">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
@@ -127,12 +186,34 @@ export default function AlternativesIndexPage() {
           <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
             Radius Map Tool Alternatives Compared
           </h1>
-          <p className="text-lg text-slate-600">
+          <p className="text-lg text-slate-700 leading-relaxed mb-4">
             Five radius-mapping tools are commonly compared online: FreeMapTools, MapDevelopers,
-            CalcMaps, Smappen, and Maptive. Each is built for a different user, and Map With Radius
-            sits against them as a free, no-signup option. Below is a side-by-side comparison, a
-            decision matrix, and deep-dive links for each.
+            CalcMaps, Smappen, and Maptive. Each is built for a different user, and Map With
+            Radius sits against them as a free, no-signup option. Below is a side-by-side
+            comparison, a decision matrix, an evaluation framework, and deep-dive links for each.
           </p>
+          <p className="text-slate-700 leading-relaxed mb-6">
+            If you&apos;re here to pick a tool quickly, the decision matrix below points you to
+            the right one in two clicks. If you&apos;re comparing options for a team purchase or
+            an evaluation, the &ldquo;how to evaluate&rdquo; section walks through the six
+            criteria that actually matter, and the FAQ answers the questions buyers usually
+            ask in evaluation calls.
+          </p>
+
+          <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-200">
+            <div>
+              <div className="text-3xl font-bold text-slate-900">6</div>
+              <div className="text-sm text-slate-600">tools compared</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-slate-900">6</div>
+              <div className="text-sm text-slate-600">evaluation criteria</div>
+            </div>
+            <div>
+              <div className="text-3xl font-bold text-slate-900">{FAQS.length}</div>
+              <div className="text-sm text-slate-600">buying questions</div>
+            </div>
+          </div>
         </header>
 
         {/* Section: Decision matrix */}
@@ -273,6 +354,59 @@ export default function AlternativesIndexPage() {
           </div>
         </section>
 
+        {/* Section: How to evaluate */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
+            How to Evaluate a Radius Mapping Tool
+          </h2>
+          <p className="text-slate-700 leading-relaxed mb-5">
+            Most radius-tool reviews focus on look and feel — the actual buying decision usually
+            comes down to six concrete questions. Run any tool through these and you&apos;ll
+            know whether it fits.
+          </p>
+          <ol className="list-decimal list-outside pl-6 space-y-3 text-slate-700 mb-5">
+            <li>
+              <strong>What&apos;s the price model?</strong> Free, ad-supported, free-with-paid-upgrade,
+              prepaid credits, monthly subscription, or per-user annual. Pricing tier depends on
+              your usage frequency more than feature set.
+            </li>
+            <li>
+              <strong>What&apos;s the map engine?</strong> Google Maps (familiar visual style with
+              per-request API costs that the tool operator absorbs) or OpenStreetMap (open, no
+              per-request fees). Performance differences are negligible for radius tooling; visual
+              style is mostly preference.
+            </li>
+            <li>
+              <strong>What can you export?</strong> KML is the universal exchange format — works
+              with Google Earth, QGIS, ArcGIS, most CRMs with mapping modules, and major MLS
+              systems. PNG for slide decks, CSV for spreadsheet workflows. The fewer formats
+              supported, the more lock-in into a vendor&apos;s dashboard.
+            </li>
+            <li>
+              <strong>Does it support bulk import?</strong> If you&apos;re mapping 50+ points from
+              a spreadsheet, CSV import is a hard requirement. Without it, manual entry kills the
+              workflow. FreeMapTools is strong here; several others lack it entirely.
+            </li>
+            <li>
+              <strong>Drive-time isochrones, not just radii?</strong> For commute, delivery, or
+              service-area work, an isochrone (irregular shape following roads) is more honest than
+              a straight-line radius. Some tools lock isochrones behind a paid plan; some don&apos;t
+              have them at all. If your workflow needs travel-time analysis, confirm this before
+              committing.
+            </li>
+            <li>
+              <strong>Account required for basic use?</strong> A signup-wall on a free tool usually
+              signals it&apos;s a lead-generation entry point for a paid product. That can be fine,
+              but check whether the workflow you actually want is accessible without an account.
+            </li>
+          </ol>
+          <p className="text-sm text-slate-500 italic">
+            Beyond these six, secondary considerations: collaborative editing, demographic-data
+            overlays, API access, mobile UX, and customer support. These matter less unless you
+            have a specific workflow that demands them.
+          </p>
+        </section>
+
         {/* Section: Detailed comparisons (cards) */}
         <section className="mb-12">
           <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
@@ -359,6 +493,234 @@ export default function AlternativesIndexPage() {
               </p>
               <span className="text-sm content-link">Read full comparison →</span>
             </Link>
+          </div>
+        </section>
+
+        {/* Section: FAQ */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
+            Frequently asked questions
+          </h2>
+          <div className="space-y-3">
+            {FAQS.map((f) => (
+              <details key={f.question} className="faq-card">
+                <summary>
+                  {f.question}
+                  <svg
+                    className="w-5 h-5 faq-chevron"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </summary>
+                <div className="faq-content">{f.answer}</div>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Section: Resources */}
+        <section className="mb-12">
+          <h2 className="text-2xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
+            Resources and references
+          </h2>
+          <p className="text-slate-700 leading-relaxed mb-6">
+            Tool pricing pages, documentation, and the underlying technology each option relies
+            on.
+          </p>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <div className="bg-slate-50 p-5 rounded-lg">
+              <h3 className="font-bold text-slate-900 mb-2">Tool homepages</h3>
+              <ul className="space-y-2 text-sm text-slate-700">
+                <li>
+                  <a
+                    href="https://www.freemaptools.com/radius-around-point.htm"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    FreeMapTools — Radius Around Point
+                  </a>{' '}
+                  (CSV bulk import).
+                </li>
+                <li>
+                  <a
+                    href="https://www.mapdevelopers.com/draw-circle-tool.php"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    MapDevelopers — Draw Circle Tool
+                  </a>
+                  .
+                </li>
+                <li>
+                  <a
+                    href="https://www.calcmaps.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    CalcMaps
+                  </a>{' '}
+                  (broader mapping suite, PRO credits).
+                </li>
+                <li>
+                  <a
+                    href="https://www.smappen.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Smappen
+                  </a>{' '}
+                  (geomarketing, formerly Oalley).
+                </li>
+                <li>
+                  <a
+                    href="https://www.maptive.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Maptive
+                  </a>{' '}
+                  (B2B data mapping).
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 p-5 rounded-lg">
+              <h3 className="font-bold text-slate-900 mb-2">Underlying technology</h3>
+              <ul className="space-y-2 text-sm text-slate-700">
+                <li>
+                  <a
+                    href="https://mapsplatform.google.com/pricing/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Google Maps Platform pricing
+                  </a>{' '}
+                  — the cost structure most &ldquo;free&rdquo; tools absorb.
+                </li>
+                <li>
+                  <a
+                    href="https://www.openstreetmap.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    OpenStreetMap
+                  </a>{' '}
+                  — open data alternative to Google Maps.
+                </li>
+                <li>
+                  <a
+                    href="https://operations.osmfoundation.org/policies/tiles/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    OSM tile usage policy
+                  </a>{' '}
+                  — the constraints any OSM-based tool operates under.
+                </li>
+                <li>
+                  <a
+                    href="https://leafletjs.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Leaflet
+                  </a>{' '}
+                  — open-source JavaScript map library used by Map With Radius.
+                </li>
+                <li>
+                  <a
+                    href="https://en.wikipedia.org/wiki/Haversine_formula"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Haversine formula
+                  </a>{' '}
+                  — the math behind every radius circle.
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 p-5 rounded-lg">
+              <h3 className="font-bold text-slate-900 mb-2">Exchange formats</h3>
+              <ul className="space-y-2 text-sm text-slate-700">
+                <li>
+                  <a
+                    href="https://en.wikipedia.org/wiki/Keyhole_Markup_Language"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    KML standard (OGC)
+                  </a>{' '}
+                  — the de-facto exchange format for radius and polygon data.
+                </li>
+                <li>
+                  <a
+                    href="https://geojson.org/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    GeoJSON
+                  </a>{' '}
+                  — open format for geographic features.
+                </li>
+                <li>
+                  <a
+                    href="https://en.wikipedia.org/wiki/Shapefile"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="content-link"
+                  >
+                    Shapefile
+                  </a>{' '}
+                  — Esri&apos;s legacy format, still used in professional GIS.
+                </li>
+              </ul>
+            </div>
+
+            <div className="bg-slate-50 p-5 rounded-lg">
+              <h3 className="font-bold text-slate-900 mb-2">On this site</h3>
+              <ul className="space-y-2 text-sm text-slate-700">
+                <li>
+                  <Link href="/" className="content-link">
+                    Main radius tool
+                  </Link>{' '}
+                  — what we&apos;re comparing against.
+                </li>
+                <li>
+                  <Link href="/use-cases" className="content-link">
+                    Use cases
+                  </Link>{' '}
+                  — concrete examples by industry with worked city walkthroughs.
+                </li>
+                <li>
+                  <Link href="/glossary" className="content-link">
+                    Glossary
+                  </Link>{' '}
+                  — definitions of every term used here.
+                </li>
+                <li>
+                  <Link href="/radius-on-google-maps" className="content-link">
+                    Radius on Google Maps
+                  </Link>{' '}
+                  — for users who specifically want a Google Maps workflow.
+                </li>
+              </ul>
+            </div>
           </div>
         </section>
 
