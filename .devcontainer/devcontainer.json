@@ -1,0 +1,13 @@
+{
+  "name": "claude-code-sandbox",
+  "build": { "dockerfile": "Dockerfile" },
+  "runArgs": ["--cap-add=NET_ADMIN", "--cap-add=NET_RAW", "-p", "3001:3000"],
+  "remoteUser": "node",
+  "workspaceFolder": "/workspace",
+  "forwardPorts": [3000],
+  "containerEnv": {
+    "NODE_OPTIONS": "--max-old-space-size=4096",
+    "CLAUDE_CONFIG_DIR": "/home/node/.claude"
+  },
+  "postCreateCommand": "sudo /usr/local/bin/init-firewall.sh"
+}

@@ -40,3 +40,9 @@ next-env.d.ts
 
 # screenshots for design audit (not deployed, not tracked)
 /screenshots/
+
+# local agent state (per-machine, not deployed)
+/.claude/
+
+# bulk reference data (not used at runtime; add -f if intentionally committing)
+/data/uszips.csv
