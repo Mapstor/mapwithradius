@@ -51,6 +51,38 @@ export default function PrivacyPage() {
         }}
       />
 
+      {/* WebPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: 'Privacy Policy',
+            description:
+              'Map With Radius privacy policy — no accounts, your location stays in your browser, GDPR and CCPA compliant. How we handle analytics, advertising, and your choices.',
+            url: 'https://mapwithradius.com/privacy',
+            inLanguage: 'en',
+            datePublished: '2026-02-01',
+            dateModified: '2026-06-03',
+            isPartOf: {
+              '@type': 'WebSite',
+              name: 'Map With Radius',
+              url: 'https://mapwithradius.com',
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'Map With Radius',
+              url: 'https://mapwithradius.com',
+            },
+            about: {
+              '@type': 'Thing',
+              name: 'Privacy practices, GDPR, CCPA, Google Consent Mode v2, advertising disclosures',
+            },
+          }),
+        }}
+      />
+
       <main className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
         <p className="text-sm text-gray-500 mb-8">Last updated: June 3, 2026</p>

@@ -51,9 +51,41 @@ export default function TermsPage() {
         }}
       />
 
+      {/* WebPage Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: 'Terms of Use',
+            description:
+              'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
+            url: 'https://mapwithradius.com/terms',
+            inLanguage: 'en',
+            datePublished: '2026-02-01',
+            dateModified: '2026-05-29',
+            isPartOf: {
+              '@type': 'WebSite',
+              name: 'Map With Radius',
+              url: 'https://mapwithradius.com',
+            },
+            publisher: {
+              '@type': 'Organization',
+              name: 'Map With Radius',
+              url: 'https://mapwithradius.com',
+            },
+            about: {
+              '@type': 'Thing',
+              name: 'Acceptable use, accuracy disclaimer, OpenStreetMap attribution, limitation of liability',
+            },
+          }),
+        }}
+      />
+
       <main className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Terms of Use</h1>
-        <p className="text-sm text-gray-500 mb-8">Last updated: February 2026</p>
+        <p className="text-sm text-gray-500 mb-8">Last updated: May 29, 2026</p>
 
         <div className="prose prose-gray max-w-none">
           <p className="text-lg text-gray-700 mb-8">
