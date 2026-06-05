@@ -4,7 +4,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { haversineDistance, formatDistance } from '@/lib/haversine';
-import { geocodeAddress } from '@/lib/geocoding';
+import { geocodeAddress, GeocodingResult } from '@/lib/geocoding';
+import LocationSearchInput from './LocationSearchInput';
 
 // Fix Leaflet default marker icon issue
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: () => void })._getIconUrl;
@@ -343,28 +344,21 @@ export default function DistanceMap() {
             <div>
               <div className="control-section-label">Add Location</div>
               <form onSubmit={handleSearch} className="space-y-2">
-                <div className="relative">
-                  <svg
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="Search address, city, or zip..."
-                    className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-200 hover:border-slate-300"
-                  />
-                </div>
+                <LocationSearchInput
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                  onSelectLocation={(s: GeocodingResult) => {
+                    addPoint(s.lat, s.lng);
+                    setSearchQuery('');
+                    setSearchError(null);
+                    if (mapRef.current) {
+                      mapRef.current.setView([s.lat, s.lng], 12);
+                    }
+                  }}
+                  placeholder="Search address, city, or zip..."
+                  inputClassName="w-full pr-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-200 hover:border-slate-300"
+                  disabled={isSearching || isLocating}
+                />
                 <button
                   type="submit"
                   disabled={isSearching || isLocating}

@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import LocationSearchInput from './LocationSearchInput';
+import { GeocodingResult } from '@/lib/geocoding';
 
 // Fix Leaflet default marker icon issue
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: () => void })._getIconUrl;
@@ -275,14 +277,23 @@ export default function DriveTimeMap({
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Location</label>
             <div className="flex gap-2">
-              <input
-                type="text"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                placeholder="Search address, city, or zip..."
-                className="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
+              <div className="flex-1">
+                <LocationSearchInput
+                  value={searchValue}
+                  onValueChange={setSearchValue}
+                  onSelectLocation={(s: GeocodingResult) => {
+                    setSearchValue(s.displayName);
+                    const newCenter: [number, number] = [s.lat, s.lng];
+                    setCenter(newCenter);
+                    setLocationName(s.displayName.split(',').slice(0, 2).join(','));
+                    if (mapRef.current) mapRef.current.setView(newCenter, 12);
+                  }}
+                  onSubmit={handleSearch}
+                  placeholder="Search address, city, or zip..."
+                  inputClassName="w-full pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  disabled={isSearching}
+                />
+              </div>
               <button
                 onClick={handleSearch}
                 disabled={isSearching}
@@ -415,14 +426,23 @@ export default function DriveTimeMap({
       {/* Mobile Controls (bottom panel) */}
       <div className="lg:hidden absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-4px_12px_-2px_rgba(15,23,42,0.08)] p-4 z-[1000]">
         <div className="flex gap-2 mb-2">
-          <input
-            type="text"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="Search address..."
-            className="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-lg"
-          />
+          <div className="flex-1">
+            <LocationSearchInput
+              value={searchValue}
+              onValueChange={setSearchValue}
+              onSelectLocation={(s: GeocodingResult) => {
+                setSearchValue(s.displayName);
+                const newCenter: [number, number] = [s.lat, s.lng];
+                setCenter(newCenter);
+                setLocationName(s.displayName.split(',').slice(0, 2).join(','));
+                if (mapRef.current) mapRef.current.setView(newCenter, 12);
+              }}
+              onSubmit={handleSearch}
+              placeholder="Search address..."
+              inputClassName="w-full pr-3 py-2 text-sm border border-slate-200 rounded-lg"
+              disabled={isSearching}
+            />
+          </div>
           <button
             onClick={handleSearch}
             disabled={isSearching}
