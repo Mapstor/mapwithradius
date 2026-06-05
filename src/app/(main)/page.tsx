@@ -628,7 +628,7 @@ export default function HomePage() {
                 API (~200KB+). The map loads faster, especially on mobile.
               </li>
               <li>
-                <strong className="text-slate-900">Privacy-first.</strong> No Google tracking. Your map interactions stay in your browser.
+                <strong className="text-slate-900">Tool-side privacy.</strong> Map tiles come from OpenStreetMap, not Google Maps, so the map itself doesn&apos;t send your location or search queries to Google. (For analytics, ads, and EEA/UK consent, see our <Link href="/privacy" className="content-link">Privacy Policy</Link>.)
               </li>
             </ul>
 
@@ -838,7 +838,7 @@ export default function HomePage() {
           </div>
           <p className="text-sm text-slate-500 mt-6">
             <Link href="/radius-map" className="content-link">
-              See all 12 city radius maps &rarr;
+              See all 25 city radius maps &rarr;
             </Link>
           </p>
         </div>

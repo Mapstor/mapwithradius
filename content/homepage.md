@@ -141,7 +141,7 @@ Map With Radius uses **[Leaflet](https://leafletjs.com/)**, an open-source mappi
 - **No usage limits.** Google Maps API charges per load after a free tier. Our tool has no API costs, so there are no restrictions on how many circles you draw or how often you use it.
 - **No API key required.** You don't need an account, API key, or any setup. Open the page and start drawing.
 - **Fast loading.** Leaflet is lightweight (~40KB) compared to the Google Maps JavaScript API (~200KB+). The map loads faster, especially on mobile.
-- **Privacy-first.** No Google tracking. Your map interactions stay in your browser.
+- **Tool-side privacy.** Map tiles come from OpenStreetMap, not Google Maps, so the map itself doesn't send your location or search queries to Google. (For analytics, ads, and EEA/UK consent, see our Privacy Policy.)
 
 The radius circles are calculated using the **[Haversine formula](https://en.wikipedia.org/wiki/Haversine_formula)**, which accounts for the Earth's curvature. This means the circles are geographically accurate — a 50-mile radius really is 50 miles from the center point in every direction, even at high latitudes where map projections can distort distances.
 
