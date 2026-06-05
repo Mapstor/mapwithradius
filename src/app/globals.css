@@ -297,3 +297,12 @@
     min-width: 44px;
   }
 }
+
+/* Hide Leaflet zoom controls on mobile for non-homepage map pages.
+   Tool/city map pages wrap their map in .map-tool-page; the homepage does
+   NOT, so its zoom buttons stay visible. */
+@media (max-width: 1023px) {
+  .map-tool-page .leaflet-control-zoom {
+    display: none !important;
+  }
+}

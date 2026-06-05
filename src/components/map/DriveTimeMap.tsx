@@ -268,8 +268,8 @@ export default function DriveTimeMap({
       {/* Map */}
       <div ref={mapContainer} className="w-full h-full" />
 
-      {/* Controls Panel */}
-      <div className="absolute top-4 right-4 w-80 lg:w-96 bg-white rounded-xl shadow-lg overflow-hidden z-[1000]">
+      {/* Controls Panel — desktop only. Mobile gets the bottom controls below. */}
+      <div className="hidden lg:block absolute top-4 right-4 w-80 lg:w-96 bg-white rounded-xl shadow-lg overflow-hidden z-[1000]">
         <div className="p-4 space-y-4">
           {/* Search */}
           <div>
@@ -413,7 +413,7 @@ export default function DriveTimeMap({
       </div>
 
       {/* Mobile Controls (bottom panel) */}
-      <div className="lg:hidden absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 z-[1000]">
+      <div className="lg:hidden absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-4px_12px_-2px_rgba(15,23,42,0.08)] p-4 z-[1000]">
         <div className="flex gap-2 mb-2">
           <input
             type="text"

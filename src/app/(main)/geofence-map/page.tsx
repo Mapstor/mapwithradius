@@ -96,17 +96,17 @@ export default function GeofenceMapPage() {
       {/* Hero Section with Tool */}
       <section className="bg-slate-50">
         {/* Hero header band */}
-        <div className="bg-primary-900 py-6">
+        <div className="bg-primary-900 py-3 lg:py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">Geofence Map Tool</h1>
-            <p className="text-slate-300">
+            <p className="text-slate-300 hidden lg:block">
               Plan a geofence visually, then export as KML or extract the coordinates for Radar, Google Geofencing API, Braze, or any geofencing platform.
             </p>
           </div>
         </div>
 
         {/* Map section */}
-        <div className="max-w-[1600px] mx-auto">
+        <div className="max-w-[1600px] mx-auto map-tool-page">
           <RadiusMapWrapper defaultUnit="kilometers" />
         </div>
       </section>

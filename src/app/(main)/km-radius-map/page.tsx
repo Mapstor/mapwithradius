@@ -79,17 +79,17 @@ export default function KMRadiusMapPage() {
       {/* Hero Section with Tool */}
       <section className="bg-slate-50">
         {/* Hero header band */}
-        <div className="bg-primary-900 py-6">
+        <div className="bg-primary-900 py-3 lg:py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">KM Radius Map</h1>
-            <p className="text-slate-300">
+            <p className="text-slate-300 hidden lg:block">
               Draw a radius in kilometers on any map. Metric-first for users outside the US and UK.
             </p>
           </div>
         </div>
 
         {/* Map section */}
-        <div className="max-w-[1600px] mx-auto">
+        <div className="max-w-[1600px] mx-auto map-tool-page">
           <RadiusMapWrapper defaultUnit="kilometers" />
         </div>
       </section>

@@ -118,17 +118,17 @@ export default function DistanceCalculatorPage() {
       {/* Hero Section with Tool */}
       <section className="bg-slate-50">
         {/* Hero header band */}
-        <div className="bg-primary-900 py-6">
+        <div className="bg-primary-900 py-3 lg:py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">Distance Between Two Points</h1>
-            <p className="text-slate-300">
+            <p className="text-slate-300 hidden lg:block">
               Click two points on the map to measure the distance between them — straight line and by road.
             </p>
           </div>
         </div>
 
         {/* Map section */}
-        <div className="max-w-[1600px] mx-auto">
+        <div className="max-w-[1600px] mx-auto map-tool-page">
           <DistanceMap />
         </div>
       </section>
@@ -237,7 +237,7 @@ export default function DistanceCalculatorPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                   </svg>
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <h3 className="text-xl font-bold text-slate-900 mb-2">1. Road Trip Planning (US Route 66)</h3>
                   <p className="text-slate-700 mb-4">
                     A family planning a road trip from <strong>Chicago, IL to Los Angeles, CA</strong> uses the distance calculator
@@ -271,7 +271,7 @@ export default function DistanceCalculatorPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <h3 className="text-xl font-bold text-slate-900 mb-2">2. Flight Distance & Frequent Flyer Miles (NYC to London)</h3>
                   <p className="text-slate-700 mb-4">
                     A business traveler calculates <strong>New York (JFK) to London (LHR)</strong> to understand
@@ -305,7 +305,7 @@ export default function DistanceCalculatorPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                   </svg>
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <h3 className="text-xl font-bold text-slate-900 mb-2">3. Home Buying: Commute Analysis (San Francisco Bay Area)</h3>
                   <p className="text-slate-700 mb-4">
                     A couple house-hunting compares commute distance from two different suburbs to their
@@ -353,7 +353,7 @@ export default function DistanceCalculatorPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                   </svg>
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <h3 className="text-xl font-bold text-slate-900 mb-2">4. Trucking Exemption: 150 Air-Mile Radius (FMCSA)</h3>
                   <p className="text-slate-700 mb-4">
                     A trucking company determines if drivers qualify for the DOT short-haul exemption
@@ -392,7 +392,7 @@ export default function DistanceCalculatorPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
                 </div>
-                <div className="flex-1">
+                <div className="flex-1 min-w-0">
                   <h3 className="text-xl font-bold text-slate-900 mb-2">5. Marathon Training Route Verification (Boston Marathon)</h3>
                   <p className="text-slate-700 mb-4">
                     A runner training for the <strong>Boston Marathon</strong> creates a point-to-point training route

@@ -231,7 +231,7 @@ export default function ZipCodeRadiusMap() {
       />
 
       {/* Controls Panel */}
-      <div className="absolute top-4 right-4 w-80 lg:w-96 max-h-[calc(100%-2rem)] bg-white rounded-xl shadow-lg overflow-hidden flex flex-col z-[1000]">
+      <div className="hidden lg:flex absolute top-4 right-4 w-80 lg:w-96 max-h-[calc(100%-2rem)] bg-white rounded-xl shadow-lg overflow-hidden flex-col z-[1000]">
         {/* Search Form */}
         <div className="p-4 border-b border-slate-200">
           <h3 className="font-semibold text-slate-900 mb-3">Find Zip Codes Within Radius</h3>

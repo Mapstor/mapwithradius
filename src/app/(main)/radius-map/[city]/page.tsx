@@ -151,7 +151,7 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
       />
 
       {/* Map widget — full bleed */}
-      <div className="w-full">
+      <div className="w-full map-tool-page">
         <RadiusMapWrapper
           defaultUnit={city.defaultUnit}
           defaultRadius={city.defaultRadius}
@@ -346,7 +346,7 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
                 <Link href="/radius-map" className="content-link">
                   All city radius maps
                 </Link>
-                {' '}— the index of all 12 city pages.
+                {' '}— the index of all {CITIES.length} city pages.
               </li>
             </ul>
           </div>

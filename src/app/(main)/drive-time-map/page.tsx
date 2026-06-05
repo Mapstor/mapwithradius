@@ -89,17 +89,17 @@ export default function DriveTimeMapPage() {
       {/* Hero Section with Tool */}
       <section className="bg-slate-50">
         {/* Hero header band */}
-        <div className="bg-primary-900 py-6">
+        <div className="bg-primary-900 py-3 lg:py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">Drive Time Map</h1>
-            <p className="text-slate-300">
+            <p className="text-slate-300 hidden lg:block">
               Enter a location and time — see how far you can travel by car, foot, or bike.
             </p>
           </div>
         </div>
 
         {/* Map section */}
-        <div className="max-w-[1600px] mx-auto">
+        <div className="max-w-[1600px] mx-auto map-tool-page">
           <DriveTimeMap />
         </div>
       </section>
