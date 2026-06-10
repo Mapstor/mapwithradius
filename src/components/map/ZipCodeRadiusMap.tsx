@@ -8,12 +8,14 @@ import {
   getZipCode,
   findZipCodesWithinRadius,
   findNearestZip,
+  findNearestZipByLocation,
   zipCodesToCsv,
   type ZipCodeData,
   type ZipCodeWithDistance,
   type ZipDatabase,
 } from '@/lib/zipCodes';
 import { toMeters, fromMeters, type DistanceUnit } from '@/lib/haversine';
+import { attachCircleDragHandles, type CircleDragHandles } from '@/lib/leafletDragHandles';
 
 // Fix Leaflet default marker icon issue
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: () => void })._getIconUrl;
@@ -30,7 +32,7 @@ export default function ZipCodeRadiusMap() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
   const circleRef = useRef<L.Circle | null>(null);
-  const centerMarkerRef = useRef<L.Marker | null>(null);
+  const dragHandlesRef = useRef<CircleDragHandles | null>(null);
   const zipMarkersRef = useRef<L.Marker[]>([]);
 
   const [zipCode, setZipCode] = useState('');
@@ -47,6 +49,19 @@ export default function ZipCodeRadiusMap() {
   const [dbLoading, setDbLoading] = useState(true);
   const [dbError, setDbError] = useState<string | null>(null);
   const [suggestion, setSuggestion] = useState<ZipCodeData | null>(null);
+
+  // Refs that mirror dynamic state, so drag-handle callbacks attached during a
+  // previous search still read the current unit / db / search function when
+  // the user later drags. Without this bridge they'd close over stale values.
+  const unitRef = useRef(unit);
+  const zipDbRef = useRef(zipDb);
+  const searchRef = useRef<((override?: string) => Promise<void>) | null>(null);
+  useEffect(() => {
+    unitRef.current = unit;
+  }, [unit]);
+  useEffect(() => {
+    zipDbRef.current = zipDb;
+  }, [zipDb]);
 
   // Convert radius to miles for calculations
   const radiusInMiles = useMemo(() => {
@@ -130,13 +145,13 @@ export default function ZipCodeRadiusMap() {
 
   // Clear map overlays
   const clearMapOverlays = useCallback(() => {
+    if (dragHandlesRef.current) {
+      dragHandlesRef.current.destroy();
+      dragHandlesRef.current = null;
+    }
     if (circleRef.current) {
       circleRef.current.remove();
       circleRef.current = null;
-    }
-    if (centerMarkerRef.current) {
-      centerMarkerRef.current.remove();
-      centerMarkerRef.current = null;
     }
     zipMarkersRef.current.forEach((marker) => marker.remove());
     zipMarkersRef.current = [];
@@ -189,20 +204,31 @@ export default function ZipCodeRadiusMap() {
       }).addTo(mapRef.current);
       circleRef.current = circle;
 
-      // Add center marker
-      const centerIcon = L.divIcon({
-        className: 'custom-center-marker',
-        html: `<div style="width: 20px; height: 20px; background-color: #3b82f6; border: 3px solid white; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10],
+      // Attach interactive drag handles: edge handle resizes the radius
+      // (visual only — list does not re-compute mid-drag, per UX choice),
+      // centre handle moves the circle and on drop snaps to the nearest
+      // known ZIP and re-runs the search at that centre.
+      dragHandlesRef.current = attachCircleDragHandles({
+        map: mapRef.current,
+        circle,
+        color: '#3b82f6',
+        onResize: (newRadiusMeters) => {
+          const newRadiusInUnit = fromMeters(newRadiusMeters, unitRef.current);
+          const formatted =
+            newRadiusInUnit >= 10
+              ? Math.round(newRadiusInUnit)
+              : Math.round(newRadiusInUnit * 10) / 10;
+          setRadius(Math.max(1, formatted));
+        },
+        onMoveEnd: (newCenter) => {
+          const db = zipDbRef.current;
+          if (!db) return;
+          const nearest = findNearestZipByLocation(newCenter.lat, newCenter.lng, db);
+          if (nearest) {
+            searchRef.current?.(nearest.zip);
+          }
+        },
       });
-
-      const centerMarker = L.marker([foundZip.lat, foundZip.lng], {
-        icon: centerIcon,
-        zIndexOffset: 1000,
-      }).addTo(mapRef.current);
-      centerMarker.bindPopup(`<strong>${foundZip.zip}</strong><br/>${foundZip.city}, ${foundZip.state}<br/><em>Search center</em>`);
-      centerMarkerRef.current = centerMarker;
 
       // Add markers for each zip code found
       const zipIcon = L.divIcon({
@@ -237,6 +263,13 @@ export default function ZipCodeRadiusMap() {
 
     setIsSearching(false);
   }, [zipCode, radiusInMiles, isMapReady, clearMapOverlays, zipDb]);
+
+  // Keep searchRef pointed at the current searchZipCodes so drag-handle
+  // callbacks attached during an earlier search call the up-to-date version
+  // (which has the current radius / unit / db state in scope).
+  useEffect(() => {
+    searchRef.current = searchZipCodes;
+  }, [searchZipCodes]);
 
   // Handle sort click
   const handleSort = useCallback((field: SortField) => {

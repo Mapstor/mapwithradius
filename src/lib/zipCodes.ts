@@ -125,6 +125,28 @@ function haversineMiles(lat1: number, lng1: number, lat2: number, lng2: number):
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
+// Geographic nearest neighbour (haversine, all 33K+ ZIPs scanned). Used when
+// the user drags the ZIP-tool centre marker to a new spot on the map and the
+// search has to snap back to an actual ZIP centroid — different from
+// findNearestZip (numeric ZIP-code distance, used for typo fallback like
+// 06101 → 06103 in the same prefix).
+export function findNearestZipByLocation(
+  lat: number,
+  lng: number,
+  db: ZipDatabase
+): ZipCodeData | null {
+  let best: ZipCodeData | null = null;
+  let bestDistMi = Infinity;
+  for (const z of db.all) {
+    const d = haversineMiles(lat, lng, z.lat, z.lng);
+    if (d < bestDistMi) {
+      best = z;
+      bestDistMi = d;
+    }
+  }
+  return best;
+}
+
 export function findZipCodesWithinRadius(
   centerLat: number,
   centerLng: number,
