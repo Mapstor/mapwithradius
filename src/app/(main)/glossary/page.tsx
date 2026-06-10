@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Map & Radius Glossary',
@@ -9,27 +8,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/glossary',
   },
-  keywords: [
-    'map glossary',
-    'gis glossary',
-    'radius map terms',
-    'isochrone definition',
-    'geofence definition',
-    'haversine formula',
-  ],
   openGraph: {
     title: 'Map & Radius Glossary',
     description:
       'Plain-English definitions of common terms used in radius mapping, geocoding, and geospatial analysis.',
     url: 'https://mapwithradius.com/glossary',
-    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Map & Radius Glossary',
     description:
       'Plain-English definitions of common terms used in radius mapping, geocoding, and geospatial analysis.',
-    images: OG_IMAGES,
   },
 };
 

@@ -2,7 +2,6 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import { CITIES } from '@/data/cities';
-import { OG_IMAGES } from '@/lib/og';
 
 const CityIndexMap = dynamic(() => import('@/components/map/CityIndexMap'), {
   ssr: false,
@@ -20,28 +19,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/radius-map',
   },
-  keywords: [
-    'city radius map',
-    'radius map by city',
-    'london radius map',
-    'new york radius map',
-    'paris radius map',
-    'tokyo radius map',
-    'urban radius tool',
-  ],
   openGraph: {
     title: 'City Radius Maps — Pre-Centered Tools for 25 Cities',
     description:
       'Pre-centered radius maps for 25 major cities across 4 continents — New York, London, Paris, Tokyo, Sydney, and more.',
     url: 'https://mapwithradius.com/radius-map',
-    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'City Radius Maps — 25 Cities Across 4 Continents',
     description:
       'Pre-centered radius maps for major cities. Hand-authored coverage, local use cases, and city-specific quirks.',
-    images: OG_IMAGES,
   },
 };
 

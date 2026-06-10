@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'MapDevelopers Draw Circle Alternative',
@@ -9,25 +8,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/alternatives/mapdevelopers',
   },
-  keywords: [
-    'mapdevelopers draw circle alternative',
-    'mapdevelopers radius alternative',
-    'draw circle on map',
-    'radius map tool',
-  ],
   openGraph: {
     title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
     description:
       'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
     url: 'https://mapwithradius.com/alternatives/mapdevelopers',
-    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'MapDevelopers Draw Circle Alternative — Modern & KML-ready (2026)',
     description:
       'MapDevelopers Draw Circle Tool alternative — KML and PNG export, drag-to-resize circles on OpenStreetMap. Free, no Google API, no account, mobile-first.',
-    images: OG_IMAGES,
   },
 };
 

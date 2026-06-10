@@ -185,8 +185,9 @@ export default function HomePage() {
                       Westminster are all within range. Highlands Ranch falls just outside.
                     </p>
                     <p className="text-slate-700">
-                      <strong>Result:</strong> The radius covers approximately <span className="font-semibold">706 square miles</span> and
-                      includes 47 distinct neighborhoods and suburbs, giving them a clear visual of where to focus their home search.
+                      <strong>Result:</strong> The radius covers approximately <span className="font-semibold">706 square miles</span>
+                      {' '}(π × 15²) and includes Denver&apos;s central neighborhoods plus the inner ring
+                      suburbs named above, giving them a clear visual of where to focus their home search.
                     </p>
                   </div>
                 </div>
@@ -213,9 +214,10 @@ export default function HomePage() {
                       Red Hook, and parts of Williamsburg.
                     </p>
                     <p className="text-slate-700">
-                      <strong>Result:</strong> The delivery zone covers <span className="font-semibold">28.3 square miles</span> with
-                      an estimated population of 450,000+ residents. They can share the map link on their website
-                      so customers know if they&apos;re in range.
+                      <strong>Result:</strong> The delivery zone covers <span className="font-semibold">28.3 square miles</span>
+                      {' '}(π × 3²) — most of Brooklyn&apos;s residential core plus the closest parts of
+                      Manhattan and Williamsburg. They can share the map link on their website so
+                      customers know if they&apos;re in range.
                     </p>
                   </div>
                 </div>
@@ -272,8 +274,10 @@ export default function HomePage() {
                     </p>
                     <p className="text-slate-700">
                       <strong>Result:</strong> Rep 1 (Scottsdale) covers the northeast, Rep 2 (Tempe) covers
-                      central/southeast, Rep 3 (Glendale) covers the west. Combined coverage is <span className="font-semibold">~5,800 square miles</span>.
-                      The exported KML file can be imported into their CRM for territory tracking.
+                      central/southeast, Rep 3 (Glendale) covers the west. Combined coverage extends across
+                      the Phoenix metro out to about 25 miles from each rep&apos;s home base; the overlap
+                      pattern is visible directly on the map. The exported KML file can be imported into
+                      their CRM for territory tracking.
                     </p>
                   </div>
                 </div>
@@ -1002,6 +1006,22 @@ export default function HomePage() {
                 item: 'https://mapwithradius.com',
               },
             ],
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            '@id': 'https://mapwithradius.com/',
+            url: 'https://mapwithradius.com/',
+            name: 'Map With Radius — Draw a Radius Circle on Any Map (Free)',
+            isPartOf: { '@id': 'https://mapwithradius.com/#website' },
+            author: { '@id': 'https://mapwithradius.com/about#marko' },
+            publisher: { '@id': 'https://mapwithradius.com/#organization' },
+            dateModified: '2026-06-10',
           }),
         }}
       />

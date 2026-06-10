@@ -1,7 +1,6 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'KM Radius Map — Free Metric Radius Tool',
@@ -9,12 +8,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/km-radius-map',
   },
-  keywords: ['km radius map', 'kilometer radius tool', '5 km radius from me', '10 km radius map', 'metric radius', 'radius map europe', 'radius map australia'],
   openGraph: {
     title: 'KM Radius Map — Draw a Kilometer Radius Circle on a Map (Free)',
     description: 'Draw a radius in kilometers on any map. Free metric radius tool — enter an address and distance in km.',
     url: 'https://mapwithradius.com/km-radius-map',
-    images: OG_IMAGES,
   },
 };
 
@@ -585,11 +582,11 @@ export default function KMRadiusMapPage() {
                 advertising scripts. Map tiles come from OpenStreetMap (not Google Maps), so no
                 user data reaches Google when the embedded map loads. URL-encoded coordinates and
                 radius let you point users at specific map configurations. The main
-                mapwithradius.com site runs Google Analytics and is integrated with Google AdSense
-                (account in review with Google); in the EEA/UK/Switzerland, Google Consent Mode v2
-                keeps non-essential cookies default-denied, so analytics runs in cookieless mode
-                and, once AdSense begins serving ads, any ads in those regions will be Limited
-                (non-personalized) — but the /embed view does not inherit those scripts at all.
+                mapwithradius.com site runs Google Analytics 4 and Google AdSense; in the
+                EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential cookies
+                default-denied, so GA4 runs in cookieless mode and AdSense ads are
+                non-personalized (Limited) in those regions — but the /embed view does not
+                inherit those scripts at all.
               </div>
             </details>
 
@@ -710,7 +707,7 @@ export default function KMRadiusMapPage() {
                     name: 'Can I embed this tool in a European website? Is it GDPR compliant?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: "Yes — embed via the /embed endpoint, which loads no analytics or advertising scripts. Map tiles come from OpenStreetMap (not Google Maps), so no user data reaches Google when the embedded map loads. URL-encoded coordinates and radius let you point users at specific map configurations. The main mapwithradius.com site runs Google Analytics and is integrated with Google AdSense (account in review with Google); in the EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential cookies default-denied, so analytics runs in cookieless mode and, once AdSense begins serving ads, any ads in those regions will be Limited (non-personalized) — but the /embed view does not inherit those scripts at all.",
+                      text: "Yes — embed via the /embed endpoint, which loads no analytics or advertising scripts. Map tiles come from OpenStreetMap (not Google Maps), so no user data reaches Google when the embedded map loads. URL-encoded coordinates and radius let you point users at specific map configurations. The main mapwithradius.com site runs Google Analytics 4 and Google AdSense; in the EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential cookies default-denied, so GA4 runs in cookieless mode and AdSense ads are non-personalized (Limited) in those regions — but the /embed view does not inherit those scripts at all.",
                     },
                   },
                   {

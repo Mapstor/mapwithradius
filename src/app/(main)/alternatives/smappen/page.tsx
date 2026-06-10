@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Smappen Alternative — Free Radius Map',
@@ -9,25 +8,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/alternatives/smappen',
   },
-  keywords: [
-    'smappen alternative',
-    'oalley alternative',
-    'free radius map no signup',
-    'smappen free alternative',
-  ],
   openGraph: {
     title: 'Smappen Alternative — Free Radius Map Without a Subscription (2026)',
     description:
       'Smappen alternative for simple radius maps — free forever, no signup, no $99-$199 monthly plan. Draw circles, export KML and PNG, share URLs instantly.',
     url: 'https://mapwithradius.com/alternatives/smappen',
-    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Smappen Alternative — Free Radius Map Without a Subscription (2026)',
     description:
       'Smappen alternative for simple radius maps — free forever, no signup, no $99-$199 monthly plan. Draw circles, export KML and PNG, share URLs instantly.',
-    images: OG_IMAGES,
   },
 };
 

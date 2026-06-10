@@ -1,7 +1,6 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Distance Between Two Points Calculator',
@@ -9,12 +8,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/distance-calculator',
   },
-  keywords: ['distance between two points', 'distance between two addresses', 'distance calculator', 'as the crow flies', 'road distance'],
   openGraph: {
     title: 'Distance Between Two Points on a Map — Free Calculator',
     description: 'Measure the straight-line or driving distance between any two points on a map.',
     url: 'https://mapwithradius.com/distance-calculator',
-    images: OG_IMAGES,
   },
 };
 

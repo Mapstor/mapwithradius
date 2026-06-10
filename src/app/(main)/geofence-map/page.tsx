@@ -1,7 +1,6 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Geofence Map Tool — Create a Geofence',
@@ -10,13 +9,11 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/geofence-map',
   },
-  keywords: ['geofence map tool', 'google map geofencing', 'geofence radius', 'create geofence'],
   openGraph: {
     title: 'Geofence Map Tool — Create a Radius Geofence (Free)',
     description:
       'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
     url: 'https://mapwithradius.com/geofence-map',
-    images: OG_IMAGES,
   },
 };
 
@@ -435,11 +432,10 @@ export default function GeofenceMapPage() {
                 Your geofence coordinates and radius stay in your browser — they&apos;re encoded
                 directly into the shareable URL, never stored on our servers. Map tiles come from
                 OpenStreetMap, not Google Maps, so the tool itself doesn&apos;t send your geofence
-                placement to Google. (Note: the main mapwithradius.com site runs Google Analytics
-                for aggregate stats and uses Google AdSense (account in review with Google); in
-                the EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential cookies
-                default-denied — analytics runs in cookieless mode and, once AdSense begins
-                serving ads, any ads in those regions will be Limited (non-personalized). See our
+                placement to Google. (Note: the main mapwithradius.com site runs Google Analytics 4
+                and Google AdSense; in the EEA/UK/Switzerland, Google Consent Mode v2 keeps
+                non-essential cookies default-denied — GA4 runs in cookieless mode and AdSense ads
+                are non-personalized (Limited) in those regions. See our{' '}
                 <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a> for full details. For a cookie-free embed,
                 use the <code>/embed</code> endpoint.)
               </div>
@@ -527,7 +523,7 @@ export default function GeofenceMapPage() {
                     name: 'Does this tool send my geofence data anywhere?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: "Your geofence coordinates and radius stay in your browser — they're encoded directly into the shareable URL, never stored on our servers. Map tiles come from OpenStreetMap, not Google Maps, so the tool itself doesn't send your geofence placement to Google. The main mapwithradius.com site runs Google Analytics for aggregate stats and uses Google AdSense (account in review with Google); in the EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential cookies default-denied — analytics runs in cookieless mode and, once AdSense begins serving ads, any ads in those regions will be Limited (non-personalized). See our Privacy Policy for full details. For a cookie-free embed, use the /embed endpoint.",
+                      text: "Your geofence coordinates and radius stay in your browser — they're encoded directly into the shareable URL, never stored on our servers. Map tiles come from OpenStreetMap, not Google Maps, so the tool itself doesn't send your geofence placement to Google. The main mapwithradius.com site runs Google Analytics 4 and Google AdSense; in the EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential cookies default-denied — GA4 runs in cookieless mode and AdSense ads are non-personalized (Limited) in those regions. See our Privacy Policy for full details. For a cookie-free embed, use the /embed endpoint.",
                     },
                   },
                   {

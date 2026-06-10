@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Terms of Use',
@@ -13,13 +12,11 @@ export const metadata: Metadata = {
     url: 'https://mapwithradius.com/terms',
     title: 'Terms of Use',
     description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
-    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Terms of Use',
     description: 'Map With Radius terms of use — acceptable use, accuracy disclaimer, OpenStreetMap attribution requirements, and limitation of liability.',
-    images: OG_IMAGES,
   },
 };
 
@@ -85,7 +82,7 @@ export default function TermsPage() {
 
       <main className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Terms of Use</h1>
-        <p className="text-sm text-gray-500 mb-8">Last updated: May 29, 2026</p>
+        <p className="text-sm text-gray-500 mb-8">Last updated: June 10, 2026</p>
 
         <div className="prose prose-gray max-w-none">
           <p className="text-lg text-gray-700 mb-8">
@@ -428,13 +425,16 @@ export default function TermsPage() {
           <section id="governing-law" className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">16. Governing Law</h2>
             <p className="text-gray-700 mb-3">
-              These Terms of Use shall be governed by and construed in accordance with the laws of the
-              United States, without regard to its conflict of law provisions.
+              These Terms of Use are governed by and construed in accordance with the laws of the
+              Republic of Slovenia, without regard to its conflict-of-law provisions. For users
+              resident in the European Economic Area, the United Kingdom, or Switzerland, the
+              mandatory consumer-protection provisions of your local jurisdiction continue to apply.
             </p>
             <p className="text-gray-700">
               Any disputes arising under or in connection with these Terms shall be subject to the
-              exclusive jurisdiction of the courts located in the United States. You waive any objection
-              to the exercise of jurisdiction over you by such courts and to venue in such courts.
+              exclusive jurisdiction of the courts of the Republic of Slovenia, except where
+              mandatory consumer-protection law gives a consumer the right to bring proceedings in
+              the courts of their place of residence.
             </p>
           </section>
 

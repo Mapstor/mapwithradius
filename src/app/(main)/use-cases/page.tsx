@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
 import { CITIES } from '@/data/cities';
 
 export const metadata: Metadata = {
@@ -10,26 +9,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/use-cases',
   },
-  keywords: [
-    'radius map use cases',
-    'radius map real estate',
-    'delivery zone map',
-    'trade area radius',
-    'sales territory radius map',
-  ],
   openGraph: {
     title: 'Radius Map Use Cases',
     description:
       'How real estate agents, delivery teams, retailers, event planners, marketers, and sales managers use radius maps.',
     url: 'https://mapwithradius.com/use-cases',
-    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Radius Map Use Cases',
     description:
       'How real estate agents, delivery teams, retailers, event planners, marketers, and sales managers use radius maps.',
-    images: OG_IMAGES,
   },
 };
 

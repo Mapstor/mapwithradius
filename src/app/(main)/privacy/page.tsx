@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -13,13 +12,11 @@ export const metadata: Metadata = {
     url: 'https://mapwithradius.com/privacy',
     title: 'Privacy Policy',
     description: 'Map With Radius privacy policy — no accounts, your location stays in your browser, GDPR and CCPA compliant. How we handle analytics, advertising, and your choices.',
-    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Privacy Policy',
     description: 'Map With Radius privacy policy — no accounts, your location stays in your browser, GDPR and CCPA compliant. How we handle analytics, advertising, and your choices.',
-    images: OG_IMAGES,
   },
 };
 
@@ -64,7 +61,7 @@ export default function PrivacyPage() {
             url: 'https://mapwithradius.com/privacy',
             inLanguage: 'en',
             datePublished: '2026-02-01',
-            dateModified: '2026-06-03',
+            dateModified: '2026-06-10',
             isPartOf: {
               '@type': 'WebSite',
               name: 'Map With Radius',
@@ -85,7 +82,7 @@ export default function PrivacyPage() {
 
       <main className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
-        <p className="text-sm text-gray-500 mb-8">Last updated: June 3, 2026</p>
+        <p className="text-sm text-gray-500 mb-8">Last updated: June 10, 2026</p>
 
         <div className="prose prose-gray max-w-none">
           <p className="text-lg text-gray-700 mb-8">
@@ -140,7 +137,7 @@ export default function PrivacyPage() {
                 <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-gray-700">Location data stays in your browser</span>
+                <span className="text-gray-700">Coordinates aren&apos;t sent to our servers</span>
               </div>
               <div className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -173,19 +170,16 @@ export default function PrivacyPage() {
             <p className="text-gray-700 mb-3">
               To fund the service so it can stay free with no usage limits, we do two things that
               involve third-party cookies and require disclosure: we use Google Analytics 4 to
-              measure aggregate traffic, and we&apos;ve integrated Google AdSense to display ads
-              once the account is approved (the AdSense account is currently in review with
-              Google). Sections 3, 4, 5, and 9 of this policy describe exactly what that means,
-              what cookies are set, and how you can opt out or block them.
+              measure aggregate traffic, and we use Google AdSense to display ads. Sections 3, 4,
+              5, and 9 of this policy describe exactly what that means, what cookies are set, and
+              how you can opt out or block them.
             </p>
             <p className="text-gray-700">
               In the EEA, UK, and Switzerland, Google Consent Mode v2 keeps non-essential
               cookies default-denied, so Google Analytics 4 runs in cookieless mode for those
-              visitors. When Google AdSense begins serving ads on this site, those ads will be
-              non-personalized (Limited) in these regions due to the default-denied state. We
-              do not currently display a consent banner; we plan to add a Google-certified
-              consent management platform (CMP) so visitors there can opt in to personalized
-              analytics and advertising. See Section 14 for details on EU/UK rights.
+              visitors and AdSense ads are non-personalized (Limited). We do not currently
+              display a consent banner, which is why those defaults remain in effect. See
+              Section 14 for details on EU/UK rights.
             </p>
           </section>
 
@@ -253,9 +247,8 @@ export default function PrivacyPage() {
                 devices and browsers they use. GA4 uses cookies and assigns each browser an anonymous
                 identifier. We have configured GA4 with Google Consent Mode v2 — for visitors in
                 the EEA, UK, and Switzerland, &lsquo;analytics_storage&rsquo; is default-denied, so
-                GA4 runs in cookieless mode and sets no analytics cookies for those visitors (a
-                consent management platform is planned, which will let those visitors opt in to
-                standard analytics). We do not link GA4 data to personally identifying information, because we
+                GA4 runs in cookieless mode and sets no analytics cookies for those visitors.
+                We do not link GA4 data to personally identifying information, because we
                 don&apos;t collect any. See{' '}
                 <a
                   href="https://policies.google.com/privacy"
@@ -454,11 +447,10 @@ export default function PrivacyPage() {
               <div className="border border-gray-200 rounded-lg p-4">
                 <h3 className="font-semibold text-gray-900 mb-2">Google AdSense</h3>
                 <p className="text-gray-600 text-sm mb-2">
-                  We use Google AdSense to fund the tools. The AdSense account is currently in
-                  review with Google; once approved, AdSense will serve ads on this site, and
-                  Google and its advertising partners may use cookies to serve ads based on prior
-                  visits to this and other websites. See Section 9 for the full advertising
-                  disclosure and the personalized-advertising opt-out.
+                  We use Google AdSense to fund the tools. Google and its advertising partners
+                  may use cookies to serve ads based on prior visits to this and other websites.
+                  See Section 9 for the full advertising disclosure and the
+                  personalized-advertising opt-out.
                 </p>
                 <p className="text-gray-600 text-sm">
                   <strong>What it may collect:</strong> Cookie identifiers, IP address, ad
@@ -497,9 +489,11 @@ export default function PrivacyPage() {
               <li>The map centers on your location</li>
             </ol>
             <p className="text-gray-700 mb-3">
-              <strong>Important:</strong> Your coordinates never leave your browser. They are not sent
-              to our servers or any third party. The geolocation happens entirely on your device and
-              in your browser.
+              <strong>Important:</strong> Your coordinates are not sent to <em>our</em> servers. The
+              geolocation lookup runs entirely in your browser. The browser then uses those coordinates
+              to centre the map, which causes OpenStreetMap to receive tile requests for the surrounding
+              viewport (see Section 5 for how tile and Nominatim requests work); but no copy of your
+              coordinates reaches Map With Radius infrastructure.
             </p>
             <p className="text-gray-700">
               You can revoke location permission at any time through your browser's settings. The site
@@ -556,11 +550,9 @@ export default function PrivacyPage() {
           <section id="advertising" className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Advertising</h2>
             <p className="text-gray-700 mb-3">
-              We use Google AdSense to support the free operation of this service. The AdSense
-              account is currently in review with Google; once approved, AdSense will serve ads
-              on the site. The disclosures in this section are required by AdSense&apos;s program
-              policies and describe how advertising cookies work on Map With Radius once ads
-              are live.
+              We use Google AdSense to support the free operation of this service. The
+              disclosures in this section are required by AdSense&apos;s program policies and
+              describe how advertising cookies work on Map With Radius.
             </p>
 
             <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">How third-party advertising cookies work here</h3>
@@ -899,25 +891,6 @@ export default function PrivacyPage() {
               We will respond to privacy-related inquiries within 30 days.
             </p>
           </section>
-
-          {/* Related Pages */}
-          <div className="border-t border-gray-200 pt-8 mt-12">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Related Pages</h3>
-            <div className="flex flex-wrap gap-4">
-              <Link href="/terms" className="text-primary hover:underline">
-                Terms of Use
-              </Link>
-              <Link href="/about" className="text-primary hover:underline">
-                About Us
-              </Link>
-              <Link href="/contact" className="text-primary hover:underline">
-                Contact Us
-              </Link>
-              <Link href="/" className="text-primary hover:underline">
-                Back to Map Tool
-              </Link>
-            </div>
-          </div>
         </div>
       </main>
     </>

@@ -56,8 +56,12 @@ mapwithradius/
 │   │   ├── distance-calculator/page.tsx
 │   │   ├── geofence-map/page.tsx
 │   │   ├── alternatives/
+│   │   │   ├── page.tsx            # Hub
+│   │   │   ├── calcmaps/page.tsx
 │   │   │   ├── freemaptools/page.tsx
-│   │   │   └── mapdevelopers/page.tsx
+│   │   │   ├── mapdevelopers/page.tsx
+│   │   │   ├── maptive/page.tsx
+│   │   │   └── smappen/page.tsx
 │   │   ├── about/page.tsx
 │   │   ├── contact/page.tsx
 │   │   ├── terms/page.tsx
@@ -117,9 +121,8 @@ mapwithradius/
 
 ### Phase 3: Content Pages
 10. /radius-on-google-maps (guide)
-11. /alternatives/freemaptools
-12. /alternatives/mapdevelopers
-13. /geofence-map
+11. /alternatives (hub) + /alternatives/{calcmaps, freemaptools, mapdevelopers, maptive, smappen}
+12. /geofence-map
 
 ### Phase 4: Advanced Tools
 14. /drive-time-map (needs OSRM integration)

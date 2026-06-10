@@ -120,16 +120,14 @@ export const CITIES: City[] = [
           'A 10-mile radius covers all of Manhattan and the Bronx, most of Brooklyn and Queens, the north tip of Staten Island, and the inner New Jersey ring (Newark, Jersey City, Bayonne).',
         includes: [
           'All five boroughs except southern Staten Island and far Queens',
-          'Newark and Newark Liberty Airport',
+          'Newark (right at the 10-mile edge)',
           'LaGuardia Airport',
-          'Yonkers (just inside)',
           'Most of Hudson County, NJ',
         ],
         excludes: [
+          'Newark Liberty Airport (~11 mi southwest — just past the edge)',
+          'Yonkers (~13 mi north)',
           'JFK Airport (~13 mi southeast)',
-          'Hempstead and central Long Island',
-          'White Plains',
-          'Stamford, CT',
         ],
       },
       {
@@ -137,20 +135,21 @@ export const CITIES: City[] = [
         unit: 'miles',
         label: '25 miles',
         description:
-          'A 25-mile radius pulls in all five boroughs, JFK, central Long Island out to Hempstead and Mineola, Westchester (White Plains, Yonkers), and most of Northern New Jersey. Just nicks Stamford, Connecticut.',
+          'A 25-mile radius pulls in all five boroughs, JFK, central Long Island out to Hempstead and Mineola, Westchester (White Plains, Yonkers), and most of Northern New Jersey. Stamford, CT and Morristown, NJ sit just past the edge.',
         includes: [
           'All NYC airports (JFK, LaGuardia, Newark)',
           'Hempstead, Mineola, Levittown',
           'White Plains and Yonkers',
-          'Stamford, CT (just inside the eastern edge)',
-          'Most of Northern New Jersey including Paterson and Morristown',
+          'Most of Northern New Jersey including Paterson',
           'North Shore Long Island to Glen Cove',
         ],
         excludes: [
-          'New Haven, CT',
-          'The Hamptons',
-          'Princeton, NJ',
-          'Poughkeepsie',
+          'Stamford, CT (~31 mi northeast — past the edge)',
+          'Morristown, NJ (~26 mi west — just past the edge)',
+          'New Haven, CT (~75 mi northeast)',
+          'The Hamptons (~85+ mi east)',
+          'Princeton, NJ (~45 mi southwest)',
+          'Poughkeepsie (~75 mi north)',
         ],
       },
       {
@@ -158,19 +157,21 @@ export const CITIES: City[] = [
         unit: 'miles',
         label: '50 miles',
         description:
-          'A 50-mile radius reaches all of Long Island except the East End, central New Jersey down to Trenton\'s outskirts, southern Connecticut to Bridgeport, and the Hudson Valley up to Newburgh. The Hamptons, New Haven, and Philadelphia stay just outside.',
+          'A 50-mile radius reaches all of Long Island except the East End, central New Jersey down to Princeton, most of Fairfield County up to the Bridgeport approaches, and the lower Hudson Valley to about Beacon. Bridgeport, Newburgh, Trenton, and Easton sit just past the edge.',
         includes: [
           'Most of Long Island west of Riverhead',
-          'Trenton, NJ approaches and Princeton',
-          'Bridgeport, CT and most of Fairfield County',
-          'Newburgh and the lower Hudson Valley',
-          'Eastern Pennsylvania near Easton',
+          'Princeton, NJ (~45 mi southwest)',
+          'Most of Fairfield County, CT (Stamford, Norwalk, Westport)',
+          'The lower Hudson Valley up to about Beacon',
         ],
         excludes: [
-          'The Hamptons (Southampton is ~85 mi)',
+          'Bridgeport, CT (~51 mi northeast — just past the edge)',
+          'Newburgh, NY (~52 mi north — just past the edge)',
+          'Trenton, NJ (~55 mi southwest)',
+          'Easton, PA (~65 mi west)',
+          'The Hamptons (Southampton ~85 mi)',
           'New Haven, CT (~75 mi)',
           'Philadelphia (~95 mi)',
-          'Hartford, CT (~110 mi)',
         ],
       },
     ],
@@ -221,12 +222,12 @@ export const CITIES: City[] = [
       {
         question: 'How big is a 5-mile radius in New York City?',
         answer:
-          'A 5-mile radius from Times Square covers nearly all of Manhattan from Battery Park to 116th Street, plus the closest parts of Brooklyn (Williamsburg, DUMBO), Queens (Long Island City, Astoria), and across the Hudson to Hoboken and Jersey City. About a third of the area inside the circle is water.',
+          'A 5-mile radius from Times Square covers nearly all of Manhattan from Battery Park to about 116th Street, plus the closest parts of Brooklyn (Williamsburg, DUMBO), Queens (Long Island City, Astoria), and across the Hudson to Hoboken and Jersey City. About a third of the area inside the circle is water.',
       },
       {
         question: 'What\'s within 10 miles of NYC?',
         answer:
-          'A 10-mile radius from midtown captures all of Manhattan and the Bronx, most of Brooklyn and Queens, the north tip of Staten Island, and the inner New Jersey ring including Newark, Jersey City, and Bayonne. Newark Airport and LaGuardia are inside; JFK, at about 13 miles southeast, is just outside.',
+          'A 10-mile radius from midtown captures all of Manhattan and the Bronx, most of Brooklyn and Queens, the north tip of Staten Island, and the inner New Jersey ring including Newark, Jersey City, and Bayonne. LaGuardia is inside; Newark Liberty Airport at ~11 miles and JFK at ~13 miles both fall just past the edge.',
       },
       {
         question: 'What\'s the standard radius for NYC real-estate comps?',
@@ -254,7 +255,7 @@ export const CITIES: City[] = [
           'Use the Drive Time Map for car commutes. For subway and bus, the straight-line radius is misleading — the subway lets a 5-mile radius become a 20-minute commute, while bus-only routes can stretch a 2-mile radius into 45 minutes. Most apartment seekers draw the radius as a "no further" filter and then verify with a transit map.',
       },
     ],
-    lastUpdated: '2026-05-04',
+    lastUpdated: '2026-06-10',
   },
   {
     slug: 'los-angeles',
@@ -1924,8 +1925,8 @@ export const CITIES: City[] = [
           'Tokyo Tower',
         ],
         excludes: [
-          'Tokyo Skytree (~7 km east)',
-          'Haneda Airport (~14 km south)',
+          'Tokyo Skytree (~10 km east)',
+          'Haneda Airport (~17 km south)',
           'Disneyland Tokyo (~18 km east)',
           'Setagaya residential west (mostly outside)',
         ],
@@ -1935,7 +1936,7 @@ export const CITIES: City[] = [
         unit: 'kilometers',
         label: '10 km',
         description:
-          'A 10 km radius from Shinjuku extends well past the Yamanote Line into Setagaya, Ota, Sumida, Edogawa\'s western edge, and Suginami. Tokyo Skytree is inside; Haneda Airport sits just outside the southern edge.',
+          'A 10 km radius from Shinjuku extends well past the Yamanote Line into Setagaya, Ota, Sumida, Edogawa\'s western edge, and Suginami. Tokyo Skytree sits right at the eastern edge (~10 km); Haneda Airport is about 17 km south, well outside.',
         includes: [
           'All Yamanote-bounded central Tokyo',
           'Setagaya, Suginami, Nakano',
@@ -1945,7 +1946,7 @@ export const CITIES: City[] = [
           'Most of the 23 special wards',
         ],
         excludes: [
-          'Haneda Airport (~14 km, just outside)',
+          'Haneda Airport (~17 km south)',
           'Disneyland Tokyo (~18 km east)',
           'Yokohama (~28 km south)',
           'Narita Airport (~60 km east)',
@@ -2009,7 +2010,7 @@ export const CITIES: City[] = [
       {
         title: 'Disney and Skytree day-trip planning',
         description:
-          'Tokyo Skytree (~7 km from Shinjuku) and Tokyo Disneyland (~18 km east in Chiba) sit inside a 25 km radius from central Tokyo. Hotel and tour operators use a 25 km radius to define "Tokyo-area attraction reach" for one-day itineraries.',
+          'Tokyo Skytree (~10 km from Shinjuku) and Tokyo Disneyland (~18 km east in Chiba) sit inside a 25 km radius from central Tokyo. Hotel and tour operators use a 25 km radius to define "Tokyo-area attraction reach" for one-day itineraries.',
         recommendedRadius: '25 km for Tokyo attraction-area itineraries',
       },
       {
@@ -2045,7 +2046,7 @@ export const CITIES: City[] = [
       {
         question: 'What\'s within 10 km of Tokyo?',
         answer:
-          'A 10 km radius from Shinjuku extends well past the Yamanote Line into Setagaya, Suginami, Sumida, Koto, and most of the 23 special wards. Tokyo Skytree is inside; Haneda Airport is about 14 km south, just outside.',
+          'A 10 km radius from Shinjuku extends well past the Yamanote Line into Setagaya, Suginami, Sumida, Koto, and most of the 23 special wards. Tokyo Skytree sits right at the eastern edge (~10 km); Haneda Airport is about 17 km south, well outside.',
       },
       {
         question: 'What is the Yamanote Line and how does it relate to a Tokyo radius?',
@@ -2055,7 +2056,7 @@ export const CITIES: City[] = [
       {
         question: 'Does a 25 km radius cover Tokyo Disneyland?',
         answer:
-          'Yes. Tokyo Disneyland sits in Maihama (Chiba prefecture) about 18 km east of Shinjuku, comfortably inside a 25 km radius. Haneda Airport (14 km south) and the inner edges of Yokohama and Kawasaki are also inside.',
+          'Yes. Tokyo Disneyland sits in Maihama (Chiba prefecture) about 18 km east of Shinjuku, comfortably inside a 25 km radius. Haneda Airport (~17 km south) and the inner edges of Yokohama and Kawasaki are also inside.',
       },
       {
         question: 'How much of Greater Tokyo fits inside a 50 km radius?',
@@ -2068,7 +2069,7 @@ export const CITIES: City[] = [
           'Because Tokyo\'s rail network is so dense and fast that direct lines collapse distance, while indirect routes balloon it. A 10 km journey on the Yamanote takes about 18 minutes, but a 10 km journey across two unconnected private lines can take an hour with transfers. Always pair radius with a rail-aware journey planner for Tokyo.',
       },
     ],
-    lastUpdated: '2026-05-04',
+    lastUpdated: '2026-06-10',
   },
   {
     slug: 'sydney',

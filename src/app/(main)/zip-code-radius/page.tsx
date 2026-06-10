@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
+import zipDensity from '@/data/zip-density.json';
 
 export const metadata: Metadata = {
   title: 'Zip Code Radius Map — Free Tool',
@@ -9,12 +9,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/zip-code-radius',
   },
-  keywords: ['zip code radius tool', 'radius around zip code', 'zip radius map', 'zip code finder radius', 'zip codes within radius'],
   openGraph: {
     title: 'Zip Code Radius Map — Find Zip Codes Within a Radius (Free)',
     description: 'Enter a zip code and distance to find all zip codes within that radius. Export the list as CSV.',
     url: 'https://mapwithradius.com/zip-code-radius',
-    images: OG_IMAGES,
   },
 };
 
@@ -216,6 +214,11 @@ export default function ZipCodeRadiusPage() {
       <section className="section-gray py-12 lg:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="section-heading mb-8">5 Real-World Examples</h2>
+          <p className="text-sm text-slate-500 mb-6">
+            ZIP counts in the examples below are computed live from this site&apos;s 33,784-ZIP
+            database; population totals are summed from the SimpleMaps population field for ZIPs
+            inside each radius. Verified {zipDensity.generated}.
+          </p>
 
           <div className="grid gap-6">
             {/* Example 1: Direct Mail Marketing */}
@@ -243,11 +246,11 @@ export default function ZipCodeRadiusPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Zip codes found:</span>
-                      <span className="font-medium text-blue-600">87 zip codes</span>
+                      <span className="font-medium text-blue-600">59 zip codes</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">Est. households:</span>
-                      <span className="font-medium">~425,000</span>
+                      <span className="text-slate-600">Est. population:</span>
+                      <span className="font-medium">~2.1 million</span>
                     </div>
                   </div>
                   <p className="text-sm text-slate-600 mt-3">
@@ -275,15 +278,15 @@ export default function ZipCodeRadiusPage() {
                   <div className="bg-white/60 rounded-lg p-4 space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Rep 1 (Dallas):</span>
-                      <span className="font-medium">75201 → 312 zip codes</span>
+                      <span className="font-medium">75201 → 260 zip codes</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Rep 2 (Houston):</span>
-                      <span className="font-medium">77002 → 298 zip codes</span>
+                      <span className="font-medium">77002 → 224 zip codes</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Rep 3 (Austin):</span>
-                      <span className="font-medium">78701 → 186 zip codes</span>
+                      <span className="font-medium">78701 → 119 zip codes</span>
                     </div>
                   </div>
                   <p className="text-sm text-slate-600 mt-3">
@@ -319,7 +322,7 @@ export default function ZipCodeRadiusPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Zip codes covered:</span>
-                      <span className="font-medium text-orange-600">42 zip codes</span>
+                      <span className="font-medium text-orange-600">44 zip codes</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Includes:</span>
@@ -350,19 +353,19 @@ export default function ZipCodeRadiusPage() {
                   <div className="bg-white/60 rounded-lg p-4 space-y-2">
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Main Hospital (Chicago):</span>
-                      <span className="font-medium">60611 → 428 zip codes</span>
+                      <span className="font-medium">60611 → 223 zip codes</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Suburban Campus:</span>
-                      <span className="font-medium">60515 → 312 zip codes</span>
+                      <span className="font-medium">60515 → 262 zip codes</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Overlap (both serve):</span>
-                      <span className="font-medium">187 zip codes</span>
+                      <span className="font-medium">203 zip codes</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">Gap (neither serves):</span>
-                      <span className="font-medium text-red-600">23 zip codes identified</span>
+                      <span className="text-slate-600">Union (either serves):</span>
+                      <span className="font-medium text-red-600">282 zip codes</span>
                     </div>
                   </div>
                   <p className="text-sm text-slate-600 mt-3">
@@ -398,11 +401,11 @@ export default function ZipCodeRadiusPage() {
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Protected zip codes:</span>
-                      <span className="font-medium text-rose-600">67 zip codes</span>
+                      <span className="font-medium text-rose-600">32 zip codes</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Est. population:</span>
-                      <span className="font-medium">~1.2 million</span>
+                      <span className="font-medium">~900,000</span>
                     </div>
                   </div>
                   <p className="text-sm text-slate-600 mt-3">
@@ -561,67 +564,28 @@ export default function ZipCodeRadiusPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-3 text-sm text-slate-900">New York City</td>
-                  <td className="px-4 py-3 text-sm text-slate-600">10001</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">187</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">412</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">892</td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-3 text-sm text-slate-900">Los Angeles</td>
-                  <td className="px-4 py-3 text-sm text-slate-600">90012</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">156</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">387</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">612</td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-3 text-sm text-slate-900">Chicago</td>
-                  <td className="px-4 py-3 text-sm text-slate-600">60601</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">142</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">356</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">598</td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-3 text-sm text-slate-900">Houston</td>
-                  <td className="px-4 py-3 text-sm text-slate-600">77002</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">98</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">245</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">412</td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-3 text-sm text-slate-900">Phoenix</td>
-                  <td className="px-4 py-3 text-sm text-slate-600">85004</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">76</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">178</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">287</td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-3 text-sm text-slate-900">Philadelphia</td>
-                  <td className="px-4 py-3 text-sm text-slate-600">19102</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">134</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">312</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">567</td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-3 text-sm text-slate-900">San Antonio</td>
-                  <td className="px-4 py-3 text-sm text-slate-600">78205</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">54</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">112</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">198</td>
-                </tr>
-                <tr className="hover:bg-slate-50">
-                  <td className="px-4 py-3 text-sm text-slate-900">Dallas</td>
-                  <td className="px-4 py-3 text-sm text-slate-600">75201</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">112</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">278</td>
-                  <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">456</td>
-                </tr>
+                {zipDensity.metros.map((m) => (
+                  <tr key={m.centerZip} className="hover:bg-slate-50">
+                    <td className="px-4 py-3 text-sm text-slate-900">{m.name}</td>
+                    <td className="px-4 py-3 text-sm text-slate-600">{m.centerZip}</td>
+                    <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">
+                      {m.counts['10'].toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">
+                      {m.counts['25'].toLocaleString()}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-slate-900 text-right font-medium">
+                      {m.counts['50'].toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
           <p className="text-sm text-slate-500 mt-4 text-center">
-            Zip code counts are approximate and based on ZCTA boundaries. Density varies by urban development patterns.
+            Counts computed from this site&apos;s ZIP database ({zipDensity.source}). Distances are
+            haversine from each metro&apos;s downtown ZIP centroid. Last verified{' '}
+            {zipDensity.generated}.
           </p>
         </div>
       </section>
@@ -634,20 +598,25 @@ export default function ZipCodeRadiusPage() {
           <div className="prose prose-slate max-w-none">
             <h3>What is a ZCTA?</h3>
             <p>
-              The US Census Bureau creates <strong>Zip Code Tabulation Areas (ZCTAs)</strong> to represent zip code
-              boundaries. Unlike USPS zip codes (which are delivery routes), ZCTAs are geographic areas with defined
-              boundaries. This tool uses ZCTA data to show zip code boundaries on the map.
+              The US Census Bureau creates <strong>Zip Code Tabulation Areas (ZCTAs)</strong> to approximate
+              zip code boundaries with polygons. Unlike USPS zip codes (which are delivery routes, not geographic
+              areas), ZCTAs let researchers tie census data to zip codes. This tool uses the centroid (center
+              point latitude/longitude) of each ZCTA — provided by the SimpleMaps US ZIPs Free dataset — to test
+              whether a zip code falls within your radius.
             </p>
 
-            <h3>Whole Zip Codes Only</h3>
+            <h3>How a ZIP gets included</h3>
             <p>
-              A zip code radius search returns <strong>whole zip codes</strong> — it doesn&apos;t split a zip code in half.
-              If any part of a zip code boundary falls within your radius, the entire zip code is included. This means:
+              Each ZIP in the database has a single center point. The radius test compares that point against
+              your circle:
             </p>
             <ul>
-              <li>The actual covered area may extend slightly beyond your specified radius</li>
-              <li>Border zip codes are included even if only a small portion overlaps</li>
-              <li>This is intentional for mailing and marketing purposes (you can&apos;t mail to &ldquo;half&rdquo; a zip code)</li>
+              <li>If a ZIP&apos;s center point falls within the radius, the entire ZIP is included.</li>
+              <li>If the center point sits outside the radius, the ZIP is excluded — even if part of its actual
+                area would overlap the circle. We don&apos;t render polygon boundaries, so we can&apos;t test
+                for partial overlap.</li>
+              <li>For mailing or marketing use cases where any boundary overlap matters, draw your radius a
+                little wider than the strict cutoff (1–2 miles in dense urban areas, more in rural ones).</li>
             </ul>
 
             <h3>When to Use Circular Radius Instead</h3>
@@ -675,8 +644,8 @@ export default function ZipCodeRadiusPage() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="bg-white rounded-lg p-4 shadow-sm">
-              <div className="text-3xl font-bold text-accent mb-1">41,700+</div>
-              <div className="text-slate-600 text-sm">Active US zip codes</div>
+              <div className="text-3xl font-bold text-accent mb-1">33,784</div>
+              <div className="text-slate-600 text-sm">US ZIPs in this tool&apos;s database</div>
             </div>
             <div className="bg-white rounded-lg p-4 shadow-sm">
               <div className="text-3xl font-bold text-accent mb-1">5</div>
@@ -763,9 +732,12 @@ export default function ZipCodeRadiusPage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                The tool includes all active US zip codes (approximately 41,700). Data is sourced from the US Census
-                Bureau&apos;s ZCTA (Zip Code Tabulation Areas) dataset, which is updated periodically to reflect new
-                developments and boundary changes.
+                The database contains 33,784 ZIP code centroids covering all 50 states, DC, and US territories
+                (American Samoa, Guam, Northern Marianas, Puerto Rico, US Virgin Islands). The source is the
+                SimpleMaps US ZIPs Free dataset, built from the US Census Bureau&apos;s ZCTA file plus
+                parent-ZCTA crosswalk entries. A small share of USPS ZIPs — single-recipient business ZIPs,
+                some PO-box-only ZIPs, and retired ZIPs — lack a ZCTA and are not in the dataset. If you
+                enter one of those, the tool tells you so rather than silently returning nothing.
               </div>
             </details>
 
@@ -802,16 +774,16 @@ export default function ZipCodeRadiusPage() {
 
             <details className="faq-card">
               <summary>
-                Why does my result include zip codes outside the circle?
+                Why are some borderline ZIP codes excluded from my results?
                 <svg className="w-5 h-5 faq-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
               </summary>
               <div className="faq-content">
-                Zip codes are included if <strong>any part</strong> of their boundary touches or overlaps your radius
-                circle. Since zip codes can&apos;t be split, a zip code that straddles the edge of your radius will be
-                fully included. The &ldquo;distance&rdquo; shown is from the zip code&apos;s center point, which may be
-                inside or outside your radius.
+                Each ZIP has a single center point (centroid) in the dataset. The radius test uses that one
+                point: if the center is inside the circle, the ZIP is included; if it&apos;s outside, the ZIP
+                is excluded — even if part of its actual area would overlap your radius. To capture edge ZIPs,
+                increase your radius by a small margin (1–2 miles in dense urban areas, more in rural ones).
               </div>
             </details>
 
@@ -823,9 +795,10 @@ export default function ZipCodeRadiusPage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                The center point (centroid) is calculated as the geographic center of the zip code&apos;s boundary
-                polygon. For irregularly shaped zip codes, this may not align with the &ldquo;main&rdquo; town or
-                commercial area, but it provides a consistent reference point for distance calculations.
+                The center point (centroid) comes from the SimpleMaps US ZIPs Free dataset, which derives it
+                from the ZIP&apos;s ZCTA polygon (or, for ZIPs without their own ZCTA, the centroid of the
+                parent ZCTA). For irregularly shaped ZIPs this may not align with the &ldquo;main&rdquo; town
+                or commercial area, but it provides a consistent reference point for distance calculations.
               </div>
             </details>
 
@@ -839,9 +812,10 @@ export default function ZipCodeRadiusPage() {
               <div className="faq-content">
                 <strong>ZIP codes</strong> are USPS mail delivery routes — they define where mail carriers go, not
                 specific areas. <strong>ZCTAs</strong> (Zip Code Tabulation Areas) are Census Bureau approximations
-                that create actual boundary polygons. This tool uses ZCTAs because they have defined boundaries that
-                can be drawn on a map. In most cases, ZCTAs closely match ZIP codes, but some differences exist in
-                rural and high-density urban areas.
+                that create boundary polygons around zip code areas. This tool uses ZCTA-derived center points (the
+                latitude/longitude given to each zip code by the SimpleMaps US ZIPs Free dataset) for radius
+                testing. In most cases, ZCTAs closely match ZIP codes; rural areas and dense urban cores have the
+                most divergence.
               </div>
             </details>
 
@@ -870,9 +844,10 @@ export default function ZipCodeRadiusPage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Yes. The ZCTA data is from the US Census Bureau and is public domain. You can export and use the zip
-                code lists for commercial purposes including marketing campaigns, sales territory planning, and
-                business analysis without any licensing fees.
+                Yes. The underlying ZCTA data is from the US Census Bureau and is public domain; the centroids
+                used by this tool come from the SimpleMaps US ZIPs Free release, which permits commercial use
+                with attribution. You can export and use the zip code lists for marketing campaigns, sales
+                territory planning, and business analysis.
               </div>
             </details>
           </div>
@@ -890,7 +865,7 @@ export default function ZipCodeRadiusPage() {
                     name: 'How many zip codes are in the database?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: "The tool includes all active US zip codes (approximately 41,700). Data is sourced from the US Census Bureau's ZCTA (Zip Code Tabulation Areas) dataset.",
+                      text: "The database contains 33,784 ZIP code centroids covering all 50 states, DC, and US territories. Source: SimpleMaps US ZIPs Free, built from US Census ZCTAs plus parent-ZCTA crosswalk entries. Single-recipient business, some PO-box-only, and retired ZIPs are not included.",
                     },
                   },
                   {
@@ -911,10 +886,10 @@ export default function ZipCodeRadiusPage() {
                   },
                   {
                     '@type': 'Question',
-                    name: 'Why does my result include zip codes outside the circle?',
+                    name: 'Why are some borderline ZIP codes excluded from my results?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: "Zip codes are included if any part of their boundary touches or overlaps your radius circle. Since zip codes can't be split, a zip code that straddles the edge will be fully included.",
+                      text: "Each ZIP has one center point in the dataset. The radius test uses that point: if it's inside the circle, the ZIP is included; if it's outside, the ZIP is excluded. To capture borderline ZIPs whose polygon partially overlaps your radius, increase the radius slightly.",
                     },
                   },
                   {
@@ -922,7 +897,7 @@ export default function ZipCodeRadiusPage() {
                     name: 'How is the center of a zip code determined?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: "The center point (centroid) is calculated as the geographic center of the zip code's boundary polygon.",
+                      text: "The center point (centroid) comes from the SimpleMaps US ZIPs Free dataset, derived from the ZIP's ZCTA polygon (or, for ZIPs without their own ZCTA, the centroid of the parent ZCTA).",
                     },
                   },
                   {
@@ -930,7 +905,7 @@ export default function ZipCodeRadiusPage() {
                     name: "What's the difference between ZIP codes and ZCTAs?",
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: 'ZIP codes are USPS mail delivery routes. ZCTAs (Zip Code Tabulation Areas) are Census Bureau approximations that create actual boundary polygons. This tool uses ZCTAs.',
+                      text: 'ZIP codes are USPS mail delivery routes. ZCTAs (Zip Code Tabulation Areas) are Census Bureau approximations that create boundary polygons around zip code areas. This tool uses ZCTA-derived center points (latitude/longitude) for radius testing.',
                     },
                   },
                   {
@@ -946,7 +921,7 @@ export default function ZipCodeRadiusPage() {
                     name: 'Is the data free to use commercially?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: 'Yes. The ZCTA data is from the US Census Bureau and is public domain. You can export and use the zip code lists for commercial purposes.',
+                      text: 'Yes. Underlying ZCTA data is from the US Census Bureau (public domain); centroids come from the SimpleMaps US ZIPs Free release, which permits commercial use with attribution.',
                     },
                   },
                 ],

@@ -1,0 +1,83 @@
+{
+  "generated": "2026-06-10",
+  "source": "Computed from SimpleMaps US ZIPs Free (33783 ZIPs)",
+  "radiiMi": [
+    10,
+    25,
+    50
+  ],
+  "metros": [
+    {
+      "name": "New York City",
+      "centerZip": "10001",
+      "counts": {
+        "10": 196,
+        "25": 512,
+        "50": 860
+      }
+    },
+    {
+      "name": "Los Angeles",
+      "centerZip": "90012",
+      "counts": {
+        "10": 96,
+        "25": 277,
+        "50": 425
+      }
+    },
+    {
+      "name": "Chicago",
+      "centerZip": "60601",
+      "counts": {
+        "10": 50,
+        "25": 187,
+        "50": 345
+      }
+    },
+    {
+      "name": "Houston",
+      "centerZip": "77002",
+      "counts": {
+        "10": 52,
+        "25": 141,
+        "50": 224
+      }
+    },
+    {
+      "name": "Phoenix",
+      "centerZip": "85004",
+      "counts": {
+        "10": 35,
+        "25": 112,
+        "50": 147
+      }
+    },
+    {
+      "name": "Philadelphia",
+      "centerZip": "19102",
+      "counts": {
+        "10": 104,
+        "25": 251,
+        "50": 525
+      }
+    },
+    {
+      "name": "San Antonio",
+      "centerZip": "78205",
+      "counts": {
+        "10": 38,
+        "25": 82,
+        "50": 130
+      }
+    },
+    {
+      "name": "Dallas",
+      "centerZip": "75201",
+      "counts": {
+        "10": 45,
+        "25": 143,
+        "50": 260
+      }
+    }
+  ]
+}

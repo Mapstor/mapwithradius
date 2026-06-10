@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Radius Map Tool Alternatives Compared',
@@ -9,25 +8,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/alternatives',
   },
-  keywords: [
-    'radius map alternatives',
-    'best radius map tool',
-    'free radius map',
-    'map radius tool comparison',
-  ],
   openGraph: {
     title: 'Radius Map Tool Alternatives — Compared Side by Side (2026)',
     description:
       'Compare six radius map tools — FreeMapTools, MapDevelopers, CalcMaps, Smappen, Maptive, and Map With Radius. Pricing, features, and which fits your use case.',
     url: 'https://mapwithradius.com/alternatives',
-    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Radius Map Tool Alternatives — Compared Side by Side (2026)',
     description:
       'Compare six radius map tools — FreeMapTools, MapDevelopers, CalcMaps, Smappen, Maptive, and Map With Radius. Pricing, features, and which fits your use case.',
-    images: OG_IMAGES,
   },
 };
 

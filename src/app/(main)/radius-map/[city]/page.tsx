@@ -3,7 +3,6 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CITIES, getCityBySlug, getNearbyCitiesByRegion } from '@/data/cities';
-import { OG_IMAGES } from '@/lib/og';
 
 type Params = { city: string };
 
@@ -24,25 +23,15 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
     title,
     description,
     alternates: { canonical: `/radius-map/${city.slug}` },
-    keywords: [
-      `radius map ${city.name.toLowerCase()}`,
-      `${city.name.toLowerCase()} radius`,
-      `5 ${city.defaultUnit} radius ${city.name.toLowerCase()}`,
-      `10 ${city.defaultUnit} radius ${city.name.toLowerCase()}`,
-      `what's within ${city.name.toLowerCase()}`,
-      altNames,
-    ],
     openGraph: {
       title,
       description,
       url,
-      images: OG_IMAGES,
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: OG_IMAGES,
     },
   };
 }
@@ -127,6 +116,25 @@ export default function CityRadiusMapPage({ params }: { params: Params }) {
                 longitude: city.lng,
               },
             },
+          }),
+        }}
+      />
+
+      {/* Article — editorial content authored by Marko Visic */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Article',
+            '@id': `https://mapwithradius.com/radius-map/${city.slug}#article`,
+            headline: `Radius Map of ${city.name}`,
+            description: `Hand-authored radius coverage for ${city.name}, ${city.country} — mile-by-mile (or km-by-km) lists of what's inside and just outside the most-searched circle sizes from ${city.centralLandmark}.`,
+            datePublished: city.lastUpdated,
+            dateModified: city.lastUpdated,
+            author: { '@id': 'https://mapwithradius.com/about#marko' },
+            publisher: { '@id': 'https://mapwithradius.com/#organization' },
+            mainEntityOfPage: { '@id': `https://mapwithradius.com/radius-map/${city.slug}` },
           }),
         }}
       />

@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Contact Us',
@@ -13,13 +12,11 @@ export const metadata: Metadata = {
     url: 'https://mapwithradius.com/contact',
     title: 'Contact Us',
     description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
-    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Contact Us',
     description: 'Contact Map With Radius for questions, bug reports, feature requests, or business inquiries. We typically respond within 48 hours.',
-    images: OG_IMAGES,
   },
 };
 
@@ -106,7 +103,7 @@ export default function ContactPage() {
                 name: 'Can I embed the map on my website?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'We\'re working on an embeddable widget. In the meantime, you can share maps using the "Copy Link" feature, which creates a URL that opens the map with your exact configuration.',
+                  text: 'Yes. The /embed endpoint loads no analytics or advertising scripts and accepts URL-encoded coordinates and radius — paste it in an iframe with your map configuration. For a regular link instead of an embed, use the "Copy Link" feature on any tool.',
                 },
               },
               {
@@ -122,7 +119,7 @@ export default function ContactPage() {
                 name: 'Do you store my data?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: "We don't require accounts, don't track your location on our servers, and don't store your map data — everything happens in your browser. When you share a link, the coordinates are encoded directly in the URL, so nothing is saved on our side. The site runs Google Analytics and is integrated with Google AdSense (account in review with Google); these set cookies (subject to Google Consent Mode v2 in the EEA/UK/Switzerland). See our Privacy Policy for the full picture.",
+                  text: "We don't require accounts, don't track your location on our servers, and don't store your map data — everything happens in your browser. When you share a link, the coordinates are encoded directly in the URL, so nothing is saved on our side. The site uses Google Analytics 4 and Google AdSense; these set cookies (default-denied for EEA/UK/Switzerland visitors via Google Consent Mode v2 until consent). See our Privacy Policy for the full picture.",
                 },
               },
             ],
@@ -153,6 +150,9 @@ export default function ContactPage() {
             </svg>
             contact@mapwithradius.com
           </a>
+          <p className="text-sm text-gray-600 mt-4">
+            Operated by Marko Visic, Slovenia.
+          </p>
         </div>
 
         {/* Contact Categories */}
@@ -231,6 +231,31 @@ export default function ContactPage() {
               <a href="mailto:info@mapwithradius.com" className="text-primary hover:underline">info@mapwithradius.com</a>
             </p>
           </div>
+
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center mb-4">
+              <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">Privacy &amp; Data Protection</h3>
+            <p className="text-gray-600 text-sm mb-3">
+              For GDPR, UK GDPR, or CCPA/CPRA enquiries — including:
+            </p>
+            <ul className="text-sm text-gray-600 space-y-1 list-disc list-inside">
+              <li>Access, rectification, or deletion requests</li>
+              <li>Opt-out from personalized advertising</li>
+              <li>Cookie or consent questions</li>
+              <li>Reporting a data incident</li>
+            </ul>
+            <p className="text-sm text-gray-600 mt-3">
+              Email{' '}
+              <a href="mailto:contact@mapwithradius.com" className="text-primary hover:underline">contact@mapwithradius.com</a>{' '}
+              with the subject line &ldquo;Privacy&rdquo; for prioritized handling. See the{' '}
+              <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link>{' '}
+              for the full list of rights and opt-out links.
+            </p>
+          </div>
         </div>
 
         {/* FAQ Before Contacting */}
@@ -270,8 +295,10 @@ export default function ContactPage() {
             <div className="border border-gray-200 rounded-lg p-5">
               <h3 className="font-semibold text-gray-900 mb-2">Can I embed the map on my website?</h3>
               <p className="text-gray-600 text-sm">
-                We're working on an embeddable widget. In the meantime, you can share maps using the
-                "Copy Link" feature, which creates a URL that opens the map with your exact configuration.
+                Yes. The <code>/embed</code> endpoint loads no analytics or advertising scripts and
+                accepts URL-encoded coordinates and radius — paste it in an iframe with your map
+                configuration. For a regular link instead of an embed, use the &ldquo;Copy Link&rdquo;
+                feature on any tool.
               </p>
             </div>
 
@@ -290,9 +317,9 @@ export default function ContactPage() {
                 We don't require accounts, don't track your location on our servers, and don't
                 store your map data — everything happens in your browser. When you share a link,
                 the coordinates are encoded directly in the URL, so nothing is saved on our side.
-                The site runs Google Analytics and is integrated with Google AdSense (account in
-                review with Google); these set cookies (subject to Google Consent Mode v2 in the
-                EEA/UK/Switzerland). See our{' '}
+                The site uses Google Analytics 4 and Google AdSense; these set cookies
+                (default-denied for EEA/UK/Switzerland visitors via Google Consent Mode v2 until
+                consent). See our{' '}
                 <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> for the full picture.
               </p>
             </div>

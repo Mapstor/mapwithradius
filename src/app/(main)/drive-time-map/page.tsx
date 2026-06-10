@@ -1,7 +1,6 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'Drive Time Map — Free Isochrone Tool',
@@ -9,12 +8,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/drive-time-map',
   },
-  keywords: ['drive time radius map', 'isochrone map', 'travel time map', 'commute time map', 'driving distance map', 'drive time map'],
   openGraph: {
     title: 'Drive Time Map — See How Far You Can Drive, Walk, or Cycle (Free)',
     description: 'Enter a location and time limit to see how far you can actually travel.',
     url: 'https://mapwithradius.com/drive-time-map',
-    images: OG_IMAGES,
   },
 };
 

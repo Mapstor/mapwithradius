@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { OG_IMAGES } from '@/lib/og';
 
 export const metadata: Metadata = {
   title: 'About Our Free Radius Map Tools',
@@ -13,13 +12,11 @@ export const metadata: Metadata = {
     url: 'https://mapwithradius.com/about',
     title: 'About Our Free Radius Map Tools',
     description: 'Map With Radius — free, privacy-respecting mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
-    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
     title: 'About Our Free Radius Map Tools',
     description: 'Map With Radius — free, privacy-respecting mapping tools built on Leaflet and OpenStreetMap. Our mission, full tool lineup, tech stack, and accuracy notes.',
-    images: OG_IMAGES,
   },
 };
 
@@ -58,17 +55,60 @@ export default function AboutPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'Organization',
+            '@id': 'https://mapwithradius.com/#organization',
             name: 'Map With Radius',
             url: 'https://mapwithradius.com',
             logo: 'https://mapwithradius.com/apple-icon',
             description:
-              'Free, privacy-respecting radius mapping tools. Built by an avid traveler who uses maps a lot — no signup, no API keys, no usage limits. Powered by OpenStreetMap and Leaflet.',
-            sameAs: [],
+              'Free, privacy-respecting radius mapping tools built by Marko Visic, a physicist and developer based in Slovenia. No signup, no API keys, no usage limits. Powered by OpenStreetMap and Leaflet.',
+            founder: { '@id': 'https://mapwithradius.com/about#marko' },
             contactPoint: {
               '@type': 'ContactPoint',
               email: 'contact@mapwithradius.com',
               contactType: 'customer support',
             },
+          }),
+        }}
+      />
+
+      {/* Person Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Person',
+            '@id': 'https://mapwithradius.com/about#marko',
+            name: 'Marko Visic',
+            jobTitle: 'Physicist and Developer',
+            url: 'https://mapwithradius.com/about',
+            sameAs: ['https://www.linkedin.com/in/marko-visic/'],
+            worksFor: { '@id': 'https://mapwithradius.com/#organization' },
+            homeLocation: {
+              '@type': 'Place',
+              address: {
+                '@type': 'PostalAddress',
+                addressCountry: 'SI',
+              },
+            },
+          }),
+        }}
+      />
+
+      {/* WebPage with dateModified — freshness signal */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            '@id': 'https://mapwithradius.com/about',
+            url: 'https://mapwithradius.com/about',
+            name: 'About Map With Radius',
+            isPartOf: { '@id': 'https://mapwithradius.com/#website' },
+            about: { '@id': 'https://mapwithradius.com/#organization' },
+            author: { '@id': 'https://mapwithradius.com/about#marko' },
+            dateModified: '2026-06-10',
           }),
         }}
       />
@@ -80,12 +120,21 @@ export default function AboutPage() {
           {/* Introduction */}
           <section className="mb-12">
             <p className="text-xl text-gray-700 mb-6 leading-relaxed">
-              I&apos;m an avid traveler who uses maps a lot. Map With Radius started because I
-              wanted a fast, free way to draw a circle on a map — &ldquo;what&apos;s within 5 miles
-              of this hostel?&rdquo;, &ldquo;how far can I get from this Airbnb on foot?&rdquo;,
-              &ldquo;which neighborhoods are within 20 minutes of the office?&rdquo; — and every
-              existing tool either wanted me to sign up, sold an API plan, or buried the feature
-              behind a paywall.
+              I&apos;m{' '}
+              <a
+                href="https://www.linkedin.com/in/marko-visic/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                Marko Visic
+              </a>
+              {' '}— a physicist and developer based in Slovenia, and an avid traveler who uses maps
+              a lot. Map With Radius started because I wanted a fast, free way to draw a circle on a
+              map — &ldquo;what&apos;s within 5 miles of this hostel?&rdquo;, &ldquo;how far can I
+              get from this Airbnb on foot?&rdquo;, &ldquo;which neighborhoods are within 20 minutes
+              of the office?&rdquo; — and every existing tool either wanted me to sign up, sold an
+              API plan, or buried the feature behind a paywall.
             </p>
             <p className="text-gray-700 mb-6">
               So I built one. No account, no usage limits, no location tracking. It runs on
@@ -240,9 +289,9 @@ export default function AboutPage() {
                   Drive Time Map
                 </Link>
                 <p className="text-gray-600 mt-1">
-                  See how far you can actually travel in a given time, accounting for real roads and
-                  traffic patterns. Unlike simple radius circles, drive time isochrones show realistic
-                  travel boundaries for driving, walking, or cycling.
+                  See how far you can actually travel in a given time, accounting for real roads,
+                  road types, and typical speeds. Unlike simple radius circles, drive time
+                  isochrones show realistic travel boundaries for driving, walking, or cycling.
                 </p>
               </div>
 
@@ -418,18 +467,18 @@ export default function AboutPage() {
                 pages are useful and where the tool is struggling. It uses cookies.
               </li>
               <li>
-                <strong>Advertising.</strong> I&apos;ve integrated Google AdSense to fund the site
-                — the account is currently in review with Google, so no live ads are serving yet.
-                Once approved, AdSense will display ads and ad partners may set cookies. For
-                visitors in the EEA, UK, and Switzerland, Google Consent Mode v2 keeps
-                non-essential cookies default-denied, so any AdSense ads there will default to
-                Limited (non-personalized); a consent management platform is planned.
+                <strong>Advertising.</strong> I use Google AdSense to fund the site. AdSense and
+                its partner ad networks serve ads and may set cookies for ad delivery and
+                measurement. For visitors in the EEA, UK, and Switzerland, Google Consent Mode v2
+                default-denies non-essential storage, so ads in those regions are
+                non-personalized (Limited).
               </li>
             </ul>
             <p className="text-gray-700">
               Full details in the{' '}
               <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> —
-              including the opt-out link for personalized advertising.
+              including how to exercise your data-protection rights and the opt-out links for
+              personalized advertising.
             </p>
           </section>
 

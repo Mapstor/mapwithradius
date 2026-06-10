@@ -16,15 +16,9 @@ export const metadata: Metadata = {
   },
   description:
     'Free radius map tool. Draw circles on a map by distance, find what\'s within your radius, and share your map. No signup, no limits. Works on mobile.',
-  keywords: [
-    'radius on map',
-    'radius map tool',
-    'draw radius on map',
-    'circle on map',
-    'radius from my location',
-  ],
-  authors: [{ name: 'Map With Radius' }],
-  creator: 'Map With Radius',
+  authors: [{ name: 'Marko Visic', url: 'https://www.linkedin.com/in/marko-visic/' }],
+  creator: 'Marko Visic',
+  publisher: 'Map With Radius',
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -72,7 +66,7 @@ export default function RootLayout({
               region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','GB','CH','IS','LI','NO'],
               wait_for_update: 500,
             });
-            // Rest of world — default-grant so GA4 records standard analytics and AdSense can serve personalized ads once approved
+            // Rest of world — default-grant so GA4 records standard analytics and AdSense can serve personalized ads
             gtag('consent', 'default', {
               ad_storage: 'granted',
               ad_user_data: 'granted',
@@ -99,6 +93,39 @@ export default function RootLayout({
           strategy="afterInteractive"
           crossOrigin="anonymous"
         />
+        {/*
+          Google Funding Choices loader. Activating the actual consent message
+          still requires creating one in AdSense → Privacy & Messaging → IAB TCF
+          (or "Not regulated") for the eligible regions, then publishing it.
+          Until then this loader is a no-op for users; once the message is
+          published, EEA/UK/CH visitors get a banner that can upgrade them out
+          of the Consent Mode v2 default-deny state.
+        */}
+        <Script
+          id="funding-choices"
+          src="https://fundingchoicesmessages.google.com/i/pub-3093026304369835?ers=1"
+          strategy="afterInteractive"
+        />
+        <Script id="funding-choices-present" strategy="afterInteractive">
+          {`
+            (function() {
+              function signalGooglefcPresent() {
+                if (!window.frames['googlefcPresent']) {
+                  if (document.body) {
+                    var iframe = document.createElement('iframe');
+                    iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;';
+                    iframe.style.display = 'none';
+                    iframe.name = 'googlefcPresent';
+                    document.body.appendChild(iframe);
+                  } else {
+                    setTimeout(signalGooglefcPresent, 0);
+                  }
+                }
+              }
+              signalGooglefcPresent();
+            })();
+          `}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

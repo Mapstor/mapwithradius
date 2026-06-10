@@ -3,7 +3,16 @@
 import { useEffect, useRef, useCallback, useState, useMemo } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { getZipCode, findZipCodesWithinRadius, zipCodesToCsv, type ZipCodeWithDistance } from '@/lib/zipCodes';
+import {
+  loadZipDatabase,
+  getZipCode,
+  findZipCodesWithinRadius,
+  findNearestZip,
+  zipCodesToCsv,
+  type ZipCodeData,
+  type ZipCodeWithDistance,
+  type ZipDatabase,
+} from '@/lib/zipCodes';
 import { toMeters, fromMeters, type DistanceUnit } from '@/lib/haversine';
 
 // Fix Leaflet default marker icon issue
@@ -34,6 +43,10 @@ export default function ZipCodeRadiusMap() {
   const [sortField, setSortField] = useState<SortField>('distance');
   const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
   const [isMapReady, setIsMapReady] = useState(false);
+  const [zipDb, setZipDb] = useState<ZipDatabase | null>(null);
+  const [dbLoading, setDbLoading] = useState(true);
+  const [dbError, setDbError] = useState<string | null>(null);
+  const [suggestion, setSuggestion] = useState<ZipCodeData | null>(null);
 
   // Convert radius to miles for calculations
   const radiusInMiles = useMemo(() => {
@@ -96,6 +109,25 @@ export default function ZipCodeRadiusMap() {
     };
   }, []);
 
+  // Load the ZIP database (lazy-fetched JSON, cached after first call)
+  useEffect(() => {
+    let cancelled = false;
+    loadZipDatabase()
+      .then((db) => {
+        if (cancelled) return;
+        setZipDb(db);
+        setDbLoading(false);
+      })
+      .catch((err: unknown) => {
+        if (cancelled) return;
+        setDbError(err instanceof Error ? err.message : 'Failed to load ZIP database');
+        setDbLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Clear map overlays
   const clearMapOverlays = useCallback(() => {
     if (circleRef.current) {
@@ -110,27 +142,40 @@ export default function ZipCodeRadiusMap() {
     zipMarkersRef.current = [];
   }, []);
 
-  // Search for zip codes within radius
-  const searchZipCodes = useCallback(async () => {
-    if (!zipCode.trim()) {
+  // Search for zip codes within radius. `override` lets the "try suggestion"
+  // button re-run the search with a different ZIP without setting state first.
+  const searchZipCodes = useCallback(async (override?: string) => {
+    const raw = (override ?? zipCode).trim();
+    if (!raw) {
       setError('Please enter a zip code');
+      setSuggestion(null);
       return;
     }
 
     if (!mapRef.current || !isMapReady) return;
+    if (!zipDb) {
+      setError('ZIP database is still loading — please try again in a moment.');
+      return;
+    }
 
     setIsSearching(true);
     setError(null);
+    setSuggestion(null);
     clearMapOverlays();
 
+    // Pad short input to 5 digits with leading zeros — handles users typing
+    // "601" expecting "00601" (Puerto Rico) without immediately failing.
+    const query = raw.padStart(5, '0');
+    if (override) setZipCode(query);
+
     // Try to find the zip code in our database
-    const foundZip = getZipCode(zipCode.trim());
+    const foundZip = getZipCode(query, zipDb);
 
     if (foundZip) {
       setCenterZip(foundZip);
 
       // Find all zip codes within radius
-      const nearbyZips = findZipCodesWithinRadius(foundZip.lat, foundZip.lng, radiusInMiles);
+      const nearbyZips = findZipCodesWithinRadius(foundZip.lat, foundZip.lng, radiusInMiles, zipDb);
       setResults(nearbyZips);
 
       // Draw circle on map
@@ -181,13 +226,17 @@ export default function ZipCodeRadiusMap() {
       // Fit map to circle bounds with padding
       mapRef.current.fitBounds(circle.getBounds(), { padding: [50, 50] });
     } else {
-      setError('Zip code not found in database. Try a major US city zip code (e.g., 10001 for NYC, 90001 for LA, 60601 for Chicago).');
+      const nearest = findNearestZip(query, zipDb);
+      setError(
+        `ZIP ${raw} isn't in our database. This often means a single-recipient business, PO-box-only, or retired ZIP code — those don't have a Census tabulation boundary.`
+      );
+      setSuggestion(nearest && nearest.zip !== query ? nearest : null);
       setResults([]);
       setCenterZip(null);
     }
 
     setIsSearching(false);
-  }, [zipCode, radiusInMiles, isMapReady, clearMapOverlays]);
+  }, [zipCode, radiusInMiles, isMapReady, clearMapOverlays, zipDb]);
 
   // Handle sort click
   const handleSort = useCallback((field: SortField) => {
@@ -275,17 +324,34 @@ export default function ZipCodeRadiusMap() {
 
           {/* Search Button */}
           <button
-            onClick={searchZipCodes}
-            disabled={isSearching}
+            onClick={() => searchZipCodes()}
+            disabled={isSearching || dbLoading || !zipDb}
             className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSearching ? 'Searching...' : 'Search'}
+            {dbLoading ? 'Loading ZIP database…' : isSearching ? 'Searching...' : 'Search'}
           </button>
 
-          {/* Error Message */}
-          {error && (
+          {/* Error Message + nearest-ZIP suggestion (if any) */}
+          {(error || dbError) && (
             <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
-              {error}
+              <div>{dbError ?? error}</div>
+              {suggestion && !dbError && (
+                <button
+                  type="button"
+                  onClick={() => searchZipCodes(suggestion.zip)}
+                  className="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-white border border-red-200 text-red-700 hover:bg-red-100 rounded font-medium"
+                >
+                  Try {suggestion.zip} ({suggestion.city}, {suggestion.state}) →
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Database info */}
+          {zipDb && !dbError && (
+            <div className="mt-3 text-xs text-slate-500">
+              {zipDb.count.toLocaleString()} ZIPs across {zipDb.states} states / territories ·
+              source: {zipDb.source} · verified {zipDb.generated}
             </div>
           )}
         </div>
@@ -400,11 +466,11 @@ export default function ZipCodeRadiusMap() {
             </select>
           </div>
           <button
-            onClick={searchZipCodes}
-            disabled={isSearching}
-            className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-lg text-sm"
+            onClick={() => searchZipCodes()}
+            disabled={isSearching || dbLoading || !zipDb}
+            className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSearching ? 'Searching...' : 'Search'}
+            {dbLoading ? 'Loading ZIP database…' : isSearching ? 'Searching...' : 'Search'}
           </button>
           {results.length > 0 && (
             <div className="mt-2 flex items-center justify-between text-sm">
@@ -414,8 +480,19 @@ export default function ZipCodeRadiusMap() {
               </button>
             </div>
           )}
-          {error && (
-            <div className="mt-2 text-sm text-red-600">{error}</div>
+          {(error || dbError) && (
+            <div className="mt-2 text-sm text-red-600">
+              <div>{dbError ?? error}</div>
+              {suggestion && !dbError && (
+                <button
+                  type="button"
+                  onClick={() => searchZipCodes(suggestion.zip)}
+                  className="mt-1 inline-flex items-center gap-1 px-2 py-1 bg-white border border-red-200 text-red-700 hover:bg-red-100 rounded font-medium text-xs"
+                >
+                  Try {suggestion.zip} ({suggestion.city}, {suggestion.state}) →
+                </button>
+              )}
+            </div>
           )}
         </div>
       </div>
