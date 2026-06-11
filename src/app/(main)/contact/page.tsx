@@ -119,7 +119,7 @@ export default function ContactPage() {
                 name: 'Do you store my data?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: "We don't require accounts, don't track your location on our servers, and don't store your map data — everything happens in your browser. When you share a link, the coordinates are encoded directly in the URL, so nothing is saved on our side. The site uses Google Analytics 4 and Google AdSense; these set cookies (default-denied for EEA/UK/Switzerland visitors via Google Consent Mode v2 until consent). See our Privacy Policy for the full picture.",
+                  text: "We don't require accounts, don't track your location on our servers, and don't store your map data — everything happens in your browser. When you share a link, the coordinates are encoded directly in the URL, so nothing is saved on our side. The only third-party measurement on the site today is Google Analytics 4 (cookieless mode for EEA/UK/Swiss visitors via Google Consent Mode v2). No ads currently serve on the site; an application to Raptive is pending. See our Privacy Policy for the full picture.",
                 },
               },
             ],
@@ -314,12 +314,12 @@ export default function ContactPage() {
             <div className="border border-gray-200 rounded-lg p-5">
               <h3 className="font-semibold text-gray-900 mb-2">Do you store my data?</h3>
               <p className="text-gray-600 text-sm">
-                We don't require accounts, don't track your location on our servers, and don't
-                store your map data — everything happens in your browser. When you share a link,
-                the coordinates are encoded directly in the URL, so nothing is saved on our side.
-                The site uses Google Analytics 4 and Google AdSense; these set cookies
-                (default-denied for EEA/UK/Switzerland visitors via Google Consent Mode v2 until
-                consent). See our{' '}
+                We don&apos;t require accounts, don&apos;t track your location on our servers,
+                and don&apos;t store your map data — everything happens in your browser. When you
+                share a link, the coordinates are encoded directly in the URL, so nothing is saved
+                on our side. The only third-party measurement on the site today is Google Analytics
+                4 (cookieless mode for EEA/UK/Swiss visitors via Google Consent Mode v2). No ads
+                currently serve on the site; an application to Raptive is pending. See our{' '}
                 <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> for the full picture.
               </p>
             </div>

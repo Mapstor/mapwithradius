@@ -1,4 +1,8 @@
-google.com, pub-3093026304369835, DIRECT, f08c47fec0942fa0
-
+# No advertising vendors are currently authorized to sell inventory on this domain.
+# We have applied to Raptive (raptive.com) for ad management; once accepted,
+# Raptive's required ads.txt entries will be added here and the date will be
+# updated below.
+#
+# Updated: 2026-06-11
 OWNERDOMAIN=mapwithradius.com
 CONTACT=contact@mapwithradius.com

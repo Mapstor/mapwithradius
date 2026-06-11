@@ -40,9 +40,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  other: {
-    'google-adsense-account': 'ca-pub-3093026304369835',
-  },
 };
 
 export default function RootLayout({
@@ -53,11 +50,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased flex flex-col min-h-screen bg-white`}>
+        {/*
+          Google Consent Mode v2: default-deny non-essential storage for EEA/UK/CH
+          on every page load, default-grant elsewhere. This only gates Google
+          Analytics 4 today (the only third-party measurement wired into the
+          site). When advertising launches via Raptive, the ad_* categories will
+          gate the ad partners' cookies; a Google-certified CMP will let EEA/UK/CH
+          visitors upgrade out of the default-deny state.
+        */}
         <Script id="google-consent-mode" strategy="beforeInteractive">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
-            // EEA/UK/Switzerland — default-deny non-essential storage until a CMP is added
             gtag('consent', 'default', {
               ad_storage: 'denied',
               ad_user_data: 'denied',
@@ -66,7 +70,6 @@ export default function RootLayout({
               region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE','GB','CH','IS','LI','NO'],
               wait_for_update: 500,
             });
-            // Rest of world — default-grant so GA4 records standard analytics and AdSense can serve personalized ads
             gtag('consent', 'default', {
               ad_storage: 'granted',
               ad_user_data: 'granted',
@@ -85,45 +88,6 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-H8ZRCLN1TK');
-          `}
-        </Script>
-        <Script
-          id="adsense-auto-ads"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3093026304369835"
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-        />
-        {/*
-          Google Funding Choices loader. Activating the actual consent message
-          still requires creating one in AdSense → Privacy & Messaging → IAB TCF
-          (or "Not regulated") for the eligible regions, then publishing it.
-          Until then this loader is a no-op for users; once the message is
-          published, EEA/UK/CH visitors get a banner that can upgrade them out
-          of the Consent Mode v2 default-deny state.
-        */}
-        <Script
-          id="funding-choices"
-          src="https://fundingchoicesmessages.google.com/i/pub-3093026304369835?ers=1"
-          strategy="afterInteractive"
-        />
-        <Script id="funding-choices-present" strategy="afterInteractive">
-          {`
-            (function() {
-              function signalGooglefcPresent() {
-                if (!window.frames['googlefcPresent']) {
-                  if (document.body) {
-                    var iframe = document.createElement('iframe');
-                    iframe.style = 'width: 0; height: 0; border: none; z-index: -1000; left: -1000px; top: -1000px;';
-                    iframe.style.display = 'none';
-                    iframe.name = 'googlefcPresent';
-                    document.body.appendChild(iframe);
-                  } else {
-                    setTimeout(signalGooglefcPresent, 0);
-                  }
-                }
-              }
-              signalGooglefcPresent();
-            })();
           `}
         </Script>
         <script

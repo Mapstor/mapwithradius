@@ -458,27 +458,31 @@ export default function AboutPage() {
               </li>
             </ul>
             <p className="text-gray-700 mb-4">
-              To keep the tool free with no usage limits, I do two things that any honest privacy
-              page should disclose:
+              To keep the tools free, the site will be funded by display advertising. I&apos;ve
+              applied to the ad management service{' '}
+              <a
+                href="https://raptive.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                Raptive
+              </a>
+              ; <strong>ads are not serving yet</strong>. When they launch, EEA/UK/Swiss
+              visitors will see a consent prompt before any advertising cookies are set, and
+              the Privacy Policy will list the ad partners. The tools themselves never require
+              ads to function — nothing is gated.
             </p>
-            <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-6">
-              <li>
-                <strong>Aggregate analytics.</strong> I use Google Analytics 4 to understand which
-                pages are useful and where the tool is struggling. It uses cookies.
-              </li>
-              <li>
-                <strong>Advertising.</strong> I use Google AdSense to fund the site. AdSense and
-                its partner ad networks serve ads and may set cookies for ad delivery and
-                measurement. For visitors in the EEA, UK, and Switzerland, Google Consent Mode v2
-                default-denies non-essential storage, so ads in those regions are
-                non-personalized (Limited).
-              </li>
-            </ul>
+            <p className="text-gray-700 mb-4">
+              I do use Google Analytics 4 (aggregate traffic only — no personal identifiers,
+              cookieless mode for EEA/UK/Swiss visitors via Google Consent Mode v2). That&apos;s
+              the only third-party measurement currently active.
+            </p>
             <p className="text-gray-700">
               Full details in the{' '}
               <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> —
               including how to exercise your data-protection rights and the opt-out links for
-              personalized advertising.
+              analytics.
             </p>
           </section>
 

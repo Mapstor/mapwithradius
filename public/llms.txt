@@ -1,6 +1,6 @@
 # Map With Radius
 
-> Free online tool to draw radius circles on any map. Enter an address and a distance, and see what falls within your radius. Built on Leaflet and OpenStreetMap. No signup, no API keys, no usage limits, mobile-friendly. The tool itself doesn't send your location to our servers (addresses geocoded via Nominatim). The site uses Google Analytics 4 and Google AdSense; in the EEA, UK, and Switzerland, Google Consent Mode v2 keeps non-essential cookies default-denied (a consent management platform is planned).
+> Free online tool to draw radius circles on any map. Enter an address and a distance, and see what falls within your radius. Built on Leaflet and OpenStreetMap. No signup, no API keys, no usage limits, mobile-friendly. The tool itself doesn't send your location to our servers (addresses geocoded via Nominatim). The site uses Google Analytics 4 only; in the EEA, UK, and Switzerland, Google Consent Mode v2 keeps non-essential cookies default-denied (cookieless GA4 in those regions). No ads currently serve on the site; an application to the ad management service Raptive is pending.
 
 ## Tools
 
@@ -32,7 +32,7 @@
 
 - [About](https://mapwithradius.com/about): Mission, tool lineup, tech stack (Leaflet, OpenStreetMap, Nominatim), accuracy notes.
 - [Contact](https://mapwithradius.com/contact): Bug reports, feature requests, business inquiries.
-- [Privacy](https://mapwithradius.com/privacy): No accounts; location data stays in your browser. Uses Google Analytics 4 and Google AdSense; in the EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential cookies default-denied (a consent management platform is planned). GDPR and CCPA compliant.
+- [Privacy](https://mapwithradius.com/privacy): No accounts; location data stays in your browser. Uses Google Analytics 4 only; in the EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential cookies default-denied. No ads currently serve; application to Raptive pending. GDPR and CCPA compliant.
 - [Terms](https://mapwithradius.com/terms): Acceptable use, accuracy disclaimer, OpenStreetMap attribution.
 
 ## Tech stack

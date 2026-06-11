@@ -433,9 +433,9 @@ export default function GeofenceMapPage() {
                 directly into the shareable URL, never stored on our servers. Map tiles come from
                 OpenStreetMap, not Google Maps, so the tool itself doesn&apos;t send your geofence
                 placement to Google. (Note: the main mapwithradius.com site runs Google Analytics 4
-                and Google AdSense; in the EEA/UK/Switzerland, Google Consent Mode v2 keeps
-                non-essential cookies default-denied — GA4 runs in cookieless mode and AdSense ads
-                are non-personalized (Limited) in those regions. See our{' '}
+                only; in the EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential
+                cookies default-denied, so GA4 runs in cookieless mode there. No ads currently
+                serve on the site — an application to Raptive is pending. See our{' '}
                 <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a> for full details. For a cookie-free embed,
                 use the <code>/embed</code> endpoint.)
               </div>
@@ -523,7 +523,7 @@ export default function GeofenceMapPage() {
                     name: 'Does this tool send my geofence data anywhere?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: "Your geofence coordinates and radius stay in your browser — they're encoded directly into the shareable URL, never stored on our servers. Map tiles come from OpenStreetMap, not Google Maps, so the tool itself doesn't send your geofence placement to Google. The main mapwithradius.com site runs Google Analytics 4 and Google AdSense; in the EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential cookies default-denied — GA4 runs in cookieless mode and AdSense ads are non-personalized (Limited) in those regions. See our Privacy Policy for full details. For a cookie-free embed, use the /embed endpoint.",
+                      text: "Your geofence coordinates and radius stay in your browser — they're encoded directly into the shareable URL, never stored on our servers. Map tiles come from OpenStreetMap, not Google Maps, so the tool itself doesn't send your geofence placement to Google. The main mapwithradius.com site runs Google Analytics 4 only; in the EEA/UK/Switzerland, Google Consent Mode v2 keeps non-essential cookies default-denied, so GA4 runs in cookieless mode there. No ads currently serve on the site — an application to Raptive is pending. See our Privacy Policy for full details. For a cookie-free embed, use the /embed endpoint.",
                     },
                   },
                   {
