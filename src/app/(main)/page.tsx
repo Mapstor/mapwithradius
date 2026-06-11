@@ -181,8 +181,9 @@ export default function HomePage() {
                     </p>
                     <p className="text-slate-600 mb-3">
                       <strong>How to use:</strong> Enter &ldquo;1700 Lincoln St, Denver, CO&rdquo; in the search box,
-                      set radius to 15 miles. The circle shows that Lakewood, Aurora, Englewood, Littleton, and
-                      Westminster are all within range. Highlands Ranch falls just outside.
+                      set radius to 15 miles. The circle shows that Lakewood, Aurora, Englewood, Littleton,
+                      Westminster, and Highlands Ranch are all within range. Parker (~19 mi southeast) sits
+                      just outside.
                     </p>
                     <p className="text-slate-700">
                       <strong>Result:</strong> The radius covers approximately <span className="font-semibold">706 square miles</span>
@@ -244,8 +245,10 @@ export default function HomePage() {
                       Export the map as PNG for the presentation.
                     </p>
                     <p className="text-slate-700">
-                      <strong>Result:</strong> The 10-mile zone covers <span className="font-semibold">314 square miles</span> including
-                      La Porte, Deer Park, Baytown, and parts of Houston. The visual helps residents understand
+                      <strong>Result:</strong> The 10-mile zone covers <span className="font-semibold">314 square miles</span>
+                      {' '}(π × 10²) including Deer Park, the Hobby Airport area, and parts of southeast Houston.
+                      La Porte&apos;s western edge brushes the radius; Baytown (~14 mi) lies outside the
+                      primary zone but inside the 20-mile secondary. The visual helps residents understand
                       if they&apos;re in a primary or secondary zone.
                     </p>
                   </div>
@@ -701,7 +704,7 @@ export default function HomePage() {
                     <td>Address search</td>
                     <td className="text-green-600 font-medium">&#10003; Free</td>
                     <td className="text-green-600">&#10003;</td>
-                    <td className="text-red-600">&#10007; Coords only</td>
+                    <td className="text-amber-600">City + coords (no full address)</td>
                   </tr>
                   <tr>
                     <td>Share via URL</td>
@@ -744,7 +747,7 @@ export default function HomePage() {
             </div>
 
             <p className="text-slate-500 text-sm mt-4">
-              <em>Data based on publicly available information. Last verified February 2026.</em>
+              <em>Data based on publicly available information. Last verified June 2026.</em>
             </p>
 
             <p className="text-slate-700 mt-6">

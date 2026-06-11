@@ -9,7 +9,7 @@
     "lint": "next lint",
     "predev": "node scripts/build-uszips-json.mjs && node scripts/build-zip-density.mjs",
     "prebuild": "node scripts/build-uszips-json.mjs && node scripts/build-zip-density.mjs",
-    "verify": "node scripts/build-uszips-json.mjs && node scripts/build-zip-density.mjs && node scripts/verify-zip-coverage.mjs && node scripts/verify-city-coverage.mjs"
+    "verify": "node scripts/build-uszips-json.mjs && node scripts/build-zip-density.mjs && node scripts/verify-zip-coverage.mjs && node scripts/verify-city-coverage.mjs && node scripts/verify-homepage-examples.mjs"
   },
   "dependencies": {
     "react": "^18.2.0",
