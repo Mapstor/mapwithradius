@@ -193,7 +193,9 @@ export default function PrivacyPage() {
           <section id="no-collect" className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">2. Information We Do NOT Collect</h2>
             <p className="text-gray-700 mb-3">
-              We want to be explicit about what we don't collect:
+              For clarity on what the mapwithradius.com application itself does not
+              collect — separate from the standard web-technology data described in
+              Section 3 (server logs, Google Analytics 4):
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
               <li>
@@ -201,8 +203,9 @@ export default function PrivacyPage() {
                 There are no usernames, passwords, or account settings to store.
               </li>
               <li>
-                <strong>No personal identifiers:</strong> We don't collect names, email addresses, phone
-                numbers, physical addresses, or any other personally identifiable information.
+                <strong>No directly identifying information:</strong> We don't ask for or
+                store names, email addresses, phone numbers, physical addresses, or other
+                directly identifying personal information.
               </li>
               <li>
                 <strong>No location history:</strong> When you use the "Use My Location" feature, your
@@ -665,8 +668,9 @@ export default function PrivacyPage() {
                 <strong>Error logs:</strong> Retained for up to 90 days for debugging purposes
               </li>
               <li>
-                <strong>Personal data:</strong> Since we don't collect personal data, there is nothing
-                to retain or delete
+                <strong>Analytics data tied to your browser:</strong> GA4 client ID and aggregated
+                event data are retained per our Google Analytics retention configuration; see
+                Section 3 for opt-out.
               </li>
             </ul>
           </section>
@@ -703,53 +707,67 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-semibold text-gray-900 mb-3">12. Children's Privacy</h2>
             <p className="text-gray-700 mb-3">
               Our Service is not directed at children under the age of 13 (or the applicable age of digital
-              consent in your jurisdiction). We do not knowingly collect personal information from children.
+              consent in your jurisdiction). We do not knowingly collect personal information about children.
             </p>
             <p className="text-gray-700 mb-3">
-              Since we do not collect personal information from any users — regardless of age — and do not
-              require account creation, our service can be used by people of all ages without privacy concerns.
+              The site requires no account creation and does not ask for names, email addresses, or other
+              directly identifying information from users of any age. The pseudonymous web-technology data
+              described in Section 3 (server logs and Google Analytics 4) is collected without distinction
+              by age, and we do not attempt to identify visitors as children.
             </p>
             <p className="text-gray-700">
               If you are a parent or guardian and believe your child has provided personal information to us,
               please <Link href="/contact" className="text-primary hover:underline">contact us</Link>.
-              However, given that we do not collect personal information, it is unlikely that any such
-              information exists in our systems.
             </p>
           </section>
 
           <section id="your-rights" className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">13. Your Rights</h2>
             <p className="text-gray-700 mb-3">
-              Depending on your location, you may have certain rights regarding your personal data.
-              These may include:
+              Depending on your location, you may have certain rights regarding personal data
+              we process. The only data we process that could be associated with you is what
+              Google Analytics 4 collects: a pseudonymous client ID and aggregated interaction
+              events (page views, device and browser type, approximate country, visit
+              timing). We don&apos;t collect or process names, email addresses, account
+              history, or other directly identifying information. Within that limited scope,
+              these rights may include:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
               <li>
-                <strong>Right to access:</strong> The right to know what personal data we hold about you.
-                Since we don't collect personal data, there is nothing to access.
+                <strong>Right to access:</strong> You may ask what categories of data are
+                tied to your GA4 client ID. We can describe the categories but cannot
+                return user-level records, because we do not link the pseudonymous ID to
+                your identity.
               </li>
               <li>
-                <strong>Right to rectification:</strong> The right to correct inaccurate data. Since we
-                don't collect personal data, there is nothing to correct.
+                <strong>Right to rectification:</strong> You may request correction of
+                inaccurate data. Aggregated page-view and device-category data is not the
+                type of data that can be inaccurate about you in a meaningful sense.
               </li>
               <li>
-                <strong>Right to erasure:</strong> The right to have your data deleted. Since we don't
-                store personal data, there is nothing to delete.
+                <strong>Right to erasure:</strong> You may request deletion. The fastest
+                path is self-serve — use the Google Analytics opt-out linked in Section 3,
+                or clear your browser cookies (see Section 4), which detaches your browser
+                from any future GA4 client ID. For data tied to an existing client ID in
+                Google&apos;s records, we will forward your deletion request to Google
+                where feasible; we do not operate a server-side deletion workflow ourselves.
               </li>
               <li>
-                <strong>Right to data portability:</strong> The right to receive your data in a portable
-                format. Since we don't collect personal data, there is nothing to export.
+                <strong>Right to data portability:</strong> You may request a portable copy
+                of the data we hold. Given the categories above, there is generally no
+                user-level record to export.
               </li>
               <li>
-                <strong>Right to object:</strong> The right to object to certain processing. Since we
-                don't process personal data, there is nothing to object to.
+                <strong>Right to object:</strong> You may object to analytics processing
+                using the opt-out methods in Section 3, by enabling Global Privacy Control
+                in your browser, or by declining analytics in any future consent prompt.
               </li>
             </ul>
             <p className="text-gray-700">
               If you have questions about your rights or wish to make a request, please{' '}
               <Link href="/contact" className="text-primary hover:underline">contact us</Link>.
-              We will respond to legitimate requests even though, in most cases, we will not have any
-              personal data to provide.
+              We will respond to legitimate requests and explain what, if any, data is
+              associated with the information you provide.
             </p>
           </section>
 
