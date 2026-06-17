@@ -661,10 +661,6 @@ export default function PrivacyPage() {
                 <strong>Server logs:</strong> Automatically deleted after 30 days
               </li>
               <li>
-                <strong>Analytics data:</strong> Aggregated and anonymized, retained for up to 2 years
-                for trend analysis
-              </li>
-              <li>
                 <strong>Error logs:</strong> Retained for up to 90 days for debugging purposes
               </li>
               <li>
@@ -871,16 +867,16 @@ export default function PrivacyPage() {
           <section id="international" className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">16. International Data Transfers</h2>
             <p className="text-gray-700 mb-3">
-              Our website is hosted in the United States. If you access the Service from outside the
-              United States, your connection data (IP address, request data) may be transferred to and
-              processed in the United States.
-            </p>
-            <p className="text-gray-700 mb-3">
-              Since we do not collect personal information, international data transfer concerns are
-              minimal. The only data that crosses borders is:
+              Our website is hosted in the United States. If you access the Service from
+              outside the United States, your connection data (IP address and browser
+              information) and the pseudonymous interaction data collected by Google
+              Analytics 4 (see Section 3) may transit to the United States and to
+              Google&apos;s infrastructure. The categories of data that may cross
+              borders are limited and described below:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-gray-700">
               <li>Standard web requests (IP address, browser information) necessary to serve the website</li>
+              <li>Google Analytics 4 events: pseudonymous client ID and aggregated interaction data, transferred to Google&apos;s infrastructure (see Section 3)</li>
               <li>Requests to OpenStreetMap services (based in various locations globally)</li>
             </ul>
             <p className="text-gray-700 mt-3">
