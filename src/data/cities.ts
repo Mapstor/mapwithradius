@@ -1279,9 +1279,9 @@ export const CITIES: City[] = [
     population: 3_700_000,
     populationLabel: '3.7 million',
     timezone: 'Europe/Berlin',
-    fact: 'Berlin covers roughly 891 km² — about the same area as New York City\'s five boroughs combined. A 10 km radius from Alexanderplatz roughly traces the S-Bahn Ringbahn, the inner ring line.',
+    fact: 'Berlin covers roughly 891 km² — about the same area as New York City\'s five boroughs combined. A roughly 6 km radius from Alexanderplatz traces the S-Bahn Ringbahn, the inner ring line.',
     intro:
-      'Berlin is geographically large for a European capital. A 10 km radius from Alexanderplatz roughly matches the S-Bahn Ringbahn — the orbital S41/S42 train line that traces the inner ring. This is a useful proxy for "central Berlin" in real-estate, retail, and event-planning work. Beyond the ring, the city continues for another 5–10 km in most directions before reaching the Brandenburg green belt.',
+      'Berlin is geographically large for a European capital. A roughly 6 km radius from Alexanderplatz traces the S-Bahn Ringbahn — the orbital S41/S42 train line that defines the inner ring. This is a useful proxy for "central Berlin" in real-estate, retail, and event-planning work. Beyond the ring, the city continues for another 10–15 km in most directions before reaching the Brandenburg green belt.',
     alternateNames: ['Berlin-Mitte (centre)', 'Hauptstadt'],
     centralLandmark: 'Alexanderplatz',
     coverage: [
@@ -1332,7 +1332,7 @@ export const CITIES: City[] = [
         unit: 'kilometers',
         label: '10 km',
         description:
-          'A 10 km radius from Alexanderplatz roughly matches the S-Bahn Ringbahn (S41/S42) — the orbital ring that defines "inner Berlin". Includes most of Charlottenburg, Schöneberg, Tempelhof-Schöneberg, Neukölln (north), Treptow (north), and Pankow (south).',
+          'A 10 km radius from Alexanderplatz extends well beyond the S-Bahn Ringbahn (S41/S42, at roughly 6 km) and includes most of Charlottenburg, Schöneberg, Tempelhof-Schöneberg, Neukölln (north), Treptow (north), and Pankow (south).',
         includes: [
           'Most of inner Berlin inside the Ringbahn',
           'Charlottenburg and Wilmersdorf (east half)',
@@ -1395,8 +1395,8 @@ export const CITIES: City[] = [
       {
         title: 'Ringbahn-aligned real estate filter',
         description:
-          'Berliners often filter property by "innerhalb des Rings" (inside the Ringbahn) — a status-laden 10 km radius from the centre. This roughly corresponds to walkable Berlin and rules out the suburban GDR-era housing estates.',
-        recommendedRadius: '10 km (inside the Ringbahn)',
+          'Berliners often filter property by "innerhalb des Rings" (inside the Ringbahn) — a status-laden ~6 km radius from the centre. This roughly corresponds to walkable Berlin and rules out the suburban GDR-era housing estates.',
+        recommendedRadius: '~6 km (inside the Ringbahn)',
       },
       {
         title: 'Bezirk-level catchment',
@@ -1421,12 +1421,12 @@ export const CITIES: City[] = [
       {
         title: 'Berlin is bigger than most cities its rank',
         description:
-          'Berlin\'s 891 km² is roughly the same area as New York City\'s five boroughs (789 km²) and substantially larger than Paris intramuros (105 km²). A 10 km radius from the centre is genuinely "inner Berlin", not "all of Berlin".',
+          'Berlin\'s 891 km² is roughly the same area as New York City\'s five boroughs (789 km²) and substantially larger than Paris intramuros (105 km²). Even a 10 km radius from the centre reaches only part of the city — Berlin extends 15–20 km from Alexanderplatz in most directions.',
       },
       {
         title: 'The Ringbahn defines inner Berlin',
         description:
-          'The S-Bahn Ringbahn (S41 and S42) is a 37 km circular railway around inner Berlin. A 10 km radius from Alexanderplatz roughly traces this ring. Berliners use the Ringbahn as the dividing line between dense inner districts and outer ones — much like London uses Zone 1, but on a single train line.',
+          'The S-Bahn Ringbahn (S41 and S42) is a 37 km circular railway around inner Berlin — about a 6 km radius from Alexanderplatz. Berliners use the Ringbahn as the dividing line between dense inner districts and outer ones — much like London uses Zone 1, but on a single train line.',
       },
       {
         title: 'Lakes and forests, not water and traffic',
@@ -1438,7 +1438,7 @@ export const CITIES: City[] = [
       {
         question: 'How big is a 10 km radius in Berlin?',
         answer:
-          'A 10 km radius from Alexanderplatz roughly matches the S-Bahn Ringbahn — the orbital S41/S42 train line that traces inner Berlin. It covers most of Mitte, Kreuzberg, Friedrichshain, Prenzlauer Berg, Charlottenburg, Schöneberg, and Neukölln.',
+          'A 10 km radius from Alexanderplatz reaches beyond the S-Bahn Ringbahn (at roughly 6 km from the centre) and covers Mitte, Kreuzberg, Friedrichshain, Prenzlauer Berg, Charlottenburg, Schöneberg, and Neukölln.',
       },
       {
         question: 'What\'s within 5 km of central Berlin?',
@@ -1448,7 +1448,7 @@ export const CITIES: City[] = [
       {
         question: 'How does Berlin compare to Paris on a radius map?',
         answer:
-          'Berlin is much larger by area. The City of Paris fits inside a 5 km radius, while inner Berlin (the Ringbahn) requires a 10 km radius. Berlin\'s 12 Bezirke spread across 891 km², compared to Paris\'s 20 arrondissements in just 105 km².',
+          'Berlin is much larger by area. The City of Paris fits inside a 5 km radius, while inner Berlin (the area inside the Ringbahn) sits at roughly 6 km and the full city extends 15–20 km from Alexanderplatz. Berlin\'s 12 Bezirke spread across 891 km², compared to Paris\'s 20 arrondissements in just 105 km².',
       },
       {
         question: 'Does a 25 km radius from Berlin cover BER Airport?',
@@ -1458,7 +1458,7 @@ export const CITIES: City[] = [
       {
         question: 'What does "innerhalb des Rings" mean in Berlin?',
         answer:
-          'It means "inside the S-Bahn Ringbahn" — the orbital S41/S42 train line at roughly a 10 km radius from the centre. Berliners use it as a status-laden divider between walkable inner districts and the outer ones. Real-estate listings and lifestyle articles use the phrase frequently.',
+          'It means "inside the S-Bahn Ringbahn" — the orbital S41/S42 train line at roughly a 6 km radius from the centre. Berliners use it as a status-laden divider between walkable inner districts and the outer ones. Real-estate listings and lifestyle articles use the phrase frequently.',
       },
       {
         question: 'How does Berlin\'s commuter belt extend beyond a city radius?',
