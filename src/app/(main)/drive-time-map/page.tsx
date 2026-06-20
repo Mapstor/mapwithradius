@@ -442,7 +442,8 @@ export default function DriveTimeMapPage() {
 
           {/* Traffic Impact */}
           <div className="mb-10">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Traffic Impact on Drive Time</h3>
+            <h3 className="text-lg font-semibold text-slate-900 mb-2">How traffic typically affects drive time</h3>
+            <p className="text-slate-500 text-sm mb-4">Rough rules of thumb — actual reduction depends on city, route, and day. Treat the percentages and hour bands as illustrative.</p>
             <div className="grid md:grid-cols-3 gap-4">
               <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
                 <div className="text-2xl font-bold text-green-700 mb-1">100%</div>
@@ -470,7 +471,11 @@ export default function DriveTimeMapPage() {
       {/* City Comparison and Urban vs Rural */}
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-heading mb-8 text-center">30-Minute Drive Coverage by City Type</h2>
+          <h2 className="section-heading mb-4 text-center">How urban density typically affects 30-minute drive coverage</h2>
+          <p className="text-center text-slate-600 mb-8">
+            Illustrative ranges showing how city layout shapes how much you can drive in 30
+            minutes — these aren&apos;t measured data, and your specific city and route will differ.
+          </p>
 
           <div className="overflow-x-auto mb-8">
             <table className="styled-table">
@@ -519,7 +524,7 @@ export default function DriveTimeMapPage() {
 
           {/* Visual comparison */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-slate-900">Relative Area Coverage (30 minutes)</h3>
+            <h3 className="text-lg font-semibold text-slate-900">Illustrative relative area coverage (30 minutes)</h3>
             {[
               { city: 'Rural Montana', area: '180 sq mi', width: '100%', color: 'bg-green-500' },
               { city: 'Suburban Phoenix', area: '85 sq mi', width: '47%', color: 'bg-green-400' },
