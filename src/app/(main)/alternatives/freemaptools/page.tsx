@@ -113,7 +113,7 @@ export default function FreeMapToolsAlternativePage() {
                 name: 'Why would I use Map With Radius over FreeMapTools?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: "Map With Radius is fully mobile-optimized and runs on OpenStreetMap rather than Google Maps. FreeMapTools' interface dates to 2011 and was not built for phones. If you are drawing a radius on mobile, Map With Radius handles it more cleanly.",
+                  text: "Map With Radius is fully mobile-optimized and runs on OpenStreetMap rather than Google Maps. FreeMapTools' interface predates the mobile era and was not built for phones. If you are drawing a radius on mobile, Map With Radius handles it more cleanly.",
                 },
               },
               {
@@ -162,8 +162,7 @@ export default function FreeMapToolsAlternativePage() {
             specific workflow tradeoffs between the two.
           </p>
           <p className="text-sm text-slate-500">
-            By the Map With Radius editorial team · Last reviewed 29 May 2026 · Based on
-            FreeMapTools&apos; public documentation as of May 2026
+            By the Map With Radius editorial team
           </p>
         </header>
 
@@ -175,11 +174,10 @@ export default function FreeMapToolsAlternativePage() {
 
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed mb-4">
-              FreeMapTools&apos; &ldquo;Radius Around a Point&rdquo; tool has been online since 2011 and has a
-              loyal user base. It offers KML export, CSV import for bulk radius creation,
-              customizable circle colors, and shareable URLs. The tool is free and requires no
-              account. It has accumulated over 2,000 user comments, reflecting genuine long-term
-              utility.
+              FreeMapTools&apos; &ldquo;Radius Around a Point&rdquo; tool is a long-running free
+              utility with a loyal user base. It offers KML export, CSV import for bulk radius
+              creation, customizable circle colors, and shareable URLs. The tool is free and
+              requires no account.
             </p>
 
             <p className="text-slate-700 leading-relaxed">
@@ -234,7 +232,7 @@ export default function FreeMapToolsAlternativePage() {
                 </tr>
                 <tr>
                   <td className="font-medium">UI design</td>
-                  <td>Functional but dated (2011-era interface)</td>
+                  <td>Functional but dated, older interface style</td>
                   <td className="text-green-700 font-medium">Clean, modern interface</td>
                 </tr>
                 <tr>
@@ -334,8 +332,8 @@ export default function FreeMapToolsAlternativePage() {
                   embeds.</li>
               <li>You need the in-radius area calculation feature (area in km² or mi² inside the
                   circle).</li>
-              <li>You&apos;re comfortable with a 2011-era interface and aren&apos;t working from
-                  a phone.</li>
+              <li>You&apos;re comfortable with an older interface style and aren&apos;t working
+                  from a phone.</li>
             </ul>
           </div>
         </section>
@@ -415,8 +413,8 @@ export default function FreeMapToolsAlternativePage() {
               </summary>
               <div className="faq-content">
                 Map With Radius is fully mobile-optimized and runs on OpenStreetMap rather than
-                Google Maps. FreeMapTools&apos; interface dates to 2011 and was not built for
-                phones. If you are drawing a radius on mobile, Map With Radius handles it more
+                Google Maps. FreeMapTools&apos; interface predates the mobile era and was not built
+                for phones. If you are drawing a radius on mobile, Map With Radius handles it more
                 cleanly.
               </div>
             </details>

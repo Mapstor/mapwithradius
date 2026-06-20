@@ -4,21 +4,21 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Maptive Alternative — Free Radius Map',
   description:
-    'Maptive alternative for radius mapping — free forever, no 10-day trial, no $250-per-user annual plan. Draw circles on OpenStreetMap, export KML, no account.',
+    'Maptive alternative for radius mapping — free, no signup, no per-user subscription. Draw circles on OpenStreetMap, export KML, no account.',
   alternates: {
     canonical: '/alternatives/maptive',
   },
   openGraph: {
-    title: 'Maptive Alternative — Free Radius Map, No $250 Plan (2026)',
+    title: 'Maptive Alternative — Free Radius Map, No Subscription',
     description:
-      'Maptive alternative for radius mapping — free forever, no 10-day trial, no $250-per-user annual plan. Draw circles on OpenStreetMap, export KML, no account.',
+      'Maptive alternative for radius mapping — free, no signup, no per-user subscription. Draw circles on OpenStreetMap, export KML, no account.',
     url: 'https://mapwithradius.com/alternatives/maptive',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Maptive Alternative — Free Radius Map, No $250 Plan (2026)',
+    title: 'Maptive Alternative — Free Radius Map, No Subscription',
     description:
-      'Maptive alternative for radius mapping — free forever, no 10-day trial, no $250-per-user annual plan. Draw circles on OpenStreetMap, export KML, no account.',
+      'Maptive alternative for radius mapping — free, no signup, no per-user subscription. Draw circles on OpenStreetMap, export KML, no account.',
   },
 };
 
@@ -89,7 +89,7 @@ export default function MaptiveAlternativePage() {
                 name: 'Is Maptive free?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Maptive is a paid product with a 10-day free trial. After the trial ends, the account reverts to a limited free state rather than a genuine free tier. Plans start at $250 per user per year.',
+                  text: 'Maptive is a paid product with a free trial. After the trial ends, the account reverts to a limited state rather than a genuine free tier. Continued access requires a paid per-user annual plan.',
                 },
               },
               {
@@ -97,7 +97,7 @@ export default function MaptiveAlternativePage() {
                 name: 'What does Maptive cost?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Maptive has four to five pricing editions, starting at $250 per user per year and rising to $2,500+ per year for team tiers. Every plan includes every feature; tiers differ only by user count, data capacity, and support level.',
+                  text: "Maptive pricing scales by team size, data capacity, and support level. Every plan includes the full feature set; the tiers differ in scale, not in features. Check Maptive's site for current pricing.",
                 },
               },
               {
@@ -113,7 +113,7 @@ export default function MaptiveAlternativePage() {
                 name: 'Does Maptive offer a free tier?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Not in the consumer sense. The 10-day trial is free, but continued access requires a paid plan starting at $250 per user per year. Map With Radius is free forever, with no trial countdown and no account required.',
+                  text: 'Not in the consumer sense. The trial is free, but continued access requires a paid per-user annual plan. Map With Radius is free, with no trial countdown and no account required.',
                 },
               },
               {
@@ -154,11 +154,11 @@ export default function MaptiveAlternativePage() {
         {/* Header */}
         <header className="mb-10">
           <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
-            Maptive Alternative — Free Radius Maps Without a $250 Plan
+            Maptive Alternative — Free Radius Maps Without a Per-User Subscription
           </h1>
           <p className="text-lg text-slate-600">
             Maptive is a paid data-mapping platform used by sales teams and territory managers. If
-            you need a free radius map without a $250-per-user annual plan or a 10-day trial
+            you need a free radius map without a per-user annual subscription or a trial
             countdown, here&apos;s how Map With Radius compares.
           </p>
         </header>
@@ -170,11 +170,11 @@ export default function MaptiveAlternativePage() {
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed mb-4">
-              Maptive is a paid B2B mapping platform headquartered in Denver, Colorado, under CEO
-              Brad Crisp. Its core value proposition is plotting spreadsheet data (CSV, Excel, or
-              Google Sheets) onto a map for sales territory management, route optimization,
-              heatmaps, and clustering. It runs on Google Maps. Radius mapping is one feature inside
-              a broader data-visualization product aimed at business teams.
+              Maptive is a paid B2B mapping platform. Its core value proposition is plotting
+              spreadsheet data (CSV, Excel, or Google Sheets) onto a map for sales territory
+              management, route optimization, heatmaps, and clustering. It runs on Google Maps.
+              Radius mapping is one feature inside a broader data-visualization product aimed at
+              business teams.
             </p>
             <p className="text-slate-700 leading-relaxed">
               Source:{' '}
@@ -197,11 +197,10 @@ export default function MaptiveAlternativePage() {
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed">
-              Maptive is paid-only. There are four to five pricing editions, starting at $250 per
-              user per year and rising to $2,500+ per year for team tiers. A 10-day free trial is
-              available; after it ends, the account reverts to a limited free state rather than a
-              genuine free tier. Every plan includes every feature — tiers differ only by user
-              count, data capacity, and support level. An account is required.
+              Maptive is paid-only. Pricing scales by team size, data capacity, and support level;
+              every plan includes the full feature set. A free trial is available; after it ends,
+              the account reverts to a limited state rather than a genuine free tier. An account is
+              required.
             </p>
           </div>
         </section>
@@ -223,12 +222,12 @@ export default function MaptiveAlternativePage() {
               <tbody>
                 <tr>
                   <td className="font-medium">Price for radius mapping</td>
-                  <td>From $250/user/year</td>
+                  <td>Per-user annual subscription</td>
                   <td className="text-green-700 font-medium">Free</td>
                 </tr>
                 <tr>
                   <td className="font-medium">Trial</td>
-                  <td>10-day, reverts to limited post-trial</td>
+                  <td>Trial available; reverts to limited tier after</td>
                   <td className="text-green-700 font-medium">Not applicable (fully free)</td>
                 </tr>
                 <tr>
@@ -337,9 +336,9 @@ export default function MaptiveAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Maptive is a paid product with a 10-day free trial. After the trial ends, the
-                account reverts to a limited free state rather than a genuine free tier. Plans start
-                at $250 per user per year.
+                Maptive is a paid product with a free trial. After the trial ends, the account
+                reverts to a limited state rather than a genuine free tier. Continued access
+                requires a paid per-user annual plan.
               </div>
             </details>
 
@@ -356,9 +355,9 @@ export default function MaptiveAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Maptive has four to five pricing editions, starting at $250 per user per year and
-                rising to $2,500+ per year for team tiers. Every plan includes every feature; tiers
-                differ only by user count, data capacity, and support level.
+                Maptive pricing scales by team size, data capacity, and support level. Every plan
+                includes the full feature set; the tiers differ in scale, not in features. Check
+                Maptive&apos;s site for current pricing.
               </div>
             </details>
 
@@ -395,9 +394,9 @@ export default function MaptiveAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Not in the consumer sense. The 10-day trial is free, but continued access requires a
-                paid plan starting at $250 per user per year. Map With Radius is free forever, with
-                no trial countdown and no account required.
+                Not in the consumer sense. The trial is free, but continued access requires a paid
+                per-user annual plan. Map With Radius is free, with no trial countdown and no
+                account required.
               </div>
             </details>
 

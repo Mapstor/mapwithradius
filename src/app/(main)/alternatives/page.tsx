@@ -9,14 +9,14 @@ export const metadata: Metadata = {
     canonical: '/alternatives',
   },
   openGraph: {
-    title: 'Radius Map Tool Alternatives — Compared Side by Side (2026)',
+    title: 'Radius Map Tool Alternatives — Compared Side by Side',
     description:
       'Compare six radius map tools — FreeMapTools, MapDevelopers, CalcMaps, Smappen, Maptive, and Map With Radius. Pricing, features, and which fits your use case.',
     url: 'https://mapwithradius.com/alternatives',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Radius Map Tool Alternatives — Compared Side by Side (2026)',
+    title: 'Radius Map Tool Alternatives — Compared Side by Side',
     description:
       'Compare six radius map tools — FreeMapTools, MapDevelopers, CalcMaps, Smappen, Maptive, and Map With Radius. Pricing, features, and which fits your use case.',
   },
@@ -36,7 +36,7 @@ const FAQS = [
   {
     question: 'When does a paid plan actually pay off?',
     answer:
-      'Three scenarios. (1) Sales-ops teams building territory plans where the cost of bad territory > $99/month. (2) Site-selection consultants charging clients for trade-area analysis — demographic overlays save hours per project. (3) Field-service ops mapping hundreds of jobs daily where CSV bulk import + saved layers compound. Below those bars, free tools are usually enough.',
+      'Three scenarios. (1) Sales-ops teams building territory plans where the cost of bad territory exceeds the cost of a monthly mapping subscription. (2) Site-selection consultants charging clients for trade-area analysis — demographic overlays save hours per project. (3) Field-service ops mapping hundreds of jobs daily where CSV bulk import + saved layers compound. Below those bars, free tools are usually enough.',
   },
   {
     question: 'Is it cheaper to build my own with the Google Maps API?',
@@ -46,12 +46,12 @@ const FAQS = [
   {
     question: 'How do these tools handle export to my CRM, MLS, or GIS?',
     answer:
-      "KML is the universal exchange format. Most tools (Map With Radius, FreeMapTools, CalcMaps) export KML, which imports cleanly into Google Earth, QGIS, ArcGIS, most CRMs with mapping modules, and major MLS systems. Maptive and Smappen lean toward their own dashboards rather than file export. Always check the export options before committing — fewer formats means more lock-in.",
+      "KML is the universal exchange format. Most tools (Map With Radius, FreeMapTools, CalcMaps) export KML, which imports cleanly into Google Earth, QGIS, ArcGIS, most CRMs with mapping modules, and major MLS systems. Some paid tools lean toward their own dashboards rather than file export. Always check the export options before committing — fewer formats means more lock-in.",
   },
   {
     question: 'Why does one tool show different radii than another for the same input?',
     answer:
-      "The underlying geometry should match — a 10 km radius is 10 km regardless of tool. What can differ: (1) which projection is used for display (Web Mercator distorts visual size), (2) whether the tool uses Haversine on a spherical Earth or Vincenty's formulae on the WGS 84 ellipsoid (differences are < 0.3% at 1,000 km), (3) where the center is anchored. Cross-check by entering identical lat/lng and radius; if numbers diverge, it's a tool bug.",
+      "The underlying geometry should match — a 10 km radius is 10 km regardless of tool. What can differ: (1) which projection is used for display (Web Mercator distorts visual size), (2) whether the tool uses Haversine on a spherical Earth or Vincenty's formulae on the WGS 84 ellipsoid (differences are sub-percent at long ranges), (3) where the center is anchored. Cross-check by entering identical lat/lng and radius; if numbers diverge, it's a tool bug.",
   },
   {
     question: "What's the difference between a paid tool and a paid plan within a free tool?",
@@ -61,7 +61,7 @@ const FAQS = [
   {
     question: 'Are any of these tools likely to disappear or change pricing soon?',
     answer:
-      "Hard to predict, but the long-running free tools (FreeMapTools dating to 2011, MapDevelopers) have shown durability. Newer or paid ones (Smappen — formerly Oalley — and Maptive) are commercial products with ongoing operations risk. Map With Radius is the youngest entrant; the bet on OpenStreetMap means cost structure stays low even at scale. Your safest insurance: pick a tool with good KML or CSV export, so you can switch later without re-creating work.",
+      "Hard to predict. The long-running free tools (FreeMapTools, MapDevelopers) have shown durability. Commercial paid tools (Smappen, Maptive) carry the ongoing operations risk that any subscription business does. Map With Radius is a newer entrant; the bet on OpenStreetMap means cost structure stays low even at scale. Your safest insurance: pick a tool with good KML or CSV export, so you can switch later without re-creating work.",
   },
 ];
 
@@ -256,7 +256,7 @@ export default function AlternativesIndexPage() {
                       Smappen
                     </Link>
                   </td>
-                  <td>Free tier plus $99–$199/month plans</td>
+                  <td>Free tier plus paid plans</td>
                 </tr>
                 <tr>
                   <td className="font-medium">Plotting large spreadsheet datasets</td>
@@ -328,14 +328,14 @@ export default function AlternativesIndexPage() {
                 </tr>
                 <tr>
                   <td className="font-medium">Smappen</td>
-                  <td>Free + $99–$199/month</td>
+                  <td>Free tier + paid plans</td>
                   <td>Custom isochrone engine</td>
                   <td>Yes</td>
                   <td>Territory and demographic analysis</td>
                 </tr>
                 <tr>
                   <td className="font-medium">Maptive</td>
-                  <td>$250+/user/year</td>
+                  <td>Paid plans</td>
                   <td>Google Maps</td>
                   <td>Yes</td>
                   <td>Spreadsheet data mapping for teams</td>
@@ -446,7 +446,7 @@ export default function AlternativesIndexPage() {
                 auto-renewing subscription.
               </p>
               <p className="text-xs text-slate-500 mb-3">
-                PRO packages of 30, 90, 180, or 365 day-credits
+                PRO uses prepaid credit packs, not a subscription
               </p>
               <span className="text-sm content-link">Read full comparison →</span>
             </Link>
@@ -459,11 +459,10 @@ export default function AlternativesIndexPage() {
                 Smappen
               </h3>
               <p className="text-sm text-slate-600 mb-3">
-                Geomarketing platform (formerly Oalley). Free tier plus $99 and $199/month plans for
-                demographic analysis.
+                Geomarketing platform with a free tier plus paid plans for demographic analysis.
               </p>
               <p className="text-xs text-slate-500 mb-3">
-                80,000+ active monthly users, business-focused
+                Business-focused; account required
               </p>
               <span className="text-sm content-link">Read full comparison →</span>
             </Link>
@@ -476,11 +475,10 @@ export default function AlternativesIndexPage() {
                 Maptive
               </h3>
               <p className="text-sm text-slate-600 mb-3">
-                Paid B2B data-mapping platform headquartered in Denver under CEO Brad Crisp. From
-                $250/user/year.
+                Paid B2B data-mapping platform aimed at sales teams and territory managers.
               </p>
               <p className="text-xs text-slate-500 mb-3">
-                Every plan has every feature; tiers differ by user count and capacity
+                Account and paid plan required; tiers scale by team size
               </p>
               <span className="text-sm content-link">Read full comparison →</span>
             </Link>
@@ -567,7 +565,7 @@ export default function AlternativesIndexPage() {
                   >
                     Smappen
                   </a>{' '}
-                  (geomarketing, formerly Oalley).
+                  (geomarketing platform).
                 </li>
                 <li>
                   <a

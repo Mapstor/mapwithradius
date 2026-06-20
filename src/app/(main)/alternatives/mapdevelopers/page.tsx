@@ -162,8 +162,7 @@ export default function MapDevelopersAlternativePage() {
             Map With Radius compares.
           </p>
           <p className="text-sm text-slate-500">
-            By the Map With Radius editorial team · Last reviewed 29 May 2026 · Based on
-            MapDevelopers&apos; public tool as of May 2026
+            By the Map With Radius editorial team
           </p>
         </header>
 
@@ -326,17 +325,17 @@ export default function MapDevelopersAlternativePage() {
               building a workflow on top, it&apos;s a structural fact worth understanding.
             </p>
             <p className="text-slate-700 leading-relaxed mb-4">
-              Google&apos;s 2018 pricing change moved the Google Maps API from a generous free tier
-              to a pay-per-load model with $200/month of free credit (covers roughly 28,000 map
-              loads). MapDevelopers absorbs that cost on the tool page and offsets it with display
-              advertising. The implications for users:
+              Google&apos;s Maps Platform charges per-load fees beyond a monthly free credit that
+              production-scale embeds quickly exceed. MapDevelopers absorbs that cost on the tool
+              page and offsets it with display advertising. The implications for users:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-slate-700 leading-relaxed mb-4">
               <li>
                 <strong>You can&apos;t embed the tool yourself for free.</strong> If you wanted to
                 put a radius tool in an internal company app or a public-facing site, replicating
                 MapDevelopers&apos; approach means provisioning a Google Cloud project, billing
-                account, and API key — and absorbing the per-load cost above 28k/month yourself.
+                account, and API key — and absorbing the per-load cost once the free tier is
+                exceeded.
               </li>
               <li>
                 <strong>Map style and POI labels follow Google&apos;s product roadmap.</strong> When

@@ -89,7 +89,7 @@ export default function CalcMapsAlternativePage() {
                 name: 'Is CalcMaps free?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'The consumer site at calcmaps.com is free and ad-supported, with no account needed. The paid product CalcMaps PRO (calcmapspro.com) uses prepaid credits — one credit equals one day of access, sold in packs of 30, 90, 180, or 365 days.',
+                  text: 'The consumer site at calcmaps.com is free and ad-supported, with no account needed. The paid product CalcMaps PRO (calcmapspro.com) uses prepaid credits — one credit equals one day of access, sold in prepaid packs of varying duration.',
                 },
               },
               {
@@ -173,8 +173,8 @@ export default function CalcMapsAlternativePage() {
               CalcMaps (calcmaps.com) is a free, ad-supported suite of browser-based mapping tools —
               radius, area, distance, and elevation calculators — running on Google Maps. It is
               aimed at casual consumer users. A separate paid product, CalcMaps PRO
-              (calcmapspro.com), launched in 2021 under the Portuguese company Emptydrops LDA and
-              targets users who need exports, custom icons, and commercial-use rights.
+              (calcmapspro.com), targets users who need exports, custom icons, and commercial-use
+              rights.
             </p>
             <p className="text-slate-700 leading-relaxed">
               Source:{' '}
@@ -199,11 +199,9 @@ export default function CalcMapsAlternativePage() {
             <p className="text-slate-700 leading-relaxed">
               The free calcmaps.com site is ad-supported and requires no account. CalcMaps PRO uses
               a prepaid credits model, not a subscription — one credit equals one day of access,
-              and you buy packages of 30, 90, 180, or 365 credits (larger packs have a lower
-              per-day cost). A 7-day free trial is available without a credit card. All paid
-              packages include the same feature set: 100 projects, 5 location stores, 200 objects
-              per project, import/export, elevation, GPX export, custom icons, and commercial-use
-              rights. Plans never auto-renew.
+              and credits are sold in prepaid packs of varying duration. A free trial is available.
+              Paid packages include exports, elevation, GPX export, custom icons, and
+              commercial-use rights. Plans do not auto-renew.
             </p>
           </div>
         </section>
@@ -341,7 +339,7 @@ export default function CalcMapsAlternativePage() {
               <div className="faq-content">
                 The consumer site at calcmaps.com is free and ad-supported, with no account needed.
                 The paid product CalcMaps PRO (calcmapspro.com) uses prepaid credits — one credit
-                equals one day of access, sold in packs of 30, 90, 180, or 365 days.
+                equals one day of access, sold in prepaid packs of varying duration.
               </div>
             </details>
 

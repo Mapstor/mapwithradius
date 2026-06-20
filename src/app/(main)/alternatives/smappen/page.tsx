@@ -4,21 +4,21 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Smappen Alternative — Free Radius Map',
   description:
-    'Smappen alternative for simple radius maps — free forever, no signup, no $99-$199 monthly plan. Draw circles, export KML and PNG, share URLs instantly.',
+    'Smappen alternative for simple radius maps — free, no signup, no monthly subscription. Draw circles, export KML and PNG, share URLs instantly.',
   alternates: {
     canonical: '/alternatives/smappen',
   },
   openGraph: {
-    title: 'Smappen Alternative — Free Radius Map Without a Subscription (2026)',
+    title: 'Smappen Alternative — Free Radius Map Without a Subscription',
     description:
-      'Smappen alternative for simple radius maps — free forever, no signup, no $99-$199 monthly plan. Draw circles, export KML and PNG, share URLs instantly.',
+      'Smappen alternative for simple radius maps — free, no signup, no monthly subscription. Draw circles, export KML and PNG, share URLs instantly.',
     url: 'https://mapwithradius.com/alternatives/smappen',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Smappen Alternative — Free Radius Map Without a Subscription (2026)',
+    title: 'Smappen Alternative — Free Radius Map Without a Subscription',
     description:
-      'Smappen alternative for simple radius maps — free forever, no signup, no $99-$199 monthly plan. Draw circles, export KML and PNG, share URLs instantly.',
+      'Smappen alternative for simple radius maps — free, no signup, no monthly subscription. Draw circles, export KML and PNG, share URLs instantly.',
   },
 };
 
@@ -89,15 +89,7 @@ export default function SmappenAlternativePage() {
                 name: 'Is Smappen free?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Yes, Smappen has a genuinely free-forever tier that lets you draw catchment areas and isochrones. An account is required. Paid plans (Essential at $99 per month, Pro at $199 per month) add demographic data, city and zip-code extracts, and deeper analysis.',
-                },
-              },
-              {
-                '@type': 'Question',
-                name: 'Was Smappen previously called Oalley?',
-                acceptedAnswer: {
-                  '@type': 'Answer',
-                  text: "Yes. Oalley was the product's original name; it was rebranded to Smappen. The company positioning shifted toward geomarketing and territory analysis over time.",
+                  text: "Yes, Smappen has a genuinely free tier that lets you draw catchment areas and isochrones. An account is required. Paid plans add demographic data, city and zip-code extracts, and deeper analysis. Check Smappen's site for current pricing.",
                 },
               },
               {
@@ -159,7 +151,7 @@ export default function SmappenAlternativePage() {
           <p className="text-lg text-slate-600">
             Smappen is a geomarketing platform built for businesses doing territory planning,
             catchment-area analysis, and demographic lookups. If you need a free radius map without
-            a $99-to-$199 monthly subscription, here&apos;s how Map With Radius compares.
+            a monthly subscription, here&apos;s how Map With Radius compares.
           </p>
         </header>
 
@@ -170,11 +162,10 @@ export default function SmappenAlternativePage() {
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed mb-4">
-              Smappen is a business-focused geomarketing platform, previously known as Oalley before
-              rebranding. It offers catchment-area analysis, drive-time and walking isochrones,
-              demographic overlays, and territory-management tools. It has over 80,000 active
-              monthly users and 700+ paying customers, mostly businesses doing market analysis,
-              retail site selection, and sales territory planning.
+              Smappen is a business-focused geomarketing platform. It offers catchment-area
+              analysis, drive-time and walking isochrones, demographic overlays, and
+              territory-management tools, aimed at businesses doing market analysis, retail site
+              selection, and sales territory planning.
             </p>
             <p className="text-slate-700 leading-relaxed">
               Source:{' '}
@@ -197,12 +188,11 @@ export default function SmappenAlternativePage() {
           </h2>
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed">
-              Smappen has three tiers. The Free plan is genuinely free forever — not a seven-day
-              trap — and lets you draw catchment areas and isochrones after signing up for an
-              account. The Essential plan is $99 per month and adds city and zip-code extracts. The
-              Pro plan is $199 per month and unlocks deeper area analysis. Smappen also offers free
-              access for students on request. All paid plans require an account and credit-card
-              billing.
+              Smappen has a free tier and paid plans. The Free plan is genuinely free — not a short
+              trial — and lets you draw catchment areas and isochrones after signing up for an
+              account. Paid plans add city and zip-code extracts, demographic data, and deeper
+              area analysis. All paid plans require an account and credit-card billing. Check
+              Smappen&apos;s site for current pricing.
             </p>
           </div>
         </section>
@@ -229,7 +219,7 @@ export default function SmappenAlternativePage() {
                 </tr>
                 <tr>
                   <td className="font-medium">Price for demographic data</td>
-                  <td>$99–$199/month</td>
+                  <td>Paid plans</td>
                   <td>Not available</td>
                 </tr>
                 <tr>
@@ -337,28 +327,10 @@ export default function SmappenAlternativePage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Yes, Smappen has a genuinely free-forever tier that lets you draw catchment areas
-                and isochrones. An account is required. Paid plans (Essential at $99 per month, Pro
-                at $199 per month) add demographic data, city and zip-code extracts, and deeper
-                analysis.
-              </div>
-            </details>
-
-            <details className="faq-card">
-              <summary>
-                Was Smappen previously called Oalley?
-                <svg
-                  className="w-5 h-5 faq-chevron"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </summary>
-              <div className="faq-content">
-                Yes. Oalley was the product&apos;s original name; it was rebranded to Smappen. The
-                company positioning shifted toward geomarketing and territory analysis over time.
+                Yes, Smappen has a genuinely free tier that lets you draw catchment areas and
+                isochrones. An account is required. Paid plans add demographic data, city and
+                zip-code extracts, and deeper analysis. Check Smappen&apos;s site for current
+                pricing.
               </div>
             </details>
 
