@@ -1481,9 +1481,9 @@ export const CITIES: City[] = [
     population: 3_300_000,
     populationLabel: '3.3 million city / 6.7 million metro',
     timezone: 'Europe/Madrid',
-    fact: 'Madrid is encircled by four orbital motorways — M-30, M-40, M-45, M-50 — at roughly 7 km, 14 km, 19 km, and 25 km from the centre. Each ring marks a real shift in urban character.',
+    fact: 'Madrid is encircled by orbital motorways — the inner M-30 (roughly 5 km from the centre), the M-40 (roughly 10 km), the partial M-45 on the eastern side, and the outer M-50 (roughly 13 km). Each ring marks a real shift in urban character.',
     intro:
-      'A 10 km radius from Puerta del Sol roughly matches the M-40 motorway, capturing all of central Madrid plus inner suburbs like Pozuelo de Alarcón. The M-30 (about 7 km from the centre) is the practical "inner Madrid" boundary; the M-40 (14 km) catches most of the city; the M-45 and M-50 reach outer suburbs and beyond. Drive time inside the M-30 is heavily traffic-dependent — pair the radius map with the Drive Time Map for honest commute work.',
+      'A 10 km radius from Puerta del Sol roughly matches the M-40 motorway, capturing all of central Madrid plus inner suburbs like Pozuelo de Alarcón. The M-30 (roughly 5 km from the centre) is the practical "inner Madrid" boundary; the M-40 (roughly 10 km) catches most of the city; the M-50 (roughly 13 km) marks the outer metropolitan ring. These ring values are averages — the actual distance varies by direction since the motorways are irregular loops rather than perfect circles. Drive time inside the M-30 is heavily traffic-dependent — pair the radius map with the Drive Time Map for honest commute work.',
     alternateNames: ['Madriz (colloquial)', 'La Capital'],
     centralLandmark: 'Puerta del Sol',
     coverage: [
@@ -1554,7 +1554,7 @@ export const CITIES: City[] = [
         unit: 'kilometers',
         label: '25 km',
         description:
-          'A 25 km radius covers all of metropolitan Madrid out to the M-50 — Madrid-Barajas Airport, Las Rozas, Majadahonda, Alcorcón, Móstoles, Fuenlabrada, Parla, San Sebastián de los Reyes, Tres Cantos, Coslada, San Fernando de Henares, and most of the Comunidad de Madrid\'s dense suburban ring.',
+          'A 25 km radius extends well beyond the M-50 ring, covering all of metropolitan Madrid — Madrid-Barajas Airport, Las Rozas, Majadahonda, Alcorcón, Móstoles, Fuenlabrada, Parla, San Sebastián de los Reyes, Tres Cantos, Coslada, San Fernando de Henares, and most of the Comunidad de Madrid\'s dense suburban ring.',
         includes: [
           'Madrid-Barajas Airport',
           'Las Rozas, Majadahonda, Boadilla del Monte',
@@ -1598,8 +1598,8 @@ export const CITIES: City[] = [
       {
         title: 'M-30 vs M-40 segmentation',
         description:
-          'Madrid retail and real estate often segment by ring road. Inside the M-30 is "central Madrid" — high density, walkable. Between M-30 and M-40 is "inner suburbs" — denser than typical European suburbs, mixed-use. Outside M-40 starts feeling distinctly suburban. A 7 km / 14 km dual-radius captures this segmentation cleanly.',
-        recommendedRadius: '7 km (M-30), 14 km (M-40)',
+          'Madrid retail and real estate often segment by ring road. Inside the M-30 is "central Madrid" — high density, walkable. Between M-30 and M-40 is "inner suburbs" — denser than typical European suburbs, mixed-use. Outside M-40 starts feeling distinctly suburban. A 5 km / 10 km dual-radius approximately traces this segmentation.',
+        recommendedRadius: '5 km (M-30), 10 km (M-40)',
       },
       {
         title: 'Metro-aligned property search',
@@ -1624,7 +1624,7 @@ export const CITIES: City[] = [
       {
         title: 'Madrid is built on rings',
         description:
-          'Few cities are as cleanly ringed as Madrid: M-30 (7 km), M-40 (14 km), M-45 (19 km), M-50 (25 km). Each ring marks a real shift in urban character — central, inner-suburb, outer-suburb, ex-urban. Most service-area and trade-area work in Madrid uses the rings as natural radii.',
+          'Few cities are as cleanly ringed as Madrid: M-30 (roughly 5 km), M-40 (roughly 10 km), and M-50 (roughly 13 km), plus the partial M-45 on the eastern side. Each ring marks a real shift in urban character — central, inner-suburb, outer-suburb, ex-urban. Most service-area and trade-area work in Madrid uses the rings as natural radii.',
       },
       {
         title: 'The radius is uniform — Madrid has no major water or hills',
@@ -1646,7 +1646,7 @@ export const CITIES: City[] = [
       {
         question: 'What is the M-30, M-40, M-45, and M-50 in Madrid?',
         answer:
-          'Four orbital motorways encircling Madrid. The M-30 sits at about 7 km from the centre and marks the boundary of central Madrid. The M-40 (14 km) marks the city limits in most directions. The M-45 (19 km) catches inner-outer suburbs. The M-50 (25 km) defines the outer metropolitan ring. Each is a useful informal radius.',
+          'Four orbital motorways encircling Madrid. The M-30 sits at roughly 5 km from the centre and marks the boundary of central Madrid. The M-40 (roughly 10 km) marks the city limits in most directions. The M-45 is a partial ring on Madrid\'s eastern side. The M-50 (roughly 13 km) defines the outer metropolitan ring. Each is a useful informal radius.',
       },
       {
         question: 'Does a 25 km radius cover Madrid-Barajas Airport?',
