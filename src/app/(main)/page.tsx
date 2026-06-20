@@ -443,7 +443,7 @@ export default function HomePage() {
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
-            <h2 className="section-heading mb-6">Map With Radius vs. Other Radius Tools</h2>
+            <h2 className="section-heading mb-6">What Map With Radius Includes</h2>
 
             <div className="overflow-x-auto">
               <table className="styled-table">
@@ -451,72 +451,48 @@ export default function HomePage() {
                   <tr>
                     <th>Feature</th>
                     <th>Map With Radius</th>
-                    <th>MapDevelopers</th>
-                    <th>FreeMapTools</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>Map provider</td>
                     <td>OpenStreetMap (free)</td>
-                    <td>Google Maps</td>
-                    <td>Google Maps</td>
                   </tr>
                   <tr>
                     <td>Multiple circles</td>
                     <td className="text-green-600 font-medium">&#10003; Unlimited</td>
-                    <td className="text-green-600">&#10003; Unlimited</td>
-                    <td className="text-green-600">&#10003; Unlimited</td>
                   </tr>
                   <tr>
                     <td>Address search</td>
-                    <td className="text-green-600 font-medium">&#10003; Free</td>
-                    <td className="text-green-600">&#10003;</td>
-                    <td className="text-amber-600">City + coords (no full address)</td>
+                    <td className="text-green-600 font-medium">&#10003; Full address, zip, city, landmark, or coordinates</td>
                   </tr>
                   <tr>
                     <td>Share via URL</td>
                     <td className="text-green-600 font-medium">&#10003;</td>
-                    <td className="text-green-600">&#10003;</td>
-                    <td className="text-green-600">&#10003;</td>
                   </tr>
                   <tr>
                     <td>Export KML</td>
                     <td className="text-green-600 font-medium">&#10003;</td>
-                    <td className="text-red-600">&#10007;</td>
-                    <td className="text-green-600">&#10003;</td>
                   </tr>
                   <tr>
                     <td>Export PNG</td>
                     <td className="text-green-600 font-medium">&#10003;</td>
-                    <td className="text-red-600">&#10007;</td>
-                    <td className="text-red-600">&#10007;</td>
                   </tr>
                   <tr>
                     <td>Mobile friendly</td>
-                    <td className="text-green-600 font-medium">&#10003; Responsive</td>
-                    <td className="text-yellow-600">Partial</td>
-                    <td className="text-red-600">&#10007;</td>
+                    <td className="text-green-600 font-medium">&#10003; Responsive, touch-optimised</td>
                   </tr>
                   <tr>
                     <td>Usage limits</td>
                     <td className="font-medium">None</td>
-                    <td>Google API limits</td>
-                    <td>Google API limits</td>
                   </tr>
                   <tr>
                     <td>Cost</td>
                     <td className="font-medium">Free</td>
-                    <td>Free</td>
-                    <td>Free</td>
                   </tr>
                 </tbody>
               </table>
             </div>
-
-            <p className="text-slate-500 text-sm mt-4">
-              <em>Data based on publicly available information. Last verified June 2026.</em>
-            </p>
 
             <p className="text-slate-700 mt-6">
               <Link href="/alternatives/freemaptools" className="content-link">
@@ -711,9 +687,9 @@ export default function HomePage() {
                   </svg>
                 </summary>
                 <div className="faq-content">
-                  The radius uses the Haversine formula, which accounts for the Earth&apos;s curvature. At typical scales
-                  (1–500 miles), accuracy is within a few meters. The circles represent straight-line distance, not road
-                  distance.
+                  The radius uses the Haversine formula, which accounts for the Earth&apos;s curvature. It is highly
+                  accurate for typical radius sizes; the spherical-Earth approximation introduces sub-percent error
+                  only at continental distances. The circles represent straight-line distance, not road distance.
                 </div>
               </details>
 
@@ -905,7 +881,7 @@ export default function HomePage() {
                 name: 'How accurate is the radius?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: "The radius uses the Haversine formula, which accounts for the Earth's curvature. At typical scales (1–500 miles), accuracy is within a few meters.",
+                  text: "The radius uses the Haversine formula, which accounts for the Earth's curvature. It is highly accurate for typical radius sizes; the spherical-Earth approximation introduces sub-percent error only at continental distances.",
                 },
               },
               {
