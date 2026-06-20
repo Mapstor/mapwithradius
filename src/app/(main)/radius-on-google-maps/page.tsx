@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'article',
-    title: 'How to Draw a Radius on Google Maps (2026 Guide + Free Tool)',
+    title: 'How to Draw a Radius on Google Maps — Guide + Free Tool',
     description:
       "Google Maps has no built-in radius tool. Here are 3 ways to draw a radius circle on Google Maps.",
     url: 'https://mapwithradius.com/radius-on-google-maps',
@@ -203,10 +203,10 @@ export default function RadiusOnGoogleMapsPage() {
           </p>
 
           <p className="text-slate-700 leading-relaxed">
-            There is no built-in radius tool in Google Maps. You cannot click a point and draw a
-            circle at a specific distance around it — not in the web version, not in the mobile app,
-            and not in Google My Maps. Google has never added this feature despite years of user
-            requests.
+            As of writing, Google Maps does not offer a built-in radius drawing tool — there is no
+            UI in the web app, mobile app, or Google My Maps that lets you click a point and draw a
+            circle at a specific distance. Below are the workarounds people commonly use to get a
+            radius onto a Google Map, and a faster alternative.
           </p>
 
           {/* Google Maps screenshot */}
@@ -221,12 +221,12 @@ export default function RadiusOnGoogleMapsPage() {
           </div>
 
           <p className="text-slate-700 leading-relaxed">
-            This guide covers three workarounds that people use to get a radius onto Google Maps, the
-            limitations of each approach, and a faster alternative using our{' '}
+            The fastest alternative is our{' '}
             <Link href="/" className="content-link font-medium">
               free radius map tool
             </Link>{' '}
-            that works instantly without any setup.
+            — works instantly with no setup. If you specifically need the radius on a Google Map,
+            the three workarounds below cover it.
           </p>
         </section>
 
@@ -297,8 +297,8 @@ export default function RadiusOnGoogleMapsPage() {
 
           <div className="prose prose-slate max-w-none">
             <p className="text-slate-700 leading-relaxed mb-4">
-              This method creates a circle in a KML file and imports it into Google My Maps. It&apos;s
-              the only way to display a radius directly on a Google Map.
+              This method creates a circle in a KML file and imports it into Google My Maps — the
+              standard route for getting a radius onto a Google Map.
             </p>
 
             <h3 className="text-lg font-semibold text-slate-900 mt-6 mb-3">How to do it:</h3>
@@ -318,14 +318,14 @@ export default function RadiusOnGoogleMapsPage() {
                 >
                   mymaps.google.com
                 </a>{' '}
-                and sign in with your Google account. Click &ldquo;Create a new map.&rdquo;
+                and sign in with your Google account. Create a new map from the My Maps interface.
               </li>
               <li>
-                <strong>Import the KML file.</strong> Click &ldquo;Import&rdquo; in the left panel, then upload
+                <strong>Import the KML file.</strong> Use the import option in My Maps to upload
                 your KML file. The circle will appear on the Google Map.
               </li>
               <li>
-                <strong>Adjust styling.</strong> Click the circle to change its fill color, border
+                <strong>Adjust styling.</strong> Select the circle to change its fill color, border
                 color, and opacity.
               </li>
             </ol>
@@ -338,15 +338,18 @@ export default function RadiusOnGoogleMapsPage() {
                 from scratch.
               </li>
               <li>
-                The circle is a polygon approximation (typically 360 points), not a true geometric
-                circle. At small scales this is indistinguishable, but at very small radii the edges
-                may appear slightly angular.
+                The circle is a polygon approximation, not a true geometric circle. At normal
+                scales this is indistinguishable, but at very small radii the edges may appear
+                slightly angular.
               </li>
               <li>
                 You cannot easily resize the circle after import. To change the radius, you need to
                 generate a new KML file and re-import it.
               </li>
-              <li>Google My Maps has a limit of 10 layers and 2,000 features per layer.</li>
+              <li>
+                Google My Maps has layer and feature limits that can affect large projects — check
+                Google&apos;s current documentation if you plan to scale.
+              </li>
             </ul>
           </div>
         </section>
@@ -394,8 +397,9 @@ new google.maps.Circle({
               <li>Requires a Google Cloud account and API key.</li>
               <li>Requires JavaScript coding knowledge.</li>
               <li>
-                Google Maps Platform charges $7 per 1,000 map loads after a $200 monthly free credit.
-                For a personal project this may be free, but for a public website it adds up quickly.
+                Google Maps Platform uses a pay-per-load pricing model with a monthly free credit.
+                For a personal project this may stay within the free tier, but for a public website
+                costs can add up — check Google&apos;s current pricing before committing.
               </li>
               <li>
                 This is a development tool, not an end-user solution. Regular users searching
@@ -432,23 +436,22 @@ new google.maps.Circle({
             </p>
 
             <p className="text-slate-700 leading-relaxed mb-4">
-              Google My Maps (the customization layer) supports markers, lines, and polygons, but not
-              circles. The Google Maps mobile app has a basic distance measurement tool (tap and hold
-              to drop a pin, then select &ldquo;Measure distance&rdquo;), but this only measures point-to-point
-              distance, not a radius in all directions.
+              Google My Maps (the customization layer) supports markers, lines, and polygons, but
+              does not currently offer a circle primitive. The Google Maps mobile app has a basic
+              distance measurement tool, but it measures point-to-point distance, not a radius in
+              all directions.
             </p>
 
             <p className="text-slate-700 leading-relaxed">
-              Google has not publicly commented on why a radius feature has not been added.
-              Third-party tools have filled this gap for over a decade —{' '}
+              Whatever the reason, third-party tools have filled this gap for a long time.{' '}
               <Link href="/alternatives/freemaptools" className="content-link">
                 FreeMapTools
               </Link>{' '}
-              has offered radius drawing since 2011, and{' '}
+              is a long-running option,{' '}
               <Link href="/alternatives/mapdevelopers" className="content-link">
                 MapDevelopers
               </Link>{' '}
-              has been another popular option. Our tool,{' '}
+              is another popular one, and our tool,{' '}
               <Link href="/" className="content-link font-medium">
                 Map With Radius
               </Link>
@@ -575,9 +578,9 @@ new google.maps.Circle({
                 </svg>
               </summary>
               <div className="faq-content">
-                No. The Google Maps app for iOS and Android does not support radius drawing. The
-                &ldquo;Measure distance&rdquo; feature only measures straight-line distance between tapped points,
-                not a radius circle.
+                No. The Google Maps mobile app does not currently support radius drawing. Its
+                distance measurement feature measures straight-line distance between tapped points,
+                not a radius in all directions.
               </div>
             </details>
 
@@ -589,10 +592,9 @@ new google.maps.Circle({
                 </svg>
               </summary>
               <div className="faq-content">
-                Google Earth Pro (desktop version) supports circle drawing through the &ldquo;Add Polygon&rdquo;
-                and &ldquo;Circle&rdquo; measurement tools. This works for visualization but is limited to
-                Google Earth — you cannot transfer the radius back to Google Maps without exporting as
-                KML. Google Earth Web does not support circle drawing.
+                Google Earth Pro (desktop version) supports circle drawing through its polygon and
+                measurement tools. This works for visualization but is limited to Google Earth —
+                you cannot transfer the radius back to Google Maps without exporting as KML.
               </div>
             </details>
 
@@ -611,8 +613,8 @@ new google.maps.Circle({
                 links, and KML export — all free with no account required. Other options include{' '}
                 <Link href="/alternatives/freemaptools" className="content-link">
                   FreeMapTools
-                </Link>{' '}
-                (established but dated UI),{' '}
+                </Link>
+                ,{' '}
                 <a
                   href="https://www.calcmaps.com/map-radius/"
                   target="_blank"
@@ -620,12 +622,16 @@ new google.maps.Circle({
                   className="content-link"
                 >
                   CalcMaps
-                </a>{' '}
-                (clean but limited free tier), and{' '}
+                </a>
+                , and{' '}
                 <Link href="/alternatives/mapdevelopers" className="content-link">
                   MapDevelopers
+                </Link>
+                . See the{' '}
+                <Link href="/alternatives" className="content-link">
+                  alternatives page
                 </Link>{' '}
-                (simple and reliable).
+                for detailed side-by-side comparisons.
               </div>
             </details>
 
@@ -677,7 +683,7 @@ new google.maps.Circle({
                     name: 'Is there a radius feature in Google Maps mobile app?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: 'No. The Google Maps app for iOS and Android does not support radius drawing. The "Measure distance" feature only measures straight-line distance between tapped points, not a radius circle.',
+                      text: 'No. The Google Maps mobile app does not currently support radius drawing. Its distance measurement feature measures straight-line distance between tapped points, not a radius in all directions.',
                     },
                   },
                   {
@@ -685,7 +691,7 @@ new google.maps.Circle({
                     name: 'Can I draw a radius in Google Earth?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: 'Google Earth Pro (desktop version) supports circle drawing through the "Add Polygon" and "Circle" measurement tools. This works for visualization but is limited to Google Earth — you cannot transfer the radius back to Google Maps without exporting as KML. Google Earth Web does not support circle drawing.',
+                      text: 'Google Earth Pro (desktop version) supports circle drawing through its polygon and measurement tools. This works for visualization but is limited to Google Earth — you cannot transfer the radius back to Google Maps without exporting as KML.',
                     },
                   },
                   {
@@ -693,7 +699,7 @@ new google.maps.Circle({
                     name: "What's the best free alternative to Google Maps for radius drawing?",
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: 'Map With Radius provides instant radius drawing with address search, multiple circles, shareable links, and KML export — all free with no account required. Other options include FreeMapTools (established but dated UI), CalcMaps (clean but limited free tier), and MapDevelopers (simple and reliable).',
+                      text: 'Map With Radius provides instant radius drawing with address search, multiple circles, shareable links, and KML export — all free with no account required. Other options include FreeMapTools, CalcMaps, and MapDevelopers. See the alternatives page for detailed side-by-side comparisons.',
                     },
                   },
                   {
