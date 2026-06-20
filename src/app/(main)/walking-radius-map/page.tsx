@@ -264,11 +264,11 @@ export default function WalkingRadiusMapPage() {
             </p>
             <ul className="list-disc pl-6 space-y-2 text-slate-700 mb-4">
               <li>
-                <strong>Signal-crossing wait times.</strong> Manhattan&apos;s average pedestrian
-                wait at a signalised crossing is 22&nbsp;seconds; central Tokyo&apos;s is
-                15&nbsp;seconds; a sprawled US suburb with a single pedestrian-actuated signal
-                can hit 90&nbsp;seconds. Across a 15-minute walk that&apos;s 5&ndash;10%
-                effective time loss.
+                <strong>Signal-crossing wait times.</strong> Pedestrians lose time at every
+                signalised crossing — typically several seconds in dense urban grids and
+                substantially more in sprawled US suburbs with infrequent pedestrian phases.
+                Across a 15-minute walk, this accumulates into a real fraction of effective
+                time.
               </li>
               <li>
                 <strong>Sidewalk completeness.</strong> OSM tags
@@ -279,15 +279,15 @@ export default function WalkingRadiusMapPage() {
               <li>
                 <strong>Hill grade and Tobler&apos;s hiking function.</strong> Tobler&apos;s
                 empirical function gives walking speed as 6·exp(&minus;3.5·|slope&nbsp;+&nbsp;0.05|)
-                km/h. A 5% incline drops speed from 5&nbsp;km/h to ~3.5&nbsp;km/h; 10% drops it to
-                ~2.5&nbsp;km/h. San Francisco isochrones drawn at flat 5&nbsp;km/h overstate reach
-                up Russian Hill by 30&nbsp;m for every metre climbed.
+                km/h — uphill grades meaningfully drop walking speed below the flat default.
+                Isochrones drawn at flat 5&nbsp;km/h overstate reach in hilly cities like
+                San Francisco, Lisbon, or Hong Kong.
               </li>
               <li>
                 <strong>Perceived safety detours.</strong> Real pedestrians avoid unlit
                 underpasses, freeway underbridges, and high-traffic arterials at night, even if
-                they&apos;re technically walkable. Active Living Research surveys consistently
-                show real route choice diverges 10&ndash;25% longer than shortest-path during
+                they&apos;re technically walkable. Active-transportation research consistently
+                finds real route choice can be substantially longer than shortest-path during
                 evening hours.
               </li>
               <li>
@@ -400,14 +400,14 @@ export default function WalkingRadiusMapPage() {
                 12&nbsp;km/h; a road bike with clipless pedals on the same route does 25&nbsp;km/h.
                 E-bikes with pedal assist (legal limit 25&nbsp;km/h EU / 20&nbsp;mph US) effectively
                 let any rider hit the upper end. The default isochrone is approximately the speed
-                of a Class&nbsp;1 e-bike, which is becoming the modal urban bike in 2026 fleets.
+                of a Class&nbsp;1 e-bike.
               </li>
               <li>
-                <strong>Infrastructure quality.</strong> Protected lanes raise average speed by
-                20&ndash;30% because cyclists don&apos;t need to slow at every intersection.
-                Painted-only bike lanes provide negligible speed benefit; sharrows provide none.
-                Copenhagen and Amsterdam consistently model cyclist speed at 18&ndash;20&nbsp;km/h;
-                US cities without protected infrastructure assume 13&ndash;15&nbsp;km/h.
+                <strong>Infrastructure quality.</strong> Protected lanes raise average speed
+                because cyclists don&apos;t need to slow at every intersection. Painted-only
+                bike lanes provide negligible speed benefit; sharrows provide none. Cities with
+                extensive protected cycling networks consistently model higher average cyclist
+                speeds than cities relying on painted lanes alone.
               </li>
               <li>
                 <strong>Gradient sensitivity.</strong> Cyclists lose more time to climbs than
@@ -653,17 +653,16 @@ export default function WalkingRadiusMapPage() {
             literature has converged on a tighter walking-radius benchmark: every resident should
             live within a 10-minute walk (roughly 800&nbsp;m) of a public park or green space.
             This is the explicit policy goal of the Trust for Public Land&apos;s 10-Minute Walk
-            Campaign, adopted by over 300 US mayors, and underpins the World Health
+            Campaign, adopted by hundreds of US mayors, and underpins the World Health
             Organization&apos;s urban green-space recommendations.
           </p>
           <p className="text-slate-700 mb-4">
             The 800&nbsp;m figure is grounded in epidemiological research. Studies in the
-            <em> American Journal of Preventive Medicine</em> and similar journals consistently
-            find that park usage drops sharply beyond a 10-minute walking radius — visitors who
-            live within 800&nbsp;m use parks 4&times; as often as those living 1.5&nbsp;km away,
-            controlling for income and demographics. The 800&nbsp;m radius is the operational
-            threshold below which park access produces measurable cardiovascular and mental-health
-            benefits at population scale.
+            public-health literature consistently find that park usage drops sharply beyond a
+            10-minute walking radius — proximity is one of the strongest predictors of how often
+            people actually use a green space, controlling for income and demographics. The
+            800&nbsp;m radius is the operational threshold below which park access produces
+            measurable cardiovascular and mental-health benefits at population scale.
           </p>
           <p className="text-slate-700 mb-4">
             Practical use of the tool: draw a walking isochrone or 800&nbsp;m straight-line
@@ -743,8 +742,9 @@ export default function WalkingRadiusMapPage() {
             third-party walkability metric in US real estate listings. Owned by Redfin since 2014,
             it produces a 0&ndash;100 score for any address by measuring walking distance to
             amenities across nine categories: grocery, restaurants, shopping, errands, parks,
-            schools, culture/entertainment, coffee, and banks. Distances are decay-weighted: an
-            amenity within 400&nbsp;m counts at full weight, dropping to zero at 1.6&nbsp;km.
+            schools, culture/entertainment, coffee, and banks. Distances are decay-weighted:
+            nearby amenities count at full weight, with the contribution dropping smoothly to
+            zero at the maximum walkable distance.
           </p>
           <p className="text-slate-700 mb-4">
             What Walk Score does well: it&apos;s a standardised, comparable score that surfaces
@@ -774,9 +774,11 @@ export default function WalkingRadiusMapPage() {
       {/* City Walkability Comparison */}
       <section className="section-gray py-12 lg:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-heading text-center mb-4">Walkability by City Type</h2>
+          <h2 className="section-heading text-center mb-4">How urban layout affects walking reach</h2>
           <p className="text-center text-slate-600 mb-8">
-            How far a 15-minute walk gets you varies dramatically by urban layout
+            Illustrative ranges showing how city layout shapes how much a 15-minute walk
+            covers — these aren&apos;t measured data, and your specific neighbourhood will
+            differ.
           </p>
 
           <div className="overflow-x-auto mb-8">
@@ -826,7 +828,7 @@ export default function WalkingRadiusMapPage() {
 
           {/* Visual Chart - Effective Walking Distance */}
           <div className="bg-white rounded-xl p-6 border border-slate-200">
-            <h3 className="font-semibold text-slate-900 mb-4">Effective 15-Minute Walking Distance by Layout</h3>
+            <h3 className="font-semibold text-slate-900 mb-4">Illustrative effective walking distance by layout</h3>
             <div className="space-y-4">
               {[
                 { layout: 'Perfect grid (Manhattan)', distance: '1.25 km', pct: 100, color: 'bg-green-500' },
@@ -867,8 +869,8 @@ export default function WalkingRadiusMapPage() {
             <div className="bg-green-50 rounded-lg p-4">
               <h3 className="font-semibold text-green-900 mb-2">Walking Benefits</h3>
               <ul className="text-sm text-green-800 space-y-1">
-                <li>• Burns ~100 calories per mile</li>
-                <li>• Reduces heart disease risk by 30%+</li>
+                <li>• Cardiovascular conditioning</li>
+                <li>• Reduces sedentary-time risk factors</li>
                 <li>• Improves mental health & mood</li>
                 <li>• Zero equipment needed</li>
               </ul>
@@ -876,9 +878,9 @@ export default function WalkingRadiusMapPage() {
             <div className="bg-blue-50 rounded-lg p-4">
               <h3 className="font-semibold text-blue-900 mb-2">Cycling Benefits</h3>
               <ul className="text-sm text-blue-800 space-y-1">
-                <li>• Burns ~50 calories per mile</li>
                 <li>• Low-impact on joints</li>
-                <li>• 3x faster than walking</li>
+                <li>• Extends commute range over walking</li>
+                <li>• Aerobic conditioning at moderate intensity</li>
                 <li>• Can replace short car trips</li>
               </ul>
             </div>
