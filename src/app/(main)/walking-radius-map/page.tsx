@@ -634,13 +634,12 @@ export default function WalkingRadiusMapPage() {
 
           <p className="text-slate-700 mt-6 mb-3">
             The framework has critics worth taking seriously. Critics on the planning-research
-            side argue 15 minutes is too permissive for genuine accessibility — Carlos
-            Moreno&apos;s original work proposed a tighter 5-minute &ldquo;chrono-urbanism&rdquo;
-            target for the core daily needs. Critics on the political side note that 15-minute
-            cities have been mischaracterised online as movement-restriction schemes, which they
-            are not; the framework is purely about co-locating amenities, not constraining
-            travel. Both critiques are worth knowing before citing the framework in a planning
-            document.
+            side argue 15 minutes is too permissive for genuine accessibility, and propose
+            tighter chrono-urbanism targets for the core daily needs. Critics on the political
+            side note that 15-minute cities have been mischaracterised online as
+            movement-restriction schemes, which they are not; the framework is purely about
+            co-locating amenities, not constraining travel. Both critiques are worth knowing
+            before citing the framework in a planning document.
           </p>
         </div>
       </section>
@@ -698,10 +697,11 @@ export default function WalkingRadiusMapPage() {
             The reference standards differ by country. US Safe Routes to School treats a half-mile
             (800&nbsp;m) as the &ldquo;walkable&rdquo; threshold for elementary, and a mile
             (1.6&nbsp;km) for middle school. Australian school-zone standards in most states use a
-            1.6&nbsp;km radius. UK guidance from the Department for Education uses a tiered
-            approach: 3&nbsp;km for primary, 4.8&nbsp;km for secondary, but these are
-            transport-eligibility thresholds, not walkability assessments. Japan uses
-            2&nbsp;km tsugakku (通学区) boundaries that are nearly always pedestrian.
+            1.6&nbsp;km radius. UK statutory walking distances (Education Act 1996 / Department
+            for Education) are 2&nbsp;miles (≈3.2&nbsp;km) for children under 8 and 3&nbsp;miles
+            (≈4.8&nbsp;km) for ages 8+, but these are transport-eligibility thresholds, not
+            walkability assessments. Japan uses 2&nbsp;km tsugakku (通学区) boundaries that are
+            nearly always pedestrian.
           </p>
           <p className="text-slate-700 mb-4">
             When you use the tool for a school-walkability check, three modelling choices matter:
