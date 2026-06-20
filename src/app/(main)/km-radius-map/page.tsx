@@ -160,80 +160,9 @@ export default function KMRadiusMapPage() {
             </p>
           </div>
 
-          {/* How Different Regions Use KM Radius Maps */}
-          <div className="mb-12">
-            <h2 className="section-heading mb-6">How Different Regions Use KM Radius Maps</h2>
-            <p className="text-slate-600 mb-6">
-              Distance conventions vary by country and regulatory regime. Below are the kilometer radii that appear most
-              often in local planning, compliance, and everyday use:
-            </p>
-
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              <div className="bg-slate-50 rounded-lg p-5">
-                <h3 className="font-semibold text-slate-900 mb-3">EU (European Union)</h3>
-                <ul className="text-sm text-slate-600 space-y-2">
-                  <li><strong>5 km:</strong> COVID-era lockdown travel limits (many countries); still referenced in mobility studies</li>
-                  <li><strong>10 km:</strong> Air quality enforcement zones in major German cities (Umweltzone)</li>
-                  <li><strong>50 km:</strong> Cross-border commuter tax-relief eligibility in several EU states</li>
-                  <li><strong>150 km:</strong> EU short-haul flight ban threshold being debated in France and Austria</li>
-                </ul>
-              </div>
-
-              <div className="bg-slate-50 rounded-lg p-5">
-                <h3 className="font-semibold text-slate-900 mb-3">United Kingdom</h3>
-                <ul className="text-sm text-slate-600 space-y-2">
-                  <li><strong>1.6 km (1 mile):</strong> &ldquo;15-minute neighborhood&rdquo; planning threshold</li>
-                  <li><strong>8 km:</strong> Average UK commute distance (ONS 2024 data)</li>
-                  <li><strong>40 km (25 mi):</strong> Travel-to-work area definition (UK ONS)</li>
-                  <li><strong>100 km:</strong> London Low Emission Zone outer reference</li>
-                </ul>
-              </div>
-
-              <div className="bg-slate-50 rounded-lg p-5">
-                <h3 className="font-semibold text-slate-900 mb-3">Australia</h3>
-                <ul className="text-sm text-slate-600 space-y-2">
-                  <li><strong>5 km:</strong> COVID lockdown limit (Victoria 2020&ndash;2021, widely referenced in property searches)</li>
-                  <li><strong>10 km:</strong> Typical school zone radius in metro areas</li>
-                  <li><strong>25 km:</strong> Metropolitan planning zone (Sydney, Melbourne)</li>
-                  <li><strong>100 km:</strong> Regional development boundary for grant eligibility</li>
-                </ul>
-              </div>
-
-              <div className="bg-slate-50 rounded-lg p-5">
-                <h3 className="font-semibold text-slate-900 mb-3">Canada</h3>
-                <ul className="text-sm text-slate-600 space-y-2">
-                  <li><strong>2 km:</strong> Walk Score &ldquo;walkable neighborhood&rdquo; threshold</li>
-                  <li><strong>5 km:</strong> Common school catchment area</li>
-                  <li><strong>25 km:</strong> Commuter rail service area (GO Transit, AMT)</li>
-                  <li><strong>100 km:</strong> Statistics Canada metropolitan area definition</li>
-                </ul>
-              </div>
-
-              <div className="bg-slate-50 rounded-lg p-5">
-                <h3 className="font-semibold text-slate-900 mb-3">Germany</h3>
-                <ul className="text-sm text-slate-600 space-y-2">
-                  <li><strong>10 km:</strong> Fire department response radius standard</li>
-                  <li><strong>20 km:</strong> Rural medical coverage obligation</li>
-                  <li><strong>50 km:</strong> Pendlerpauschale (commuter tax allowance) effective range</li>
-                  <li><strong>500 km:</strong> High-speed rail &ldquo;short-haul&rdquo; definition</li>
-                </ul>
-              </div>
-
-              <div className="bg-slate-50 rounded-lg p-5">
-                <h3 className="font-semibold text-slate-900 mb-3">Japan</h3>
-                <ul className="text-sm text-slate-600 space-y-2">
-                  <li><strong>500 m:</strong> Standard station walking radius for property listings</li>
-                  <li><strong>2 km:</strong> School walking zone (tsugakku)</li>
-                  <li><strong>30 km:</strong> Tokyo 23-ku outer boundary approximation</li>
-                  <li><strong>100 km:</strong> Shinkansen station coverage threshold</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
           {/* Worked examples — field guide */}
           <div className="mb-12">
-            <h2 className="section-heading mb-6">Field guide: five worked examples</h2>
+            <h2 className="section-heading mb-6">Field guide: four worked examples</h2>
             <p className="text-slate-700 mb-6">
               Concrete cases where a kilometer radius is the right tool — drawn from public
               regulation and planning documents. Each example notes the radius value, what defines
@@ -260,25 +189,7 @@ export default function KMRadiusMapPage() {
               </article>
 
               <article>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">2. Australian bushfire cascading evacuation perimeters</h3>
-                <p className="text-slate-700 mb-2">
-                  State emergency services (NSW Rural Fire Service, CFA Victoria) define
-                  evacuation zones as cascading concentric radii from a known ignition point: an
-                  inner exclusion ring (usually 5 km), a warning zone (10 km), and a watch
-                  perimeter (25 km). The radius is drawn straight-line because wind-driven fire
-                  spread doesn&apos;t follow roads; if you&apos;re modelling a perimeter for
-                  evacuation planning, the Euclidean radius is the correct primitive even though
-                  evacuation movement is by road.
-                </p>
-                <p className="text-slate-600 text-sm">
-                  <strong>Radii used:</strong> 5 km, 10 km, 25 km concentric.{' '}
-                  <strong>Gotcha:</strong> straight-line for the threat boundary, road network for
-                  the evacuation route — two different layers in the same map.
-                </p>
-              </article>
-
-              <article>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">3. Carlos Moreno&apos;s 15-minute city as a 1.2 km screen</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-2">2. Carlos Moreno&apos;s 15-minute city as a 1.2 km screen</h3>
                 <p className="text-slate-700 mb-2">
                   The 15-minute city framework — adopted by Paris, Melbourne, Portland, and
                   others — measures whether daily essentials are reachable within a
@@ -296,7 +207,7 @@ export default function KMRadiusMapPage() {
               </article>
 
               <article>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">4. Japanese station-walking radius for property listings</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-2">3. Japanese station-walking radius for property listings</h3>
                 <p className="text-slate-700 mb-2">
                   Japanese real-estate listings universally quote &ldquo;駅徒歩X分&rdquo;
                   (X-minute walk to station) at a regulated 80 m/min pace — so 5 minutes is
@@ -314,7 +225,7 @@ export default function KMRadiusMapPage() {
               </article>
 
               <article>
-                <h3 className="text-lg font-bold text-slate-900 mb-2">5. EU short-haul flight threshold debate</h3>
+                <h3 className="text-lg font-bold text-slate-900 mb-2">4. EU short-haul flight threshold debate</h3>
                 <p className="text-slate-700 mb-2">
                   France banned short-haul domestic flights where a train alternative under 2.5
                   hours exists (2022 law); the broader EU debate proposes a 500&ndash;1,500 km
@@ -529,18 +440,6 @@ export default function KMRadiusMapPage() {
               <li>
                 French Climate and Resilience Law (loi 2021-1104) — short-haul flight ban for
                 routes with train alternatives under 2.5 hours.
-              </li>
-              <li>
-                UK Office for National Statistics, Commuting patterns (2024 release) — average
-                commute distance figures.
-              </li>
-              <li>
-                Australian Bureau of Statistics, Greater Capital City Statistical Areas — 25 km
-                metropolitan boundary definitions.
-              </li>
-              <li>
-                Statistics Canada, Census Metropolitan Area definitions — used for the 100 km
-                CMA reference.
               </li>
               <li>
                 Japanese Real Estate Fair Trade Council guidelines — the 80 m/min walking-pace
