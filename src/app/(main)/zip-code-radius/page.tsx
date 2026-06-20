@@ -375,7 +375,7 @@ export default function ZipCodeRadiusPage() {
           </div>
           <p className="text-sm text-slate-500 mt-4 text-center">
             Counts computed from this site&apos;s ZIP database ({zipDensity.source}). Distances are
-            haversine from each metro&apos;s downtown ZIP centroid. Last verified{' '}
+            haversine from each metro&apos;s downtown ZIP centroid. Database updated{' '}
             {zipDensity.generated}.
           </p>
         </div>
