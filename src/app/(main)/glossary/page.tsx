@@ -147,7 +147,7 @@ const terms: Term[] = [
     anchor: 'haversine',
     letter: 'H',
     definition:
-      "The standard formula for computing great-circle distance between two latitude/longitude points on a sphere. Accurate to within a fraction of a percent for Earth-scale distances. The Haversine assumes a perfectly spherical Earth (radius ~6,371 km), which introduces an error of <0.3% at 1,000 km — irrelevant for radius mapping but worth noting for surveying or aviation, which use ellipsoidal formulas like Vincenty's instead.",
+      "The standard formula for computing great-circle distance between two latitude/longitude points on a sphere. Accurate to within a fraction of a percent for Earth-scale distances. The Haversine assumes a perfectly spherical Earth (radius ~6,371 km), which introduces sub-percent error only at continental distances — irrelevant for radius mapping but worth noting for surveying or aviation, which use ellipsoidal formulas like Vincenty's instead.",
   },
   {
     term: 'Heatmap',
@@ -168,7 +168,7 @@ const terms: Term[] = [
     anchor: 'kml',
     letter: 'K',
     definition:
-      "An XML-based file format for geographic data, originally developed by Keyhole Inc. (the company Google acquired to launch Google Earth in 2004). Now an OGC standard, supported by Google My Maps, ArcGIS, QGIS, and most consumer mapping tools. KML is the most widely interoperable format for sharing simple geographic data between mapping tools — every export on this site includes a KML option.",
+      "An XML-based file format for geographic data, originally developed by Keyhole Inc. (the company Google acquired in 2004; Keyhole's product became Google Earth shortly after). Now an OGC standard, supported by Google My Maps, ArcGIS, QGIS, and most consumer mapping tools. KML is the most widely interoperable format for sharing simple geographic data between mapping tools — every export on this site includes a KML option.",
   },
   {
     term: 'Latitude',
@@ -224,7 +224,7 @@ const terms: Term[] = [
     anchor: 'nominatim',
     letter: 'N',
     definition:
-      "An open-source geocoder built on OpenStreetMap data. Used by Map With Radius for address search; available as a free public service (with usage limits — typically 1 request per second per IP under OSM's tile policy) or self-hostable. A typical self-hosted Nominatim instance covering Europe needs ~80 GB of disk and runs on standard hardware.",
+      "An open-source geocoder built on OpenStreetMap data. Used by Map With Radius for address search; available as a free public service (with usage limits — typically 1 request per second per IP under OSM's tile policy) or self-hostable. A self-hosted Nominatim instance covering a large region like Europe needs substantial disk space and runs on standard hardware — check the current Nominatim documentation for sizing.",
   },
   {
     term: 'OpenStreetMap (OSM)',
@@ -245,7 +245,7 @@ const terms: Term[] = [
     anchor: 'poi',
     letter: 'P',
     definition:
-      "Any named location of interest on a map: a restaurant, school, hospital, or landmark. POIs typically have a category, name, and coordinates. OpenStreetMap has ~50 million POIs globally. Commercial datasets (Google Places, Foursquare, SafeGraph) cover similar territory with denser metadata; OSM tends to win on coverage in rural areas and specialty categories like hiking shelters or EV-charging stations.",
+      "Any named location of interest on a map: a restaurant, school, hospital, or landmark. POIs typically have a category, name, and coordinates. OpenStreetMap has tens of millions of POIs globally, with the count growing continuously as the volunteer community adds and updates entries. Commercial datasets (Google Places, Foursquare, SafeGraph) cover similar territory with denser metadata; OSM tends to win on coverage in rural areas and specialty categories like hiking shelters or EV-charging stations.",
   },
   {
     term: 'Polygon',
