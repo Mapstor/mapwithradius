@@ -54,7 +54,7 @@ const FAQS = [
   {
     question: 'How accurate is a radius drawn on these maps?',
     answer:
-      'The geometry is exact — we use the Haversine formula on the WGS 84 spheroid (the same coordinate system used by GPS), so a 10 km radius really is 10 km in every direction from the center. Visual size on screen varies slightly with latitude due to the Web Mercator projection (a 10 km circle in Stockholm looks larger than a 10 km circle in Nairobi), but the underlying distance is correct. For radii under 100 km, accuracy is within a few meters.',
+      'The geometry is exact — we use the Haversine formula on the WGS 84 spheroid (the same coordinate system used by GPS), so a 10 km radius really is 10 km in every direction from the center. Visual size on screen varies slightly with latitude due to the Web Mercator projection (a 10 km circle in Stockholm looks larger than a 10 km circle in Nairobi), but the underlying distance is correct. The spherical-Earth approximation introduces sub-percent error only at continental distances.',
   },
   {
     question: 'Does the radius account for terrain, water, or roads?',
@@ -228,11 +228,11 @@ export default function RadiusMapIndexPage() {
               The reason to maintain per-city pages instead of one generic interface is that what
               makes a radius useful is heavily local. A 10-mile radius from downtown Phoenix covers
               suburban sprawl that&apos;s functionally one continuous market; a 10-mile radius from
-              downtown Manhattan covers five distinct boroughs, two rivers, and three different
-              transit-system catchment areas. The geometry is identical; the meaning isn&apos;t.
-              City pages give you a starting frame that already reflects the local meaning, plus
-              hand-authored content describing what does and doesn&apos;t fit inside the typical
-              radii local planners and professionals actually use.
+              downtown Manhattan reaches into four boroughs, crosses major rivers, and covers
+              multiple transit-system catchment areas. The geometry is identical; the meaning
+              isn&apos;t. City pages give you a starting frame that already reflects the local
+              meaning, plus hand-authored content describing what does and doesn&apos;t fit inside
+              the typical radii local planners and professionals actually use.
             </p>
             <p>
               Each page is intentionally small in scope: one tool, one city, one set of coverage
@@ -263,9 +263,9 @@ export default function RadiusMapIndexPage() {
               </li>
               <li>
                 <strong>Mountain cities</strong> have hard boundaries at specific bearings. The
-                North Shore Mountains rise sharply 5 km north of downtown Vancouver; the radii
-                drawn here read very differently to the north (mountains, no roads) versus south
-                (continuous metro all the way to the US border).
+                North Shore Mountains rise sharply across the inlet just north of downtown
+                Vancouver; the radii drawn here read very differently to the north (mountains,
+                no roads) versus south (continuous metro all the way to the US border).
               </li>
               <li>
                 <strong>Density gradients</strong> change what &ldquo;X miles from the center&rdquo;
@@ -277,10 +277,9 @@ export default function RadiusMapIndexPage() {
               <li>
                 <strong>Cultural conventions</strong> dictate which radius value people actually
                 use. Japanese real-estate listings use station-walking radii of 500&nbsp;m and
-                800&nbsp;m almost universally; UK trade-area work clusters around 5 mi and 25 mi;
-                German emergency-response standards are codified at 10 km. Picking the radius the
-                local market expects matters more than picking a mathematically &ldquo;clean&rdquo;
-                number.
+                800&nbsp;m almost universally; UK trade-area work clusters around 5 mi and 25 mi.
+                Picking the radius the local market expects matters more than picking a
+                mathematically &ldquo;clean&rdquo; number.
               </li>
               <li>
                 <strong>Web Mercator distortion</strong> makes radii drawn at high latitudes
