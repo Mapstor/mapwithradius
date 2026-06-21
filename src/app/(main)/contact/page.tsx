@@ -87,7 +87,7 @@ export default function ContactPage() {
                 name: 'How accurate are the distance calculations?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: "Our radius calculations use the Haversine formula, which accounts for the Earth's curvature and is accurate to within a few meters for most purposes. However, for critical applications, we recommend verifying measurements independently.",
+                  text: "Our radius calculations use the Haversine formula, which accounts for the Earth's curvature; the spherical-Earth approximation introduces sub-percent error only at continental distances. However, for critical applications, we recommend verifying measurements independently.",
                 },
               },
               {
@@ -119,7 +119,7 @@ export default function ContactPage() {
                 name: 'Do you store my data?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: "We don't require accounts, don't track your location on our servers, and don't store your map data — everything happens in your browser. When you share a link, the coordinates are encoded directly in the URL, so nothing is saved on our side. The only third-party measurement on the site today is Google Analytics 4 (cookieless mode for EEA/UK/Swiss visitors via Google Consent Mode v2). No ads currently serve on the site; an application to Raptive is pending. See our Privacy Policy for the full picture.",
+                  text: "The tool itself doesn't require accounts and doesn't store your GPS location, search queries, or map data on our servers — everything tool-side happens in your browser, and shareable links encode coordinates directly in the URL. The only third-party measurement on the site is Google Analytics 4 (cookieless mode for EEA/UK/Swiss visitors via Google Consent Mode v2), which collects pseudonymous interaction data. No ads currently serve on the site; an application to Raptive is pending. See our Privacy Policy for the full picture.",
                 },
               },
             ],
@@ -277,9 +277,9 @@ export default function ContactPage() {
             <div className="border border-gray-200 rounded-lg p-5">
               <h3 className="font-semibold text-gray-900 mb-2">How accurate are the distance calculations?</h3>
               <p className="text-gray-600 text-sm">
-                Our radius calculations use the Haversine formula, which accounts for the Earth's curvature
-                and is accurate to within a few meters for most purposes. However, for critical applications,
-                we recommend verifying measurements independently.
+                Our radius calculations use the Haversine formula, which accounts for the Earth's curvature;
+                the spherical-Earth approximation introduces sub-percent error only at continental distances.
+                However, for critical applications, we recommend verifying measurements independently.
               </p>
             </div>
 
@@ -314,12 +314,13 @@ export default function ContactPage() {
             <div className="border border-gray-200 rounded-lg p-5">
               <h3 className="font-semibold text-gray-900 mb-2">Do you store my data?</h3>
               <p className="text-gray-600 text-sm">
-                We don&apos;t require accounts, don&apos;t track your location on our servers,
-                and don&apos;t store your map data — everything happens in your browser. When you
-                share a link, the coordinates are encoded directly in the URL, so nothing is saved
-                on our side. The only third-party measurement on the site today is Google Analytics
-                4 (cookieless mode for EEA/UK/Swiss visitors via Google Consent Mode v2). No ads
-                currently serve on the site; an application to Raptive is pending. See our{' '}
+                The tool itself doesn&apos;t require accounts and doesn&apos;t store your GPS
+                location, search queries, or map data on our servers — everything tool-side
+                happens in your browser, and shareable links encode coordinates directly in the
+                URL. The only third-party measurement on the site is Google Analytics 4
+                (cookieless mode for EEA/UK/Swiss visitors via Google Consent Mode v2), which
+                collects pseudonymous interaction data. No ads currently serve on the site; an
+                application to Raptive is pending. See our{' '}
                 <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link> for the full picture.
               </p>
             </div>
