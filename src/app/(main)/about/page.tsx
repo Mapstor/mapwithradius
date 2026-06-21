@@ -137,11 +137,12 @@ export default function AboutPage() {
               API plan, or buried the feature behind a paywall.
             </p>
             <p className="text-gray-700 mb-6">
-              So I built one. No account, no usage limits, no location tracking. It runs on
-              OpenStreetMap and Leaflet, which means there are no Google Maps API fees to recoup
-              from you. Whether you&apos;re a real estate agent comparing comps, a planner defining
-              a delivery zone, a couple picking a wedding venue, or just someone curious about a
-              30-minute walk from home — these tools are yours, free.
+              So I built one. No account, no usage limits, and your GPS location stays in your
+              browser. It runs on OpenStreetMap and Leaflet, which means there are no Google
+              Maps API fees to recoup from you. Whether you&apos;re a real estate agent
+              comparing comps, a planner defining a delivery zone, a couple picking a wedding
+              venue, or just someone curious about a 30-minute walk from home — these tools
+              are yours, free.
             </p>
           </section>
 
