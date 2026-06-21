@@ -221,7 +221,6 @@ export default function GeofenceMapPage() {
                   <th>Type</th>
                   <th>Geofence Limit</th>
                   <th>Polygon Support</th>
-                  <th>Best For</th>
                 </tr>
               </thead>
               <tbody>
@@ -230,48 +229,42 @@ export default function GeofenceMapPage() {
                   <td>Standalone SaaS</td>
                   <td>Unlimited (paid plans)</td>
                   <td>Yes</td>
-                  <td>Product teams wanting a managed geofencing layer without SDK overhead</td>
                 </tr>
                 <tr>
                   <td className="font-medium">Google Geofencing API</td>
                   <td>Mobile SDK (Android)</td>
                   <td>100 per app</td>
                   <td>Circle only (native); polygon via server</td>
-                  <td>Android-only apps, cost-sensitive teams (free with Google Play Services)</td>
                 </tr>
                 <tr>
                   <td className="font-medium">Apple Core Location</td>
                   <td>Mobile SDK (iOS)</td>
                   <td>20 per app</td>
                   <td>Circle only</td>
-                  <td>iOS-native apps; hard limit forces dynamic geofence management</td>
                 </tr>
                 <tr>
                   <td className="font-medium">PlotProjects</td>
                   <td>Marketing platform</td>
                   <td>Plan-based</td>
                   <td>Yes</td>
-                  <td>Marketing teams running proximity campaigns at scale</td>
                 </tr>
                 <tr>
                   <td className="font-medium">Braze</td>
                   <td>Customer engagement</td>
                   <td>Plan-based</td>
                   <td>Yes</td>
-                  <td>Consumer brands with existing Braze messaging infrastructure</td>
                 </tr>
                 <tr>
                   <td className="font-medium">OneSignal</td>
                   <td>Push notifications</td>
                   <td>Paid tier</td>
                   <td>Limited</td>
-                  <td>SMB teams wanting geofenced push without a dedicated location stack</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <p className="text-slate-500 text-sm mt-4">
-            Limits and features change frequently — verify each platform&apos;s current docs before committing. This comparison reflects publicly documented capabilities as of early 2026.
+            Limits and features change frequently — verify each platform&apos;s current docs before committing.
           </p>
         </div>
       </section>
