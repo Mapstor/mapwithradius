@@ -491,7 +491,7 @@ export default function DistanceCalculatorPage() {
                   <svg className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
-                  IRS mileage reimbursement (2024: $0.67/mi)
+                  IRS mileage reimbursement (rate updated annually — see IRS.gov)
                 </li>
                 <li className="flex items-start gap-2">
                   <svg className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -637,7 +637,7 @@ Where:
             </div>
 
             <p className="text-slate-600 text-sm">
-              This formula gives accuracy within 0.5% for most practical purposes. For extremely precise geodetic calculations
+              The spherical-Earth approximation introduces sub-percent error only at continental distances — irrelevant for typical use. For extremely precise geodetic calculations
               (surveying, GPS), more complex formulas like Vincenty&apos;s are used.
             </p>
           </div>
@@ -769,7 +769,7 @@ Where:
                 </svg>
               </summary>
               <div className="faq-content">
-                Straight-line distance is highly accurate (within 0.5%) using the Haversine formula on a WGS84 spheroid model.
+                Straight-line distance is highly accurate using the Haversine formula on a WGS84 spheroid model — the spherical-Earth approximation introduces sub-percent error only at continental distances.
                 Road distance accuracy depends on OpenStreetMap data quality for your region — in well-mapped areas (US, Europe,
                 major cities worldwide), it&apos;s typically accurate within 1-3% of actual driving distance.
               </div>
@@ -845,7 +845,7 @@ Where:
                     name: 'How accurate is the distance measurement?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: 'Straight-line distance is accurate within 0.5% using the Haversine formula. Road distance accuracy depends on OpenStreetMap data quality, typically within 1-3% in well-mapped areas.',
+                      text: 'Straight-line distance is highly accurate using the Haversine formula; the spherical-Earth approximation introduces sub-percent error only at continental distances. Road distance accuracy depends on OpenStreetMap data quality, typically within 1-3% in well-mapped areas.',
                     },
                   },
                 ],
