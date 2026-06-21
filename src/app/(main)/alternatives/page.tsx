@@ -294,7 +294,7 @@ export default function AlternativesIndexPage() {
                   <th>Price</th>
                   <th>Map Engine</th>
                   <th>Account Required</th>
-                  <th>Best For</th>
+                  <th>Focus</th>
                 </tr>
               </thead>
               <tbody>

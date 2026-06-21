@@ -510,11 +510,11 @@ export default function KMRadiusMapPage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                For radii under 100 km, the circle is accurate to within a few meters using the Haversine formula. For larger
-                radii (500 km or more), the Earth&apos;s curvature causes the drawn circle on a flat map to diverge slightly
-                from a true geodesic circle — the visual shape will look oval on Web Mercator projection, but the underlying
-                distance calculation remains correct. If you need true geodesic accuracy for aviation or maritime planning,
-                consult a specialized GIS tool.
+                The Haversine formula is highly accurate for typical radius sizes; the spherical-Earth
+                approximation introduces sub-percent error only at continental distances. For larger radii
+                (500 km or more), the visual shape will look oval on Web Mercator projection, but the
+                underlying distance calculation remains correct. If you need true geodesic accuracy for
+                aviation or maritime planning, consult a specialized GIS tool.
               </div>
             </details>
 
@@ -621,7 +621,7 @@ export default function KMRadiusMapPage() {
                     name: 'How accurate is a kilometer radius over long distances?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: "For radii under 100 km, the circle is accurate to within a few meters using the Haversine formula. For larger radii (500 km or more), the Earth's curvature causes the drawn circle on a flat map to diverge slightly from a true geodesic circle — the visual shape will look oval on Web Mercator projection, but the underlying distance calculation remains correct. If you need true geodesic accuracy for aviation or maritime planning, consult a specialized GIS tool.",
+                      text: "The Haversine formula is highly accurate for typical radius sizes; the spherical-Earth approximation introduces sub-percent error only at continental distances. For larger radii (500 km or more), the visual shape will look oval on Web Mercator projection, but the underlying distance calculation remains correct. If you need true geodesic accuracy for aviation or maritime planning, consult a specialized GIS tool.",
                     },
                   },
                   {
