@@ -1,8 +1,10 @@
-# No advertising vendors are currently authorized to sell inventory on this domain.
-# We have applied to Raptive (raptive.com) for ad management; once accepted,
-# Raptive's required ads.txt entries will be added here and the date will be
-# updated below.
+# Authorized Digital Sellers for mapwithradius.com
+# Ad management provided by Raptive (raptive.com).
+# The entries below were supplied by Raptive for domain approval with Google.
 #
-# Updated: 2026-06-11
+# Updated: 2026-06-26
 OWNERDOMAIN=mapwithradius.com
 CONTACT=contact@mapwithradius.com
+
+google.com, pub-8501674430909082, RESELLER, f08c47fec0942fa0
+indexexchange.com, 182496, DIRECT, 50b1c356f2c5c8fc
