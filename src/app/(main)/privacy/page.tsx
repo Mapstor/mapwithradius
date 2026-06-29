@@ -61,7 +61,7 @@ export default function PrivacyPage() {
             url: 'https://mapwithradius.com/privacy',
             inLanguage: 'en',
             datePublished: '2026-02-01',
-            dateModified: '2026-06-11',
+            dateModified: '2026-06-29',
             isPartOf: {
               '@type': 'WebSite',
               name: 'Map With Radius',
@@ -82,7 +82,7 @@ export default function PrivacyPage() {
 
       <main className="max-w-3xl mx-auto px-4 py-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
-        <p className="text-sm text-gray-500 mb-8">Last updated: June 11, 2026</p>
+        <p className="text-sm text-gray-500 mb-8">Last updated: June 29, 2026</p>
 
         <div className="prose prose-gray max-w-none">
           <p className="text-lg text-gray-700 mb-8">
@@ -143,7 +143,7 @@ export default function PrivacyPage() {
                 <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                <span className="text-gray-700">No ads currently serve on this site</span>
+                <span className="text-gray-700">Display ads served via Raptive, with opt-outs</span>
               </div>
               <div className="flex items-start gap-2">
                 <svg className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -169,24 +169,22 @@ export default function PrivacyPage() {
             </p>
             <p className="text-gray-700 mb-3">
               To fund the service so it can stay free with no usage limits, the site is funded
-              by display advertising. <strong>Ads are not currently serving on this site.</strong> We have
-              applied to the ad management service <a href="https://raptive.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Raptive</a>;
-              once we are accepted and the integration goes live, third-party ad partners will
-              set advertising cookies, and this policy will be updated the same day to name the
-              specific vendors with links to their privacy policies. Until then, no advertising
-              cookies are set by this site.
+              by display advertising provided by <a href="https://raptive.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Raptive</a>.
+              Third-party ad partners (including Google) set advertising cookies to serve and
+              measure ads. Section 9 sets out the full advertising disclosure, the vendors
+              involved, and your opt-out choices.
             </p>
             <p className="text-gray-700 mb-3">
-              The only third-party measurement currently active is Google Analytics 4, which we
-              use to understand aggregate traffic. Sections 3, 4, and 5 describe what cookies it
-              sets and how you can opt out.
+              Alongside advertising, the third-party measurement we use is Google Analytics 4,
+              which we use to understand aggregate traffic. Sections 3, 4, and 5 describe what
+              cookies it sets and how you can opt out.
             </p>
             <p className="text-gray-700">
               In the EEA, UK, and Switzerland, Google Consent Mode v2 keeps non-essential
               cookies default-denied, so Google Analytics 4 runs in cookieless mode for those
-              visitors. When advertising goes live, EEA/UK/Swiss visitors will be shown a
-              Google-certified consent management platform (CMP) before any non-essential
-              cookies are set. See Section 14 for details on EU/UK rights.
+              visitors until they consent. EEA/UK/Swiss visitors are shown a Google-certified
+              consent management platform (CMP) before any non-essential (analytics or
+              advertising) cookies are set. See Section 14 for details on EU/UK rights.
             </p>
           </section>
 
@@ -257,8 +255,8 @@ export default function PrivacyPage() {
                 devices and browsers they use. GA4 uses cookies and assigns each browser an anonymous
                 identifier. We have configured GA4 with Google Consent Mode v2 — for visitors in
                 the EEA, UK, and Switzerland, &lsquo;analytics_storage&rsquo; is default-denied, so
-                GA4 runs in cookieless mode and sets no analytics cookies for those visitors.
-                We do not link GA4 data to personally identifying information, because we
+                GA4 runs in cookieless mode and sets no analytics cookies for those visitors unless
+                they consent. We do not link GA4 data to personally identifying information, because we
                 don&apos;t collect any. See{' '}
                 <a
                   href="https://policies.google.com/privacy"
@@ -308,19 +306,18 @@ export default function PrivacyPage() {
               <li>
                 <strong>Analytics cookies (Google Analytics 4):</strong> Cookies set by GA4 to
                 distinguish unique browsers and produce aggregate site statistics. In the EEA, UK,
-                and Switzerland these are default-denied via Google Consent Mode v2 — until a
-                consent banner is added, GA4 stays in cookieless mode for those visitors and sets
-                no analytics cookies (see &ldquo;Consent in the EEA, UK, and Switzerland&rdquo; below).
+                and Switzerland these are default-denied via Google Consent Mode v2 — GA4 stays in
+                cookieless mode for those visitors and sets no analytics cookies unless they consent
+                (see &ldquo;Consent in the EEA, UK, and Switzerland&rdquo; below).
               </li>
               <li>
-                <strong>Advertising cookies (when ads launch):</strong> Once the site is accepted
-                by Raptive and ads begin serving, third-party ad partners will set cookies used to
-                serve and measure ads, including ads tailored to your interests based on your
-                previous visits to this and other sites. <em>No advertising cookies are set today</em>
-                — none of the ad partners are wired into the site yet. When ads launch, EEA/UK/Swiss
-                visitors will be shown a Google-certified consent management platform before any
-                advertising cookies are set. See Section 9 for full advertising details and the
-                opt-out links for personalized advertising.
+                <strong>Advertising cookies (Raptive):</strong> Display advertising on this site is
+                served through Raptive. Raptive&apos;s third-party ad partners (including Google) set
+                cookies used to serve and measure ads, including ads tailored to your interests based
+                on your previous visits to this and other sites. In the EEA, UK, and Switzerland these
+                advertising cookies are set only after consent is given through the Google-certified
+                consent management platform shown to those visitors. See Section 9 for full advertising
+                details and the opt-out links for personalized advertising.
               </li>
             </ul>
 
@@ -341,13 +338,12 @@ export default function PrivacyPage() {
               For visitors in the European Economic Area, United Kingdom, and Switzerland, we run
               Google Consent Mode v2 with all non-essential cookie categories
               (&lsquo;ad_storage&rsquo;, &lsquo;ad_user_data&rsquo;, &lsquo;ad_personalization&rsquo;,
-              &lsquo;analytics_storage&rsquo;) default-denied on every page load. The only tag
-              currently affected is Google Analytics 4, which runs in cookieless mode for EEA/UK/CH
-              visitors and therefore sets no analytics cookies for them. No ad tags are wired
-              into the site yet, so the &lsquo;ad_*&rsquo; categories are pre-configured but have
-              nothing to gate today. When advertising goes live through Raptive, a Google-certified
-              consent management platform (CMP) will be shown to EEA/UK/CH visitors before any
-              non-essential cookies are set.
+              &lsquo;analytics_storage&rsquo;) default-denied on every page load. Google Analytics 4
+              runs in cookieless mode for EEA/UK/CH visitors unless they consent. Advertising is
+              served through Raptive, whose Google-certified consent management platform (CMP) is
+              shown to EEA/UK/CH visitors before any non-essential cookies are set; the
+              &lsquo;ad_*&rsquo; and &lsquo;analytics_storage&rsquo; categories are granted only after
+              the visitor consents.
             </p>
 
             <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">Managing Cookies</h3>
@@ -456,10 +452,9 @@ export default function PrivacyPage() {
               </div>
 
               <div className="border border-gray-200 rounded-lg p-4">
-                <h3 className="font-semibold text-gray-900 mb-2">Advertising (planned — Raptive)</h3>
+                <h3 className="font-semibold text-gray-900 mb-2">Advertising (Raptive)</h3>
                 <p className="text-gray-600 text-sm mb-2">
-                  <strong>No advertising network is wired into the site today.</strong> We have
-                  applied to{' '}
+                  Display advertising on this site is managed by{' '}
                   <a
                     href="https://raptive.com"
                     target="_blank"
@@ -468,13 +463,21 @@ export default function PrivacyPage() {
                   >
                     Raptive
                   </a>{' '}
-                  for ad management. When ads launch, Raptive&apos;s ad partners may use cookies
-                  to serve and measure ads; this page will be updated the same day to name the
-                  specific vendors. See Section 9 for full advertising details.
+                  (CMI Marketing, Inc., d/b/a Raptive). Raptive&apos;s ad partners (including
+                  Google) use cookies to serve and measure ads. See Section 9 for the full
+                  advertising disclosure and your opt-out choices.
                 </p>
                 <p className="text-gray-600 text-sm">
-                  <strong>What this means today:</strong> no third-party advertising cookies are
-                  set on this site.
+                  <strong>What they may collect:</strong> Cookie identifiers, IP address, and
+                  ad-interaction signals used to serve and measure advertising{' '}
+                  <a
+                    href="https://raptive.com/creator-advertising-privacy-statement/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    (Raptive Advertising Privacy Statement)
+                  </a>
                 </p>
               </div>
             </div>
@@ -562,35 +565,35 @@ export default function PrivacyPage() {
           <section id="advertising" className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">9. Advertising</h2>
             <p className="text-gray-700 mb-3">
-              The site is funded by display advertising. <strong>Ads are not currently serving
-              on this site.</strong> We have applied to the ad management service{' '}
+              CMI Marketing, Inc., d/b/a Raptive (&ldquo;Raptive&rdquo;) is a service provider of
+              this Site for the purposes of placing advertising on the Site, and Raptive will
+              collect and use certain data for advertising purposes. To learn more about
+              Raptive&apos;s data usage, click here:{' '}
               <a
-                href="https://raptive.com"
+                href="https://raptive.com/creator-advertising-privacy-statement/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                Raptive
-              </a>; if and when the application is accepted and the integration goes live, the
-              disclosures in this section apply. This section describes how advertising cookies
-              will work once they are wired into the site.
+                https://raptive.com/creator-advertising-privacy-statement/
+              </a>
+            </p>
+            <p className="text-gray-700 mb-3">
+              The site is funded by display advertising served through Raptive. This section
+              describes how advertising cookies work and the choices available to you.
             </p>
 
-            <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">When advertising goes live</h3>
+            <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">How advertising works</h3>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
               <li>
-                Third-party ad vendors (Raptive&apos;s partner networks, including Google) will
-                use cookies to serve ads, including ads tailored to your interests based on your
+                Third-party ad vendors (Raptive&apos;s partner networks, including Google) use
+                cookies to serve ads, including ads tailored to your interests based on your
                 previous visits to this and other sites where consented.
               </li>
               <li>
-                Some of these ads will be personalized based on inferred interests where consent
+                Some of these ads are personalized based on inferred interests where consent
                 permits; others are contextual (matched to page content) and do not rely on
                 profiling.
-              </li>
-              <li>
-                This policy will be updated <em>the same day</em> ads launch to name each ad
-                vendor with a link to their privacy policy.
               </li>
               <li>
                 We do not sell personal information, and we do not share user identifiers with
@@ -598,7 +601,7 @@ export default function PrivacyPage() {
               </li>
             </ul>
 
-            <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">Your choices (once ads are live)</h3>
+            <h3 className="text-lg font-medium text-gray-900 mt-4 mb-2">Your choices</h3>
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
               <li>
                 You may opt out of personalized advertising by visiting{' '}
@@ -644,10 +647,10 @@ export default function PrivacyPage() {
             <p className="text-gray-700 mb-3">
               For visitors in the European Economic Area, the United Kingdom, and Switzerland,
               non-essential storage is set to denied on every page load through Google Consent
-              Mode v2. Today this affects only Google Analytics 4 (which runs in cookieless mode
-              for those visitors). When advertising goes live, EEA/UK/CH visitors will be shown a
-              Google-certified consent management platform (CMP) before any advertising cookies
-              are set; until that day there are no ad partners on the site to gate.
+              Mode v2. Advertising is served through Raptive, whose Google-certified consent
+              management platform (CMP) is shown to EEA/UK/CH visitors before any advertising
+              cookies are set; the advertising and analytics categories are granted only after
+              the visitor consents.
             </p>
           </section>
 
@@ -776,13 +779,13 @@ export default function PrivacyPage() {
             <ul className="list-disc pl-6 space-y-2 text-gray-700 mb-4">
               <li>
                 <strong>Legal basis:</strong> Essential site operation and security rely on our
-                legitimate interests. For analytics, we run Google Consent Mode v2 with
-                non-essential cookie categories default-denied for EEA/UK/Swiss visitors, so
-                Google Analytics 4 runs in cookieless mode for those visitors and sets no
-                analytics cookies for them. No advertising vendor is wired into the site today;
-                when advertising launches through Raptive, a Google-certified consent management
-                platform (CMP) will be shown to EEA/UK/Swiss visitors before any advertising
-                cookies are set.
+                legitimate interests. For analytics and advertising, we run Google Consent Mode v2
+                with non-essential cookie categories default-denied for EEA/UK/Swiss visitors, so
+                Google Analytics 4 runs in cookieless mode for those visitors unless they consent.
+                Advertising is served through Raptive; a Google-certified consent management
+                platform (CMP) is shown to EEA/UK/Swiss visitors before any advertising cookies are
+                set, and the advertising categories are granted only on the basis of the visitor&apos;s
+                consent.
               </li>
               <li>
                 <strong>Data minimization:</strong> We collect only what is technically necessary to
@@ -857,10 +860,9 @@ export default function PrivacyPage() {
             </ul>
             <p className="text-gray-700">
               <strong>Do Not Sell or Share My Personal Information:</strong> We do not sell
-              personal information. No advertising vendor is wired into the site today; when
-              advertising launches through Raptive, that may involve &ldquo;sharing&rdquo; under
-              CPRA, and the opt-out at that point will be the Google Ads Settings link above and
-              the Global Privacy Control browser signal — both of which we already honor.
+              personal information. Advertising is served through Raptive, which may involve
+              &ldquo;sharing&rdquo; under CPRA. The opt-out is the Google Ads Settings link above
+              and the Global Privacy Control browser signal — both of which we honor.
             </p>
           </section>
 
