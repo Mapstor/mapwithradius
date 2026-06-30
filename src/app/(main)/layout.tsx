@@ -52,11 +52,10 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased flex flex-col min-h-screen bg-white`}>
         {/*
           Google Consent Mode v2: default-deny non-essential storage for EEA/UK/CH
-          on every page load, default-grant elsewhere. This only gates Google
-          Analytics 4 today (the only third-party measurement wired into the
-          site). When advertising launches via Raptive, the ad_* categories will
-          gate the ad partners' cookies; a Google-certified CMP will let EEA/UK/CH
-          visitors upgrade out of the default-deny state.
+          on every page load, default-grant elsewhere. This gates Google
+          Analytics 4 and the Raptive ad partners' cookies. EEA/UK/CH visitors are
+          shown a Google-certified CMP (via Raptive) that lets them upgrade out of
+          the default-deny state before any non-essential cookies are set.
         */}
         <Script id="google-consent-mode" strategy="beforeInteractive">
           {`
@@ -90,6 +89,29 @@ export default function RootLayout({
             gtag('config', 'G-H8ZRCLN1TK');
           `}
         </Script>
+        {/* Raptive Head Tag (manual install). Runs once; Raptive's loader handles
+            client-side route changes itself, so it must not be re-triggered on
+            navigation — placing it here in the layout satisfies that. */}
+        <Script
+          id="raptive-ads"
+          strategy="afterInteractive"
+          data-no-optimize="1"
+          data-cfasync="false"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w, d) {
+  w.adthrive = w.adthrive || {};
+  w.adthrive.cmd = w.adthrive.cmd || [];
+  w.adthrive.plugin = 'adthrive-ads-manual';
+  w.adthrive.host = 'ads.adthrive.com';
+  var s = d.createElement('script');
+  s.async = true;
+  s.referrerpolicy = 'no-referrer-when-downgrade';
+  s.src = 'https://' + w.adthrive.host + '/sites/6a3d589918ca6927370d0a51/ads.min.js?referrer=' + w.encodeURIComponent(w.location.href) + '&cb=' + (Math.floor(Math.random() * 100) + 1);
+  var n = d.getElementsByTagName('script')[0];
+  n.parentNode.insertBefore(s, n);
+})(window, document);`,
+          }}
+        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
