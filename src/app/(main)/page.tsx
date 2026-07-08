@@ -1,10 +1,30 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
+
+const HOME_TITLE = 'Radius Map Tool: Draw 1, 5, 10, 50 Mile Circles (Free)';
 
 export const metadata: Metadata = {
+  title: { absolute: HOME_TITLE },
   alternates: {
     canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://mapwithradius.com',
+    siteName: 'Map With Radius',
+    title: HOME_TITLE,
+    description:
+      'Free radius map tool. Draw circles on a map by distance, find what\'s within your radius, and share your map.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: HOME_TITLE,
+    description:
+      'Free radius map tool. Draw circles on a map by distance, find what\'s within your radius, and share your map.',
+    images: OG_IMAGES,
   },
 };
 
