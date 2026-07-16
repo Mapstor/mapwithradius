@@ -65,6 +65,17 @@ const toolsLinks = [
       </svg>
     )
   },
+  {
+    href: '/acre-calculator',
+    label: 'Acre Calculator',
+    description: 'See how big acres are on a map',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <rect x="3.5" y="3.5" width="17" height="17" rx="1.5" strokeWidth={2} />
+        <path strokeLinecap="round" strokeWidth={2} d="M3.5 9.5h17M9.5 3.5v17" />
+      </svg>
+    )
+  },
 ];
 
 const resourcesLinks = [

@@ -31,6 +31,13 @@ type Term = {
 
 const terms: Term[] = [
   {
+    term: 'Acre',
+    anchor: 'acre',
+    letter: 'A',
+    definition:
+      'A unit of land area equal to 43,560 square feet — 4,046.86 m², or about 0.4047 hectares. Historically the area a team of oxen could plow in a day, it is now the standard unit for US real estate and agriculture. There are 640 acres in a square mile (a survey "section"), and one acre is roughly 76% of an American football field including the end zones. The Acre Calculator on this site draws a true-scale acre overlay on any map so you can picture the size.',
+  },
+  {
     term: 'Antipode',
     anchor: 'antipode',
     letter: 'A',
