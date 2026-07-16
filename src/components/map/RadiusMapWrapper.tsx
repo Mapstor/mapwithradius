@@ -404,7 +404,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
   } : null;
 
   return (
-    <div className="relative">
+    <div id="radius-tool" className="relative">
       {/* Status messages */}
       {locationError && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm shadow-lg max-w-[90vw]">

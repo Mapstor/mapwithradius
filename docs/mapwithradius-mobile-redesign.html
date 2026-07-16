@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Map With Radius — Mobile Redesign Prototype</title>
+<style>
+  :root{
+    --blue:#2563EB; --blue-soft:#DBEAFE; --navy:#0F172A; --ink:#1E293B;
+    --muted:#64748B; --line:#E2E8F0; --paper:#FFFFFF; --bg:#F1F5F9;
+    --radius-fill:rgba(37,99,235,.16); --radius-stroke:#2563EB;
+    --anchor-h:64px; --safe-b:env(safe-area-inset-bottom,0px);
+    --shadow-sheet:0 -8px 32px rgba(15,23,42,.16);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+  button{font:inherit;border:0;background:none;cursor:pointer;color:inherit}
+
+  /* ---------- Header ---------- */
+  .hdr{position:fixed;top:0;left:0;right:0;height:52px;z-index:40;background:#fff;
+    display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid var(--line)}
+  .hdr .pin{width:26px;height:26px;flex:none}
+  .hdr h1{font-size:19px;font-weight:800;letter-spacing:-.02em;color:var(--navy)}
+  .hdr h1 b{color:var(--blue);font-weight:800}
+  .hdr .menu{margin-left:auto;width:44px;height:44px;display:grid;place-items:center;border-radius:12px}
+  .hdr .menu:active{background:var(--bg)}
+
+  /* ---------- Map ---------- */
+  #mapwrap{position:fixed;top:52px;left:0;right:0;bottom:0;background:#F2EFE7;touch-action:none}
+  #map{position:absolute;inset:0;width:100%;height:100%;display:block}
+
+  .zoom{position:absolute;top:14px;left:12px;z-index:20;display:flex;flex-direction:column;
+    background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(15,23,42,.14);overflow:hidden}
+  .zoom button{width:46px;height:46px;font-size:24px;font-weight:600;color:var(--ink)}
+  .zoom button:first-child{border-bottom:1px solid var(--line)}
+  .zoom button:active{background:var(--bg)}
+
+  .fab{position:absolute;right:12px;z-index:20;width:52px;height:52px;border-radius:50%;
+    background:#fff;box-shadow:0 3px 12px rgba(15,23,42,.18);display:grid;place-items:center;
+    transition:bottom .25s cubic-bezier(.32,.72,.24,1)}
+  .fab:active{transform:scale(.94)}
+  .fab svg{width:24px;height:24px;stroke:var(--blue)}
+
+  .scalebar{position:absolute;left:12px;z-index:15;font-size:11px;color:#475569;
+    background:rgba(255,255,255,.82);padding:3px 8px;border-radius:8px;backdrop-filter:blur(4px);
+    transition:bottom .25s cubic-bezier(.32,.72,.24,1)}
+  .scalebar .bar{height:3px;background:#475569;border-radius:2px;margin-top:3px}
+  .attrib{position:absolute;right:10px;z-index:15;font-size:10px;color:#94A3B8;
+    background:rgba(255,255,255,.75);padding:2px 7px;border-radius:7px;
+    transition:bottom .25s cubic-bezier(.32,.72,.24,1)}
+
+  /* ---------- Circle handles ---------- */
+  .handle{position:absolute;left:0;top:0;z-index:25;width:56px;height:56px;margin:-28px 0 0 -28px;
+    touch-action:none;display:grid;place-items:center}
+  .handle .dot{width:20px;height:20px;border-radius:50%;background:var(--radius-stroke);
+    border:3.5px solid #fff;box-shadow:0 2px 8px rgba(15,23,42,.3);transition:transform .12s}
+  .handle.edge .dot{background:#fff;border:3.5px solid var(--radius-stroke)}
+  .handle.dragging .dot{transform:scale(1.35)}
+  .handle::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--radius-stroke);
+    opacity:0;transition:opacity .15s}
+  .handle.dragging::after{opacity:.12}
+
+  .drag-tip{position:absolute;left:0;top:0;z-index:26;transform:translate(-50%,-140%);pointer-events:none;
+    background:var(--navy);color:#fff;font-size:15px;font-weight:700;letter-spacing:.01em;
+    padding:8px 14px;border-radius:12px;white-space:nowrap;opacity:0;transition:opacity .12s;
+    box-shadow:0 4px 14px rgba(15,23,42,.35)}
+  .drag-tip small{font-weight:500;opacity:.7;font-size:12px}
+  .drag-tip.on{opacity:1}
+
+  /* ---------- Toast ---------- */
+  .toast{position:fixed;top:66px;left:50%;transform:translate(-50%,-8px);z-index:60;
+    background:var(--navy);color:#fff;font-size:14.5px;font-weight:500;padding:11px 18px;
+    border-radius:14px;box-shadow:0 6px 20px rgba(15,23,42,.3);opacity:0;pointer-events:none;
+    transition:opacity .25s,transform .25s;max-width:86vw;text-align:center}
+  .toast.on{opacity:1;transform:translate(-50%,0)}
+
+  /* ---------- Bottom sheet ---------- */
+  .sheet{position:fixed;left:0;right:0;bottom:calc(var(--anchor-h) + var(--safe-b));z-index:50;
+    background:var(--paper);border-radius:22px 22px 0 0;box-shadow:var(--shadow-sheet);
+    display:flex;flex-direction:column;will-change:transform;
+    transition:transform .3s cubic-bezier(.32,.72,.24,1)}
+  .sheet.dragging{transition:none}
+  .grab-zone{flex:none;padding:10px 0 2px;touch-action:none;cursor:grab}
+  .grabber{width:44px;height:5px;border-radius:3px;background:#CBD5E1;margin:0 auto}
+
+  .peek{flex:none;display:flex;align-items:center;gap:10px;padding:8px 16px 14px;touch-action:none}
+  .r-pill{flex:1;min-width:0;display:flex;align-items:baseline;gap:6px;background:var(--bg);
+    border:1.5px solid var(--line);border-radius:16px;padding:10px 16px;min-height:52px;align-items:center}
+  .r-pill:active{border-color:var(--blue)}
+  .r-pill .val{font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--navy);font-variant-numeric:tabular-nums}
+  .r-pill .u{font-size:14px;font-weight:600;color:var(--muted)}
+  .r-pill .edit{margin-left:auto;color:#94A3B8;flex:none}
+  .r-pill input{width:100%;font-size:24px;font-weight:800;border:0;background:transparent;outline:none;color:var(--navy)}
+  .r-pill.empty{justify-content:flex-start;gap:10px}
+  .r-pill.empty .hint{font-size:15px;font-weight:600;color:var(--muted)}
+
+  .seg{flex:none;display:flex;background:var(--bg);border-radius:14px;padding:3px}
+  .seg button{padding:10px 14px;border-radius:11px;font-size:14px;font-weight:700;color:var(--muted);min-height:46px}
+  .seg button.on{background:#fff;color:var(--blue);box-shadow:0 1px 4px rgba(15,23,42,.12)}
+
+  .icon-btn{flex:none;width:52px;height:52px;border-radius:16px;background:var(--blue-soft);
+    display:grid;place-items:center}
+  .icon-btn:active{background:#BFDBFE}
+  .icon-btn svg{width:22px;height:22px;stroke:var(--blue)}
+
+  .body{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:2px 16px 24px;-webkit-overflow-scrolling:touch}
+  .sec{margin-top:18px}
+  .sec-t{font-size:11.5px;font-weight:800;letter-spacing:.09em;color:#94A3B8;margin-bottom:10px}
+
+  /* slider */
+  .slider-row{display:flex;align-items:center;gap:12px}
+  input[type=range]{flex:1;-webkit-appearance:none;appearance:none;height:44px;background:transparent}
+  input[type=range]::-webkit-slider-runnable-track{height:8px;border-radius:4px;
+    background:linear-gradient(to right,var(--blue) var(--fill,30%),var(--line) var(--fill,30%))}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;border-radius:50%;
+    background:#fff;border:3px solid var(--blue);box-shadow:0 2px 8px rgba(15,23,42,.2);margin-top:-11px}
+  .slider-row .lim{font-size:12px;color:#94A3B8;font-weight:600;flex:none;font-variant-numeric:tabular-nums}
+
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{padding:11px 16px;border-radius:14px;background:var(--bg);border:1.5px solid var(--line);
+    font-size:14.5px;font-weight:700;color:var(--ink);min-height:44px}
+  .chip.on{background:var(--blue-soft);border-color:var(--blue);color:var(--blue)}
+  .chip:active{transform:scale(.96)}
+
+  .stats{display:flex;gap:10px}
+  .stat{flex:1;background:var(--bg);border-radius:16px;padding:12px 14px}
+  .stat .k{font-size:11.5px;font-weight:700;color:#94A3B8;letter-spacing:.05em}
+  .stat .v{font-size:17px;font-weight:800;color:var(--navy);margin-top:3px;font-variant-numeric:tabular-nums}
+  .stat .v small{font-size:12px;font-weight:600;color:var(--muted)}
+
+  .clist{display:flex;flex-direction:column;gap:8px}
+  .crow{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:14px;
+    border:1.5px solid var(--line);min-height:52px}
+  .crow.on{border-color:var(--blue);background:#F8FAFF}
+  .crow .cdot{width:18px;height:18px;border-radius:50%;flex:none;border:2px solid #fff;box-shadow:0 0 0 1.5px rgba(15,23,42,.12)}
+  .crow .cname{font-size:15px;font-weight:700}
+  .crow .cmeta{font-size:12.5px;color:var(--muted);font-weight:500}
+  .crow .del{margin-left:auto;width:40px;height:40px;display:grid;place-items:center;border-radius:10px;color:#94A3B8}
+  .crow .del:active{background:#FEE2E2;color:#DC2626}
+
+  .row2{display:flex;gap:10px}
+  .btn{flex:1;min-height:52px;border-radius:16px;font-size:15.5px;font-weight:700;
+    display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn:active{transform:scale(.98)}
+  .btn.pri{background:var(--blue);color:#fff}
+  .btn.pri.arm{background:var(--navy)}
+  .btn.gho{background:var(--bg);color:var(--ink)}
+
+  .swatches{display:flex;gap:12px}
+  .sw{width:40px;height:40px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px var(--line)}
+  .sw.on{box-shadow:0 0 0 3px var(--blue)}
+
+  .adslot{margin-top:22px;height:110px;border-radius:14px;background:var(--bg);
+    border:1.5px dashed #CBD5E1;display:grid;place-items:center;color:#94A3B8;font-size:12.5px;font-weight:600;text-align:center;line-height:1.5}
+
+  /* anchor ad */
+  .anchor-ad{position:fixed;left:0;right:0;bottom:0;height:calc(var(--anchor-h) + var(--safe-b));z-index:45;
+    background:#E9EDF3;border-top:1px solid var(--line);display:grid;place-items:center;
+    color:#94A3B8;font-size:12px;font-weight:600;padding-bottom:var(--safe-b)}
+
+  /* search overlay inside sheet */
+  .search-wrap{display:none;flex:1;flex-direction:column;padding:0 16px 16px;min-height:0}
+  .sheet.searching .search-wrap{display:flex}
+  .sheet.searching .peek,.sheet.searching .body{display:none}
+  .s-field{display:flex;align-items:center;gap:10px;background:var(--bg);border:2px solid var(--blue);
+    border-radius:16px;padding:0 14px;min-height:54px;flex:none}
+  .s-field input{flex:1;border:0;background:transparent;outline:none;font-size:17px;font-weight:500;min-width:0}
+  .s-field .cancel{color:var(--blue);font-weight:700;font-size:15px;flex:none}
+  .s-results{flex:1;overflow-y:auto;margin-top:8px;-webkit-overflow-scrolling:touch}
+  .s-row{display:flex;align-items:center;gap:12px;padding:14px 6px;border-bottom:1px solid var(--line);min-height:56px}
+  .s-row svg{flex:none;stroke:#94A3B8;width:20px;height:20px}
+  .s-row .n{font-size:16px;font-weight:600}
+  .s-row .d{font-size:13px;color:var(--muted)}
+  .s-row:active{background:var(--bg)}
+  .s-loc{color:var(--blue)} .s-loc svg{stroke:var(--blue)} .s-loc .n{color:var(--blue)}
+
+  @media (prefers-reduced-motion:reduce){
+    .sheet,.fab,.scalebar,.attrib{transition:none}
+  }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <svg class="pin" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-6.1-7-11a7 7 0 1 1 14 0c0 4.9-7 11-7 11Z" fill="#2563EB"/><circle cx="12" cy="10" r="2.6" fill="#fff"/></svg>
+  <h1>Map With <b>Radius</b></h1>
+  <button class="menu" aria-label="Menu"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#334155" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+</header>
+
+<div id="mapwrap">
+  <canvas id="map"></canvas>
+  <div class="zoom"><button id="zin" aria-label="Zoom in">+</button><button id="zout" aria-label="Zoom out">−</button></div>
+  <button class="fab" id="fab" aria-label="Use my location">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.5" fill="#2563EB" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+  </button>
+  <div class="scalebar" id="scalebar"><span id="scaletxt">5 mi</span><div class="bar" id="scalebarbar" style="width:80px"></div></div>
+  <div class="attrib">© OpenStreetMap</div>
+  <div class="handle" id="hCenter" style="display:none" aria-label="Move circle"><div class="dot"></div></div>
+  <div class="handle edge" id="hEdge" style="display:none" aria-label="Resize radius"><div class="dot"></div></div>
+  <div class="drag-tip" id="dragTip"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="sheet" id="sheet">
+  <div class="grab-zone" id="grabzone"><div class="grabber"></div></div>
+
+  <div class="peek" id="peek">
+    <div class="r-pill empty" id="rpill">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="1.6" fill="#94A3B8" stroke="none"/></svg>
+      <span class="hint">Tap the map to draw a radius</span>
+    </div>
+    <div class="seg" id="seg">
+      <button data-u="mi" class="on">mi</button><button data-u="km">km</button>
+    </div>
+    <button class="icon-btn" id="searchBtn" aria-label="Search location">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+    </button>
+  </div>
+
+  <div class="body" id="sheetBody">
+    <div class="sec" id="secSlider" style="display:none">
+      <div class="slider-row">
+        <span class="lim" id="limL">0.5</span>
+        <input type="range" id="slider" min="0" max="1000" value="440" aria-label="Radius">
+        <span class="lim" id="limR">250</span>
+      </div>
+      <div class="chips" id="presets" style="margin-top:10px"></div>
+    </div>
+
+    <div class="sec" id="secStats" style="display:none">
+      <div class="stats">
+        <div class="stat"><div class="k">AREA</div><div class="v" id="stArea">—</div></div>
+        <div class="stat"><div class="k">DIAMETER</div><div class="v" id="stDia">—</div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-t">CIRCLES</div>
+      <div class="clist" id="clist"></div>
+      <div class="row2" style="margin-top:10px">
+        <button class="btn pri" id="btnNew">＋ New circle</button>
+        <button class="btn gho" id="btnClear">Clear all</button>
+      </div>
+    </div>
+
+    <div class="sec" id="secColor" style="display:none">
+      <div class="sec-t">CIRCLE COLOR</div>
+      <div class="swatches" id="swatches"></div>
+    </div>
+
+    <div class="sec" id="secShare" style="display:none">
+      <div class="sec-t">SHARE &amp; EXPORT</div>
+      <div class="row2">
+        <button class="btn gho" id="btnLink">🔗 Copy link</button>
+      </div>
+      <div class="row2" style="margin-top:10px">
+        <button class="btn gho" id="btnPng">🖼 PNG</button>
+        <button class="btn gho" id="btnKml">📍 KML</button>
+      </div>
+    </div>
+
+    <div class="adslot">Advertisement<br><span style="font-size:11px;font-weight:500">Reserved slot · fixed 110&nbsp;px · zero layout shift</span></div>
+  </div>
+
+  <div class="search-wrap" id="searchWrap">
+    <div class="s-field">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.8-3.8"/></svg>
+      <input id="sInput" type="text" placeholder="Address, city, or zip code" autocomplete="off">
+      <button class="cancel" id="sCancel">Cancel</button>
+    </div>
+    <div class="s-results" id="sResults"></div>
+  </div>
+</div>
+
+<div class="anchor-ad">Raptive anchor ad · 320×50/100 · sheet always sits above it</div>
+
+<script>
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const MI2KM=1.609344;
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const vibrate=ms=>{try{navigator.vibrate&&navigator.vibrate(ms)}catch(e){}};
+
+/* ============ state ============ */
+const state={
+  cx:0, cy:0, ppm:13,           // world center (miles), pixels-per-mile
+  circles:[], active:-1,        // {x,y,r(miles),color,angle}
+  unit:'mi',
+  armNew:false,
+};
+const COLORS=['#2563EB','#DC2626','#16A34A','#D97706','#7C3AED','#0F172A'];
+const RMIN=0.25, RMAX=250;
+
+/* ============ fake basemap (procedural, SD-style) ============ */
+const map=$('map'), wrap=$('mapwrap');
+const ctx=map.getContext('2d');
+let W=0,H=0,DPR=1;
+function resize(){
+  DPR=Math.min(2,window.devicePixelRatio||1);
+  W=wrap.clientWidth; H=wrap.clientHeight;
+  map.width=W*DPR; map.height=H*DPR;
+  map.style.width=W+'px'; map.style.height=H+'px';
+  render();
+}
+addEventListener('resize',resize);
+
+function mulberry32(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const rnd=mulberry32(42);
+// rivers
+function makeRiver(y0,seed){const r=mulberry32(seed);const pts=[];let y=y0;for(let x=-90;x<=90;x+=3){y+=(r()-0.5)*4;pts.push([x,y])}return pts}
+const rivers=[makeRiver(-2,7),makeRiver(20,19)];
+// scattered land parcels
+const parcels=[];for(let i=0;i<160;i++){parcels.push([rnd()*160-80,rnd()*160-80,1+rnd()*2.2,0.8+rnd()*1.8])}
+const towns=[{n:'Mission',x:-27,y:-13},{n:'Winner',x:25,y:-10},{n:'Valentine',x:-15,y:23},{n:'White River',x:-31,y:-29},{n:'Carter',x:9,y:-20}];
+
+const w2sX=wx=>(wx-state.cx)*state.ppm+W/2;
+const w2sY=wy=>(wy-state.cy)*state.ppm+H/2;
+const s2wX=sx=>(sx-W/2)/state.ppm+state.cx;
+const s2wY=sy=>(sy-H/2)/state.ppm+state.cy;
+
+function render(){
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.fillStyle='#F3F0E8';ctx.fillRect(0,0,W,H);
+  const x0=s2wX(0),x1=s2wX(W),y0=s2wY(0),y1=s2wY(H);
+  // section grid (1 mi) at high zoom
+  if(state.ppm>16){ctx.strokeStyle='#E7E2D4';ctx.lineWidth=1;ctx.beginPath();
+    for(let x=Math.floor(x0);x<=x1;x++){ctx.moveTo(w2sX(x),0);ctx.lineTo(w2sX(x),H)}
+    for(let y=Math.floor(y0);y<=y1;y++){ctx.moveTo(0,w2sY(y));ctx.lineTo(W,w2sY(y))}ctx.stroke()}
+  // county grid (6 mi)
+  ctx.strokeStyle='#DDD7C6';ctx.lineWidth=1.2;ctx.beginPath();
+  for(let x=Math.floor(x0/6)*6;x<=x1;x+=6){ctx.moveTo(w2sX(x),0);ctx.lineTo(w2sX(x),H)}
+  for(let y=Math.floor(y0/6)*6;y<=y1;y+=6){ctx.moveTo(0,w2sY(y));ctx.lineTo(W,w2sY(y))}ctx.stroke();
+  // parcels
+  ctx.fillStyle='rgba(196,186,158,.35)';
+  for(const p of parcels){const sx=w2sX(p[0]),sy=w2sY(p[1]);if(sx>-40&&sx<W+40&&sy>-40&&sy<H+40)ctx.fillRect(sx,sy,p[2]*state.ppm,p[3]*state.ppm)}
+  // state line
+  ctx.strokeStyle='#B9A6C9';ctx.lineWidth=2.4;ctx.beginPath();ctx.moveTo(0,w2sY(17));ctx.lineTo(W,w2sY(17));ctx.stroke();
+  // rivers
+  ctx.strokeStyle='#8FBEE6';ctx.lineWidth=Math.max(2,state.ppm*.14);ctx.lineJoin='round';
+  for(const rv of rivers){ctx.beginPath();rv.forEach((p,i)=>{const sx=w2sX(p[0]),sy=w2sY(p[1]);i?ctx.lineTo(sx,sy):ctx.moveTo(sx,sy)});ctx.stroke()}
+  // roads
+  ctx.strokeStyle='#F0A860';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(w2sX(-27),0);ctx.lineTo(w2sX(-26),H);ctx.stroke();
+  ctx.strokeStyle='#F5C97B';ctx.lineWidth=2.4;ctx.beginPath();ctx.moveTo(0,w2sY(-11));ctx.lineTo(W,w2sY(-10));ctx.stroke();
+  // towns
+  ctx.font='600 12px -apple-system,sans-serif';
+  for(const t of towns){const sx=w2sX(t.x),sy=w2sY(t.y);
+    ctx.fillStyle='#8A8578';ctx.beginPath();ctx.arc(sx,sy,2.5,0,7);ctx.fill();
+    ctx.fillStyle='#4B4A44';ctx.fillText(t.n,sx+7,sy+4)}
+  // circles
+  state.circles.forEach((c,i)=>{
+    const sx=w2sX(c.x),sy=w2sY(c.y),sr=c.r*state.ppm;
+    ctx.beginPath();ctx.arc(sx,sy,sr,0,7);
+    ctx.fillStyle=hexA(c.color,.16);ctx.fill();
+    ctx.lineWidth=i===state.active?3:2;ctx.strokeStyle=c.color;ctx.stroke();
+    if(i!==state.active){ctx.fillStyle=c.color;ctx.beginPath();ctx.arc(sx,sy,5,0,7);ctx.fill();
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(sx,sy,2,0,7);ctx.fill()}
+  });
+  positionHandles();
+  drawScale();
+}
+function hexA(h,a){const n=parseInt(h.slice(1),16);return`rgba(${n>>16&255},${n>>8&255},${n&255},${a})`}
+function drawScale(){
+  const nice=[0.25,0.5,1,2,5,10,20,50,100,200];
+  const inKm=state.unit==='km';
+  let best=nice[0];
+  for(const d of nice){const px=(inKm?d/MI2KM:d)*state.ppm;if(px>=56&&px<=150){best=d;break}best=d}
+  const px=(inKm?best/MI2KM:best)*state.ppm;
+  $('scaletxt').textContent=best+' '+state.unit;
+  $('scalebarbar').style.width=clamp(px,30,170)+'px';
+}
+
+/* ============ handles ============ */
+const hC=$('hCenter'),hE=$('hEdge'),tip=$('dragTip');
+function positionHandles(){
+  const c=state.circles[state.active];
+  if(!c){hC.style.display=hE.style.display='none';return}
+  const sx=w2sX(c.x),sy=w2sY(c.y),sr=c.r*state.ppm;
+  hC.style.display=hE.style.display='';
+  hC.style.transform=`translate(${sx}px,${sy}px)`;
+  const a=c.angle??-Math.PI/2;
+  const ex=sx+Math.cos(a)*sr, ey=sy+Math.sin(a)*sr;
+  hE.style.transform=`translate(${ex}px,${ey}px)`;
+  hC.querySelector('.dot').style.background=c.color;
+  hE.querySelector('.dot').style.borderColor=c.color;
+  if(dragging===hE){tip.style.left=ex+'px';tip.style.top=(ey-14)+'px'}
+}
+let dragging=null;
+function bindHandle(el,onMove){
+  el.addEventListener('pointerdown',e=>{
+    e.preventDefault();e.stopPropagation();
+    el.setPointerCapture(e.pointerId);
+    dragging=el;el.classList.add('dragging');
+    if(el===hE){updateTip();render();tip.classList.add('on')}
+    vibrate(8);
+  });
+  el.addEventListener('pointermove',e=>{
+    if(dragging!==el)return;
+    onMove(e.clientX-wrap.getBoundingClientRect().left, e.clientY-wrap.getBoundingClientRect().top);
+  });
+  const end=e=>{if(dragging!==el)return;dragging=null;el.classList.remove('dragging');tip.classList.remove('on');syncUI()};
+  el.addEventListener('pointerup',end);el.addEventListener('pointercancel',end);
+}
+let lastSnap=null;
+bindHandle(hE,(mx,my)=>{
+  const c=state.circles[state.active];if(!c)return;
+  const wx=s2wX(mx),wy=s2wY(my);
+  let r=Math.hypot(wx-c.x,wy-c.y);
+  c.angle=Math.atan2(wy-c.y,wx-c.x);
+  // gentle integer snap in the active unit
+  const rU=state.unit==='km'?r*MI2KM:r;
+  const snapTo=Math.round(rU);
+  if(snapTo>=1&&Math.abs(rU-snapTo)<0.18){
+    r=state.unit==='km'?snapTo/MI2KM:snapTo;
+    if(lastSnap!==snapTo){vibrate(6);lastSnap=snapTo}
+  }else lastSnap=null;
+  c.r=clamp(r,RMIN,RMAX);
+  updateTip();render();syncReadouts();
+});
+bindHandle(hC,(mx,my)=>{
+  const c=state.circles[state.active];if(!c)return;
+  c.x=s2wX(mx);c.y=s2wY(my);
+  render();
+});
+function updateTip(){
+  const c=state.circles[state.active];if(!c)return;
+  const mi=c.r,km=c.r*MI2KM;
+  tip.innerHTML=state.unit==='mi'
+    ?`${fmt(mi)} mi <small>· ${fmt(km)} km</small>`
+    :`${fmt(km)} km <small>· ${fmt(mi)} mi</small>`;
+}
+const fmt=v=>v>=100?Math.round(v):v>=10?v.toFixed(1):(Math.round(v*10)/10).toFixed(1).replace(/\.0$/,v<1?'.0':'')||v.toFixed(1);
+
+/* ============ map pan / pinch / tap ============ */
+const pointers=new Map();
+let panStart=null,pinchStart=null,moved=0;
+map.addEventListener('pointerdown',e=>{
+  map.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===1){panStart={x:e.clientX,y:e.clientY,cx:state.cx,cy:state.cy};moved=0}
+  else if(pointers.size===2){
+    const[p1,p2]=[...pointers.values()];
+    pinchStart={d:Math.hypot(p1.x-p2.x,p1.y-p2.y),ppm:state.ppm,
+      mx:(p1.x+p2.x)/2,my:(p1.y+p2.y)/2-52,
+      wx:s2wX((p1.x+p2.x)/2),wy:s2wY((p1.y+p2.y)/2-52)};
+    panStart=null;
+  }
+});
+map.addEventListener('pointermove',e=>{
+  if(!pointers.has(e.pointerId))return;
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===2&&pinchStart){
+    const[p1,p2]=[...pointers.values()];
+    const d=Math.hypot(p1.x-p2.x,p1.y-p2.y);
+    state.ppm=clamp(pinchStart.ppm*d/pinchStart.d,1.2,80);
+    state.cx=pinchStart.wx-(pinchStart.mx-W/2)/state.ppm;
+    state.cy=pinchStart.wy-(pinchStart.my-H/2)/state.ppm;
+    render();
+  }else if(panStart){
+    const dx=e.clientX-panStart.x,dy=e.clientY-panStart.y;
+    moved=Math.max(moved,Math.hypot(dx,dy));
+    state.cx=panStart.cx-dx/state.ppm;
+    state.cy=panStart.cy-dy/state.ppm;
+    render();
+  }
+});
+function mapUp(e){
+  const wasTap=panStart&&moved<8&&pointers.size===1;
+  pointers.delete(e.pointerId);
+  if(pointers.size<2)pinchStart=null;
+  if(pointers.size===0){
+    if(wasTap)handleTap(e.clientX,e.clientY-52);
+    panStart=null;
+  }
+}
+map.addEventListener('pointerup',mapUp);
+map.addEventListener('pointercancel',e=>{pointers.delete(e.pointerId);panStart=pinchStart=null});
+
+function handleTap(sx,sy){
+  const wx=s2wX(sx),wy=s2wY(sy);
+  // select an existing circle if tapped inside it (nearest center wins)
+  let hit=-1,hd=1e9;
+  state.circles.forEach((c,i)=>{const d=Math.hypot(wx-c.x,wy-c.y);if(d<=c.r&&d<hd){hit=i;hd=d}});
+  if(state.armNew||state.circles.length===0){
+    addCircle(wx,wy);
+  }else if(hit>=0&&hit!==state.active){
+    state.active=hit;toast(`Circle ${hit+1} selected`);
+  }else{
+    const c=state.circles[state.active];
+    if(c){c.x=wx;c.y=wy;vibrate(8)}
+  }
+  setSheet('peek');
+  render();syncUI();
+}
+function addCircle(wx,wy){
+  const defaultR=state.unit==='km'?10/MI2KM:10;
+  const color=COLORS[state.circles.length%COLORS.length];
+  state.circles.push({x:wx,y:wy,r:defaultR,color,angle:-Math.PI/2});
+  state.active=state.circles.length-1;
+  state.armNew=false;$('btnNew').classList.remove('arm');$('btnNew').textContent='＋ New circle';
+  vibrate(12);
+  toast(state.circles.length===1?'Drag the white dot to resize':'Circle '+state.circles.length+' added');
+}
+
+/* ============ zoom / locate ============ */
+function zoom(f){state.ppm=clamp(state.ppm*f,1.2,80);render()}
+$('zin').onclick=()=>zoom(1.45);
+$('zout').onclick=()=>zoom(1/1.45);
+$('fab').onclick=()=>{
+  const wx=s2wX(W/2),wy=s2wY(H/2-40);
+  if(state.circles.length===0)addCircle(wx,wy);
+  else{const c=state.circles[state.active];c.x=wx;c.y=wy}
+  toast('Centered on your location');render();syncUI();
+};
+
+/* ============ bottom sheet ============ */
+const sheet=$('sheet');
+let vh=innerHeight;
+const detents=()=>({peek:150,mid:Math.min(vh*0.52,470),full:vh-120});
+let sheetPos='peek',sheetY=0;
+function applySheet(px,animate=true){
+  sheetY=px;
+  sheet.style.height=detents().full+'px';
+  sheet.classList.toggle('dragging',!animate);
+  sheet.style.transform=`translateY(${detents().full-px}px)`;
+  const off=px+64+8;
+  $('fab').style.bottom=off+'px';
+  $('scalebar').style.bottom=(px+72)+'px';
+  document.querySelector('.attrib').style.bottom=(px+72)+'px';
+}
+function setSheet(name){sheetPos=name;applySheet(detents()[name])}
+addEventListener('resize',()=>{vh=innerHeight;setSheet(sheetPos)});
+
+let shStart=null,shCommitted=false,shSuppressClick=false;
+function sheetDown(e){
+  if(sheet.classList.contains('searching'))return;
+  shStart={y:e.clientY,pos:sheetY,vy:0,ly:e.clientY,lt:performance.now()};
+  shCommitted=false;
+  addEventListener('pointermove',sheetMove);
+  addEventListener('pointerup',sheetUp);
+  addEventListener('pointercancel',sheetUp);
+}
+function sheetMove(e){
+  if(!shStart)return;
+  const dy=e.clientY-shStart.y;
+  if(!shCommitted){
+    if(Math.abs(dy)<10)return;       // taps on pill / mi-km / search still work
+    shCommitted=true;
+  }
+  const now=performance.now();
+  shStart.vy=(e.clientY-shStart.ly)/Math.max(1,now-shStart.lt);
+  shStart.ly=e.clientY;shStart.lt=now;
+  applySheet(clamp(shStart.pos-dy,detents().peek,detents().full),false);
+}
+function sheetUp(){
+  removeEventListener('pointermove',sheetMove);
+  removeEventListener('pointerup',sheetUp);
+  removeEventListener('pointercancel',sheetUp);
+  if(!shStart)return;
+  const v=shStart.vy, wasDrag=shCommitted;
+  shStart=null;
+  if(!wasDrag)return;                 // plain tap → let click handlers run
+  shSuppressClick=true;setTimeout(()=>shSuppressClick=false,350);
+  const d=detents(),pos=[d.peek,d.mid,d.full],names=['peek','mid','full'];
+  let i=pos.reduce((b,p,j)=>Math.abs(p-sheetY)<Math.abs(pos[b]-sheetY)?j:b,0);
+  if(Math.abs(v)>0.55)i=clamp(i+(v<0?1:-1),0,2); // fling to next detent
+  vibrate(6);setSheet(names[i]);
+}
+$('grabzone').addEventListener('pointerdown',sheetDown);
+$('peek').addEventListener('pointerdown',sheetDown);
+// suppress the synthetic click that follows a real drag
+sheet.addEventListener('click',e=>{if(shSuppressClick){e.stopPropagation();e.preventDefault()}},true);
+// plain tap on the grabber toggles peek/mid
+$('grabzone').addEventListener('click',()=>setSheet(sheetPos==='peek'?'mid':'peek'));
+
+/* ============ radius pill (tap to edit) ============ */
+const rpill=$('rpill');
+rpill.addEventListener('click',()=>{
+  const c=state.circles[state.active];if(!c)return;
+  if(rpill.querySelector('input'))return;
+  const cur=state.unit==='km'?c.r*MI2KM:c.r;
+  rpill.innerHTML=`<input type="text" inputmode="decimal" value="${fmt(cur)}" aria-label="Radius value"><span class="u">${state.unit}</span>`;
+  const inp=rpill.querySelector('input');
+  inp.focus();inp.select();
+  const commit=()=>{
+    let v=parseFloat(inp.value.replace(',','.'));
+    if(!isNaN(v)&&v>0){
+      v=state.unit==='km'?v/MI2KM:v;
+      c.r=clamp(v,RMIN,RMAX);
+    }
+    rpill.innerHTML='';        // force syncUI to rebuild the value display
+    render();syncUI();
+  };
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')inp.blur()});
+  inp.addEventListener('blur',commit,{once:true});
+});
+
+/* ============ unit toggle ============ */
+$('seg').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  state.unit=b.dataset.u;
+  [...$('seg').children].forEach(x=>x.classList.toggle('on',x===b));
+  vibrate(6);buildPresets();render();syncUI();
+});
+
+/* ============ slider & presets ============ */
+const slider=$('slider');
+const s2r=v=>RMIN*Math.pow(RMAX/RMIN,v/1000);
+const r2s=r=>1000*Math.log(r/RMIN)/Math.log(RMAX/RMIN);
+slider.addEventListener('input',()=>{
+  const c=state.circles[state.active];if(!c)return;
+  let r=s2r(+slider.value);
+  const rU=state.unit==='km'?r*MI2KM:r;
+  const nice=rU>=20?Math.round(rU):Math.round(rU*2)/2;
+  r=state.unit==='km'?nice/MI2KM:nice;
+  c.r=clamp(r,RMIN,RMAX);
+  render();syncReadouts();
+});
+function buildPresets(){
+  const vals=state.unit==='mi'?[1,2,5,10,25,50]:[1,2,5,10,25,50];
+  $('presets').innerHTML=vals.map(v=>`<button class="chip" data-v="${v}">${v} ${state.unit}</button>`).join('');
+}
+$('presets').addEventListener('click',e=>{
+  const b=e.target.closest('.chip');if(!b)return;
+  const c=state.circles[state.active];if(!c)return;
+  const v=+b.dataset.v;
+  c.r=state.unit==='km'?v/MI2KM:v;
+  vibrate(8);render();syncUI();
+});
+
+/* ============ circle list / new / clear / colors ============ */
+$('btnNew').onclick=()=>{
+  state.armNew=!state.armNew;
+  $('btnNew').classList.toggle('arm',state.armNew);
+  $('btnNew').textContent=state.armNew?'Tap the map to place…':'＋ New circle';
+  if(state.armNew){setSheet('peek');toast('Tap the map to place the new circle')}
+};
+$('btnClear').onclick=()=>{
+  if(!state.circles.length)return;
+  state.circles=[];state.active=-1;vibrate(10);
+  toast('All circles cleared');render();syncUI();
+};
+$('clist').addEventListener('click',e=>{
+  const row=e.target.closest('.crow');if(!row)return;
+  const i=+row.dataset.i;
+  if(e.target.closest('.del')){
+    state.circles.splice(i,1);
+    state.active=state.circles.length?Math.min(i,state.circles.length-1):-1;
+    vibrate(8);render();syncUI();return;
+  }
+  state.active=i;
+  const c=state.circles[i];state.cx=c.x;state.cy=c.y;
+  render();syncUI();
+});
+$('swatches').addEventListener('click',e=>{
+  const b=e.target.closest('.sw');if(!b)return;
+  const c=state.circles[state.active];if(!c)return;
+  c.color=b.dataset.c;vibrate(6);render();syncUI();
+});
+
+/* ============ share / export (demo) ============ */
+$('btnLink').onclick=()=>{toast('Link copied — restores center, radius & zoom')};
+$('btnPng').onclick=()=>{toast('PNG exported')};
+$('btnKml').onclick=()=>{toast('KML exported')};
+
+/* ============ search ============ */
+const CITIES=[
+  {n:'Miami, FL',d:'Florida, United States'},
+  {n:'Miami Beach, FL',d:'Florida, United States'},
+  {n:'Mission, SD',d:'South Dakota, United States'},
+  {n:'Winner, SD',d:'South Dakota, United States'},
+  {n:'Valentine, NE',d:'Nebraska, United States'},
+  {n:'Minneapolis, MN',d:'Minnesota, United States'},
+  {n:'Milwaukee, WI',d:'Wisconsin, United States'},
+  {n:'Maribor',d:'Slovenia'},
+];
+function openSearch(){
+  sheet.classList.add('searching');setSheet('full');
+  renderResults('');
+  setTimeout(()=>$('sInput').focus(),80);
+}
+function closeSearch(){
+  sheet.classList.remove('searching');$('sInput').value='';$('sInput').blur();
+  setSheet(state.circles.length?'mid':'peek');
+}
+$('searchBtn').onclick=openSearch;
+$('sCancel').onclick=closeSearch;
+$('sInput').addEventListener('input',e=>renderResults(e.target.value));
+function renderResults(q){
+  const list=CITIES.filter(c=>c.n.toLowerCase().includes(q.toLowerCase()));
+  $('sResults').innerHTML=
+    `<div class="s-row s-loc" data-loc="1">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>
+      <div><div class="n">Use my location</div></div>
+    </div>`+
+    list.map((c,i)=>`<div class="s-row" data-i="${CITIES.indexOf(c)}">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 21s-6-5.3-6-9.6A6 6 0 0 1 18 11.4C18 15.7 12 21 12 21Z"/><circle cx="12" cy="11" r="2"/></svg>
+      <div><div class="n">${c.n}</div><div class="d">${c.d}</div></div>
+    </div>`).join('');
+}
+$('sResults').addEventListener('click',e=>{
+  const row=e.target.closest('.s-row');if(!row)return;
+  closeSearch();
+  const wx=state.cx+(rnd()-0.5)*4, wy=state.cy+(rnd()-0.5)*4;
+  if(state.circles.length===0)addCircle(wx,wy);
+  else{const c=state.circles[state.active];c.x=wx;c.y=wy;state.cx=wx;state.cy=wy}
+  toast(row.dataset.loc?'Centered on your location':'Centered on '+row.querySelector('.n').textContent+' (demo)');
+  render();syncUI();
+});
+
+/* ============ toast ============ */
+let toastT=null;
+function toast(msg){
+  const t=$('toast');t.textContent=msg;t.classList.add('on');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600);
+}
+
+/* ============ UI sync ============ */
+function syncReadouts(){
+  const c=state.circles[state.active];
+  if(!c)return;
+  const r=state.unit==='km'?c.r*MI2KM:c.r;
+  const el=rpill.querySelector('.val');
+  if(el)el.textContent=fmt(r);
+  const area=Math.PI*r*r, dia=2*r;
+  $('stArea').innerHTML=`${area>=100?Math.round(area).toLocaleString():area.toFixed(1)} <small>${state.unit}²</small>`;
+  $('stDia').innerHTML=`${fmt(dia)} <small>${state.unit}</small>`;
+  const sv=r2s(c.r);slider.value=sv;
+  slider.style.setProperty('--fill',(sv/10)+'%');
+  $('limL').textContent=state.unit==='km'?'0.4':'0.25';
+  $('limR').textContent=state.unit==='km'?'400':'250';
+  [...document.querySelectorAll('.chip')].forEach(ch=>{
+    ch.classList.toggle('on',Math.abs(+ch.dataset.v-r)<0.05);
+  });
+}
+function syncUI(){
+  const has=state.active>=0&&state.circles.length>0;
+  // peek pill
+  if(has){
+    if(!rpill.querySelector('.val')&&!rpill.querySelector('input')){
+      rpill.classList.remove('empty');
+      rpill.innerHTML=`<span class="val">10.0</span><span class="u">${state.unit}</span>
+        <svg class="edit" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 5l4 4L8 20H4v-4L15 5Z"/></svg>`;
+    }else{
+      const u=rpill.querySelector('.u');if(u)u.textContent=state.unit;
+    }
+  }else{
+    rpill.classList.add('empty');
+    rpill.innerHTML=`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2"><circle cx="12" cy="12" r="8" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="1.6" fill="#94A3B8" stroke="none"/></svg><span class="hint">Tap the map to draw a radius</span>`;
+  }
+  $('secSlider').style.display=$('secStats').style.display=
+  $('secColor').style.display=$('secShare').style.display=has?'':'none';
+  // circle list
+  $('clist').innerHTML=state.circles.length?state.circles.map((c,i)=>{
+    const r=state.unit==='km'?c.r*MI2KM:c.r;
+    return`<div class="crow ${i===state.active?'on':''}" data-i="${i}">
+      <span class="cdot" style="background:${c.color}"></span>
+      <div><div class="cname">Circle ${i+1}</div><div class="cmeta">${fmt(r)} ${state.unit} radius</div></div>
+      <button class="del" aria-label="Delete circle ${i+1}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V5h6v2M7 7l1 13h8l1-13"/></svg></button>
+    </div>`}).join('')
+    :`<div style="font-size:14px;color:var(--muted);padding:6px 2px">No circles yet — tap the map or search for a place.</div>`;
+  // swatches
+  const c=state.circles[state.active];
+  $('swatches').innerHTML=COLORS.map(col=>`<button class="sw ${c&&c.color===col?'on':''}" data-c="${col}" style="background:${col}" aria-label="Color ${col}"></button>`).join('');
+  syncReadouts();
+  render();
+}
+
+/* ============ boot ============ */
+buildPresets();
+resize();
+applySheet(detents().peek,false);
+requestAnimationFrame(()=>{setSheet('peek')});
+setTimeout(()=>toast('Tap the map or search to draw a radius'),600);
+})();
+</script>
+</body>
+</html>

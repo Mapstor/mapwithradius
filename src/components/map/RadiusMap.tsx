@@ -3,7 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { fromMeters, DistanceUnit, calculateCircleArea, formatDistance, formatArea } from '@/lib/haversine';
+import { fromMeters, toMeters, DistanceUnit, calculateCircleArea, formatDistance, formatArea } from '@/lib/haversine';
 
 // Fix Leaflet default marker icon issue
 delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: () => void })._getIconUrl;
@@ -41,13 +41,25 @@ interface RadiusMapProps {
 // Min/max radius constants (in meters)
 const MIN_RADIUS = 160.934; // 0.1 miles
 const MAX_RADIUS = 804672;  // 500 miles
+const EARTH_RADIUS_M = 6371000;
+const DEFAULT_EDGE_BEARING = 0; // radians, 0 = due north — the edge handle's rest position
+const SNAP_THRESHOLD = 0.18;    // snap when within 0.18 of an integer in the active unit
+
+// navigator.vibrate is a no-op on iOS Safari; guard for browsers without it.
+const vibrate = (ms: number) => {
+  try {
+    navigator.vibrate?.(ms);
+  } catch {
+    /* ignore */
+  }
+};
 
 export default function RadiusMap({
   circles,
   selectedCircleId,
-  currentRadius,
+  // currentRadius / currentColor are supplied by the parent for other tools but the
+  // per-circle values on `circles` are authoritative here, so they are intentionally unused.
   currentUnit,
-  currentColor,
   onCircleUpdate,
   onCircleSelect,
   onMapClick,
@@ -59,14 +71,19 @@ export default function RadiusMap({
 }: RadiusMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const circleLayersRef = useRef<Map<string, { circle: L.Circle; centerMarker: L.Marker; edgeMarker: L.Marker }>>(new Map());
+  // Bearing (radians, 0 = north) where each circle's edge handle currently sits. The handle
+  // stays wherever the finger left it instead of snapping back to north between gestures.
+  const edgeBearingsRef = useRef<Map<string, number>>(new Map());
   const userLocationMarkerRef = useRef<L.Marker | null>(null);
+  const dragTooltipRef = useRef<L.Tooltip | null>(null);
+  const lastSnapRef = useRef<number | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
 
-  // Drag state refs
+  // Drag state refs — which circle (if any) is having its center/edge dragged right now.
   const isDraggingCenterRef = useRef<string | null>(null);
   const isDraggingEdgeRef = useRef<string | null>(null);
 
-  // Refs for callbacks to avoid stale closures
+  // Refs for callbacks to avoid stale closures inside long-lived Leaflet handlers
   const onMapClickRef = useRef(onMapClick);
   const onCircleUpdateRef = useRef(onCircleUpdate);
   const onCircleSelectRef = useRef(onCircleSelect);
@@ -74,7 +91,6 @@ export default function RadiusMap({
   const onDragStartRef = useRef(onDragStart);
   const onDragEndRef = useRef(onDragEnd);
   const currentUnitRef = useRef(currentUnit);
-  const circlesRef = useRef(circles);
 
   useEffect(() => { onMapClickRef.current = onMapClick; }, [onMapClick]);
   useEffect(() => { onCircleUpdateRef.current = onCircleUpdate; }, [onCircleUpdate]);
@@ -83,7 +99,6 @@ export default function RadiusMap({
   useEffect(() => { onDragStartRef.current = onDragStart; }, [onDragStart]);
   useEffect(() => { onDragEndRef.current = onDragEnd; }, [onDragEnd]);
   useEffect(() => { currentUnitRef.current = currentUnit; }, [currentUnit]);
-  useEffect(() => { circlesRef.current = circles; }, [circles]);
 
   // Initialize map
   useEffect(() => {
@@ -106,163 +121,21 @@ export default function RadiusMap({
       maxZoom: 19,
     }).addTo(map);
 
-    // Handle map clicks - only if not dragging
+    // One reusable tooltip that rides the edge handle during a resize drag.
+    dragTooltipRef.current = L.tooltip({
+      direction: 'top',
+      offset: L.point(0, -10),
+      opacity: 1,
+      className: 'radius-drag-tip',
+      interactive: false,
+    });
+
+    // Map clicks create/move circles — but never while a handle is being dragged.
     map.on('click', (e: L.LeafletMouseEvent) => {
       if (!isDraggingCenterRef.current && !isDraggingEdgeRef.current) {
         onMapClickRef.current(e.latlng.lat, e.latlng.lng);
       }
     });
-
-    // Global mousemove handler for drag operations (desktop)
-    map.on('mousemove', (e: L.LeafletMouseEvent) => {
-      handleMouseMove(e.latlng);
-    });
-
-    // Global mouseup handler to end drag operations (desktop)
-    map.on('mouseup', () => {
-      handleMouseUp();
-    });
-
-    // =========================================
-    // MOBILE TOUCH HANDLING - Pure DOM events
-    // =========================================
-    // Using document-level touch events for smooth, unthrottled handling
-    // Do NOT use Leaflet's touch events - they can be throttled/delayed
-
-    // Helper: Convert touch coordinates to LatLng
-    const touchToLatLng = (touch: Touch): L.LatLng => {
-      const rect = map.getContainer().getBoundingClientRect();
-      const point = L.point(touch.clientX - rect.left, touch.clientY - rect.top);
-      return map.containerPointToLatLng(point);
-    };
-
-    // Helper: Check if touch is on a center marker
-    const getCenterMarkerCircleId = (target: HTMLElement, touch: Touch): string | null => {
-      const centerMarkerIcon = target.closest('.center-marker-icon') as HTMLElement;
-      const centerMarkerInner = target.closest('.center-marker-inner') as HTMLElement;
-
-      if (centerMarkerIcon || centerMarkerInner) {
-        // Try data attribute first
-        const circleId = centerMarkerInner?.getAttribute('data-circle-id') ||
-                        centerMarkerIcon?.getAttribute('data-circle-id');
-        if (circleId && circleLayersRef.current.has(circleId)) {
-          return circleId;
-        }
-
-        // Fallback: find closest by position
-        const touchLatLng = touchToLatLng(touch);
-        let closestId: string | null = null;
-        let closestDist = Infinity;
-        circleLayersRef.current.forEach((layers, id) => {
-          const pos = layers.centerMarker.getLatLng();
-          const dist = touchLatLng.distanceTo(pos);
-          if (dist < closestDist) {
-            closestDist = dist;
-            closestId = id;
-          }
-        });
-        return closestId;
-      }
-      return null;
-    };
-
-    // Helper: Check if touch is on or near an edge marker (within 30px)
-    const getEdgeMarkerCircleId = (target: HTMLElement, touch: Touch): string | null => {
-      const edgeMarkerIcon = target.closest('.edge-marker-icon') as HTMLElement;
-      const edgeMarkerInner = target.closest('.edge-marker-inner') as HTMLElement;
-
-      // Direct hit on edge marker element
-      if (edgeMarkerIcon || edgeMarkerInner) {
-        const circleId = edgeMarkerInner?.getAttribute('data-circle-id') ||
-                        edgeMarkerIcon?.getAttribute('data-circle-id');
-        if (circleId && circleLayersRef.current.has(circleId)) {
-          return circleId;
-        }
-      }
-
-      // Proximity check: find edge marker within 30px of touch point
-      const TOUCH_RADIUS = 30; // pixels
-      const rect = map.getContainer().getBoundingClientRect();
-      const touchX = touch.clientX - rect.left;
-      const touchY = touch.clientY - rect.top;
-
-      let closestId: string | null = null;
-      let closestDist = Infinity;
-
-      circleLayersRef.current.forEach((layers, id) => {
-        const edgeLatLng = layers.edgeMarker.getLatLng();
-        const edgePoint = map.latLngToContainerPoint(edgeLatLng);
-        const dx = edgePoint.x - touchX;
-        const dy = edgePoint.y - touchY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < TOUCH_RADIUS && dist < closestDist) {
-          closestDist = dist;
-          closestId = id;
-        }
-      });
-
-      return closestId;
-    };
-
-    // TOUCHSTART: Start drag operation
-    const handleTouchStart = (e: TouchEvent) => {
-      if (e.touches.length !== 1) return;
-
-      const target = e.target as HTMLElement;
-      const touch = e.touches[0];
-
-      // Check for edge marker first (higher z-index, larger touch area)
-      const edgeCircleId = getEdgeMarkerCircleId(target, touch);
-      if (edgeCircleId) {
-        e.preventDefault();
-        e.stopPropagation();
-        isDraggingEdgeRef.current = edgeCircleId;
-        map.dragging.disable();
-        onCircleSelectRef.current(edgeCircleId);
-        onDragStartRef.current?.();
-        return;
-      }
-
-      // Check for center marker
-      const centerCircleId = getCenterMarkerCircleId(target, touch);
-      if (centerCircleId) {
-        e.preventDefault();
-        e.stopPropagation();
-        isDraggingCenterRef.current = centerCircleId;
-        map.dragging.disable();
-        onCircleSelectRef.current(centerCircleId);
-        onDragStartRef.current?.();
-        return;
-      }
-    };
-
-    // TOUCHMOVE: Handle drag - called on EVERY touch move for smooth updates
-    const handleTouchMove = (e: TouchEvent) => {
-      // Only handle if we're dragging something
-      if (!isDraggingCenterRef.current && !isDraggingEdgeRef.current) return;
-      if (e.touches.length !== 1) return;
-
-      // Prevent scrolling/zooming during drag
-      e.preventDefault();
-
-      const latlng = touchToLatLng(e.touches[0]);
-      handleMouseMove(latlng);
-    };
-
-    // TOUCHEND: End drag operation
-    const handleTouchEnd = (e: TouchEvent) => {
-      if (isDraggingCenterRef.current || isDraggingEdgeRef.current) {
-        e.preventDefault();
-        handleMouseUp();
-      }
-    };
-
-    // Add touch listeners with passive: false to allow preventDefault
-    document.addEventListener('touchstart', handleTouchStart, { passive: false });
-    document.addEventListener('touchmove', handleTouchMove, { passive: false });
-    document.addEventListener('touchend', handleTouchEnd, { passive: false });
-    document.addEventListener('touchcancel', handleTouchEnd, { passive: false });
 
     mapRef.current = map;
     setIsMapReady(true);
@@ -299,117 +172,11 @@ export default function RadiusMap({
     }
 
     return () => {
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-      document.removeEventListener('touchcancel', handleTouchEnd);
       map.remove();
       mapRef.current = null;
+      dragTooltipRef.current = null;
     };
   }, [mapRef, skipAutoGeolocation]);
-
-  // Handle mouse move during drag
-  const handleMouseMove = useCallback((latlng: L.LatLng) => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    // CENTER DRAG: Move the entire circle
-    if (isDraggingCenterRef.current) {
-      const layers = circleLayersRef.current.get(isDraggingCenterRef.current);
-      if (layers) {
-        const { circle, centerMarker, edgeMarker } = layers;
-        const currentRadius = circle.getRadius();
-
-        // Update circle position
-        circle.setLatLng(latlng);
-
-        // Update center marker position
-        centerMarker.setLatLng(latlng);
-
-        // Update edge marker to north point of circle
-        const edgePoint = calculateNorthPoint(latlng.lat, latlng.lng, currentRadius);
-        edgeMarker.setLatLng([edgePoint.lat, edgePoint.lng]);
-
-        // Update state in real-time
-        onCircleUpdateRef.current(isDraggingCenterRef.current, latlng.lat, latlng.lng, currentRadius);
-      }
-    }
-
-    // EDGE DRAG: Resize the circle
-    if (isDraggingEdgeRef.current) {
-      const layers = circleLayersRef.current.get(isDraggingEdgeRef.current);
-      if (layers) {
-        const { circle, edgeMarker } = layers;
-        const center = circle.getLatLng();
-
-        // Calculate new radius from center to mouse position
-        let newRadius = center.distanceTo(latlng);
-
-        // Clamp radius
-        newRadius = Math.max(MIN_RADIUS, Math.min(MAX_RADIUS, newRadius));
-
-        // Update circle radius
-        circle.setRadius(newRadius);
-
-        // Edge marker follows mouse exactly during drag
-        edgeMarker.setLatLng(latlng);
-
-        // Update radius input in real-time with proper formatting
-        const radiusInUnit = fromMeters(newRadius, currentUnitRef.current);
-        const formatted = radiusInUnit >= 10
-          ? Math.round(radiusInUnit)
-          : Math.round(radiusInUnit * 10) / 10;
-        onRadiusChangeRef.current(formatted);
-
-        // Update state
-        onCircleUpdateRef.current(isDraggingEdgeRef.current, center.lat, center.lng, newRadius);
-      }
-    }
-  }, []);
-
-  // Handle mouse up to end drag
-  const handleMouseUp = useCallback(() => {
-    const map = mapRef.current;
-    if (!map) return;
-
-    const wasDragging = isDraggingCenterRef.current || isDraggingEdgeRef.current;
-
-    // End center drag
-    if (isDraggingCenterRef.current) {
-      const layers = circleLayersRef.current.get(isDraggingCenterRef.current);
-      if (layers) {
-        const center = layers.circle.getLatLng();
-        const radius = layers.circle.getRadius();
-        onCircleUpdateRef.current(isDraggingCenterRef.current, center.lat, center.lng, radius);
-      }
-      isDraggingCenterRef.current = null;
-      map.dragging.enable();
-      document.body.style.cursor = '';
-    }
-
-    // End edge drag - snap edge marker to north point
-    if (isDraggingEdgeRef.current) {
-      const layers = circleLayersRef.current.get(isDraggingEdgeRef.current);
-      if (layers) {
-        const center = layers.circle.getLatLng();
-        const radius = layers.circle.getRadius();
-
-        // Snap edge marker to north point
-        const edgePoint = calculateNorthPoint(center.lat, center.lng, radius);
-        layers.edgeMarker.setLatLng([edgePoint.lat, edgePoint.lng]);
-
-        onCircleUpdateRef.current(isDraggingEdgeRef.current, center.lat, center.lng, radius);
-      }
-      isDraggingEdgeRef.current = null;
-      map.dragging.enable();
-      document.body.style.cursor = '';
-    }
-
-    // Notify parent that drag ended
-    if (wasDragging) {
-      onDragEndRef.current?.();
-    }
-  }, []);
 
   // Create popup content for a circle
   const createPopupContent = useCallback((circle: RadiusCircle) => {
@@ -440,6 +207,7 @@ export default function RadiusMap({
         layers.centerMarker.remove();
         layers.edgeMarker.remove();
         circleLayersRef.current.delete(id);
+        edgeBearingsRef.current.delete(id);
       }
     });
 
@@ -449,17 +217,20 @@ export default function RadiusMap({
       const radiusMeters = circleData.radiusMeters > 0 ? circleData.radiusMeters : 16093.44;
 
       if (existing) {
-        // Skip updates if currently being dragged
-        if (isDraggingCenterRef.current !== circleData.id && isDraggingEdgeRef.current !== circleData.id) {
+        const isDraggingThis =
+          isDraggingCenterRef.current === circleData.id || isDraggingEdgeRef.current === circleData.id;
+
+        // Skip repositioning if this circle is mid-drag (its handles drive the map directly)
+        if (!isDraggingThis) {
           existing.circle.setLatLng([circleData.lat, circleData.lng]);
           existing.circle.setRadius(radiusMeters);
           existing.centerMarker.setLatLng([circleData.lat, circleData.lng]);
 
-          const edgePoint = calculateNorthPoint(circleData.lat, circleData.lng, radiusMeters);
-          existing.edgeMarker.setLatLng([edgePoint.lat, edgePoint.lng]);
+          const bearing = edgeBearingsRef.current.get(circleData.id) ?? DEFAULT_EDGE_BEARING;
+          const edge = destinationPoint(circleData.lat, circleData.lng, radiusMeters, bearing);
+          existing.edgeMarker.setLatLng([edge.lat, edge.lng]);
         }
 
-        // Update styles
         existing.circle.setStyle({
           color: circleData.color,
           fillColor: circleData.color,
@@ -468,33 +239,8 @@ export default function RadiusMap({
           fillOpacity: 0.15,
         });
 
-        // Update center marker icon with new color
-        const newCenterIcon = L.divIcon({
-          className: 'center-marker-icon cursor-grab',
-          html: `<div class="center-marker-inner" data-circle-id="${circleData.id}" style="background-color: ${circleData.color}; border: 2px solid white; width: 16px; height: 16px; border-radius: 50%; cursor: grab;"></div>`,
-          iconSize: [44, 44],
-          iconAnchor: [22, 22],
-        });
-        existing.centerMarker.setIcon(newCenterIcon);
-        const centerElement = existing.centerMarker.getElement();
-        if (centerElement) {
-          centerElement.setAttribute('data-circle-id', circleData.id);
-        }
-
-        // Update edge marker icon with new color
-        const newEdgeIcon = L.divIcon({
-          className: 'edge-marker-icon',
-          html: `<div class="edge-marker-inner" data-circle-id="${circleData.id}" style="background-color: white; border: 2px solid ${circleData.color}; width: 16px; height: 16px; border-radius: 50%; cursor: ew-resize;"></div>`,
-          iconSize: [40, 40],
-          iconAnchor: [20, 20],
-        });
-        existing.edgeMarker.setIcon(newEdgeIcon);
-        // Set data attribute for circle ID after icon update
-        const edgeElement = existing.edgeMarker.getElement();
-        if (edgeElement) {
-          edgeElement.setAttribute('data-circle-id', circleData.id);
-        }
-
+        // Recolor the handle dots in place (avoids setIcon, which would re-init Draggable)
+        setHandleColors(existing.centerMarker, existing.edgeMarker, circleData.color);
         existing.circle.setPopupContent(createPopupContent(circleData));
       } else {
         // Create new circle
@@ -508,117 +254,219 @@ export default function RadiusMap({
         }).addTo(map);
 
         circle.bindPopup(createPopupContent(circleData));
-
         circle.on('click', (e: L.LeafletMouseEvent) => {
           L.DomEvent.stopPropagation(e);
           onCircleSelectRef.current(circleData.id);
         });
 
-        // Create center marker using DivIcon for large touch target (like edge marker)
-        const centerIcon = L.divIcon({
-          className: 'center-marker-icon cursor-grab',
-          html: `<div class="center-marker-inner" data-circle-id="${circleData.id}" style="background-color: ${circleData.color}; border: 2px solid white; width: 16px; height: 16px; border-radius: 50%; cursor: grab;"></div>`,
-          iconSize: [44, 44],  // Large touch target (44pt recommended minimum)
-          iconAnchor: [22, 22],
-        });
+        const id = circleData.id;
+
+        // ---- Center handle: 56px invisible hit area, native draggable → moves the circle ----
+        // Center sits ABOVE the edge handle (1000 > 900) so that on a small on-screen circle,
+        // where the two 56px hit areas overlap, a tap on the middle moves the circle (primary
+        // intent) rather than being swallowed by the resize handle. The edge stays grabbable on
+        // its outer side, and on any normally-sized circle the handles don't overlap at all.
         const centerMarker = L.marker([circleData.lat, circleData.lng], {
-          icon: centerIcon,
-          draggable: false,
-          bubblingMouseEvents: false,
+          icon: makeHandleIcon('center', circleData.color),
+          draggable: true,
+          keyboard: false,
+          zIndexOffset: 1000,
         }).addTo(map);
 
-        // Set data attribute when added
-        centerMarker.on('add', () => {
-          const el = centerMarker.getElement();
-          if (el) el.setAttribute('data-circle-id', circleData.id);
-        });
+        // ---- Edge handle: 56px invisible hit area, native draggable → resizes the radius ----
+        const edgeBearing = edgeBearingsRef.current.get(id) ?? DEFAULT_EDGE_BEARING;
+        edgeBearingsRef.current.set(id, edgeBearing);
+        const edgePoint = destinationPoint(circleData.lat, circleData.lng, radiusMeters, edgeBearing);
+        const edgeMarker = L.marker([edgePoint.lat, edgePoint.lng], {
+          icon: makeHandleIcon('edge', circleData.color),
+          draggable: true,
+          keyboard: false,
+          zIndexOffset: 900,
+        }).addTo(map);
 
-        // Center marker: mousedown starts drag (touch handled at document level)
-        centerMarker.on('mousedown', (e: L.LeafletMouseEvent) => {
-          L.DomEvent.stopPropagation(e);
-          isDraggingCenterRef.current = circleData.id;
+        // Center drag → move the whole circle, keeping the edge handle at its stored bearing.
+        centerMarker.on('dragstart', () => {
+          isDraggingCenterRef.current = id;
           map.dragging.disable();
-          document.body.style.cursor = 'grabbing';
-          onCircleSelectRef.current(circleData.id);
+          onCircleSelectRef.current(id);
           onDragStartRef.current?.();
+          vibrate(8);
+          centerMarker.getElement()?.classList.add('dragging');
         });
-
+        centerMarker.on('drag', () => {
+          const layers = circleLayersRef.current.get(id);
+          if (!layers) return;
+          const p = layers.centerMarker.getLatLng();
+          const r = layers.circle.getRadius();
+          layers.circle.setLatLng(p);
+          const bearing = edgeBearingsRef.current.get(id) ?? DEFAULT_EDGE_BEARING;
+          const edge = destinationPoint(p.lat, p.lng, r, bearing);
+          layers.edgeMarker.setLatLng([edge.lat, edge.lng]);
+          onCircleUpdateRef.current(id, p.lat, p.lng, r);
+        });
+        centerMarker.on('dragend', () => {
+          const layers = circleLayersRef.current.get(id);
+          if (layers) {
+            const p = layers.circle.getLatLng();
+            const r = layers.circle.getRadius();
+            onCircleUpdateRef.current(id, p.lat, p.lng, r);
+            layers.centerMarker.getElement()?.classList.remove('dragging');
+          }
+          isDraggingCenterRef.current = null;
+          map.dragging.enable();
+          onDragEndRef.current?.();
+        });
         centerMarker.on('click', (e: L.LeafletMouseEvent) => {
           L.DomEvent.stopPropagation(e);
-          onCircleSelectRef.current(circleData.id);
+          onCircleSelectRef.current(id);
         });
 
-        // Create edge marker at north point - using DivIcon for better touch support
-        const edgePoint = calculateNorthPoint(circleData.lat, circleData.lng, radiusMeters);
-        const edgeIcon = L.divIcon({
-          className: 'edge-marker-icon',
-          html: `<div class="edge-marker-inner" data-circle-id="${circleData.id}" style="background-color: white; border: 2px solid ${circleData.color}; width: 16px; height: 16px; border-radius: 50%; cursor: ew-resize;"></div>`,
-          iconSize: [40, 40],  // Large touch target
-          iconAnchor: [20, 20],
-        });
-        const edgeMarker = L.marker([edgePoint.lat, edgePoint.lng], {
-          icon: edgeIcon,
-          draggable: false,
-          bubblingMouseEvents: false,
-        }).addTo(map);
-
-        // Set data attribute on parent element when available
-        edgeMarker.on('add', () => {
-          const el = edgeMarker.getElement();
-          if (el) el.setAttribute('data-circle-id', circleData.id);
-        });
-
-        // Edge marker: mousedown starts resize (touch handled at document level)
-        edgeMarker.on('mousedown', (e: L.LeafletMouseEvent) => {
-          L.DomEvent.stopPropagation(e);
-          isDraggingEdgeRef.current = circleData.id;
+        // Edge drag → resize. Radius = haversine(center, handle); handle follows the finger.
+        edgeMarker.on('dragstart', () => {
+          isDraggingEdgeRef.current = id;
+          lastSnapRef.current = null;
           map.dragging.disable();
-          document.body.style.cursor = 'ew-resize';
-          onCircleSelectRef.current(circleData.id);
+          onCircleSelectRef.current(id);
           onDragStartRef.current?.();
+          vibrate(8);
+          edgeMarker.getElement()?.classList.add('dragging');
+          const layers = circleLayersRef.current.get(id);
+          const tip = dragTooltipRef.current;
+          if (layers && tip) {
+            tip
+              .setLatLng(layers.edgeMarker.getLatLng())
+              .setContent(edgeTooltipHtml(layers.circle.getRadius(), currentUnitRef.current))
+              .openOn(map);
+          }
+        });
+        edgeMarker.on('drag', () => {
+          const layers = circleLayersRef.current.get(id);
+          if (!layers) return;
+          const center = layers.circle.getLatLng();
+          const handle = layers.edgeMarker.getLatLng();
+          const unit = currentUnitRef.current;
+
+          let r = center.distanceTo(handle);
+          const brg = bearingBetween(center.lat, center.lng, handle.lat, handle.lng);
+          edgeBearingsRef.current.set(id, brg);
+
+          // Gentle snap to a whole number in the active unit
+          const rU = fromMeters(r, unit);
+          const snapTo = Math.round(rU);
+          let repositionHandle = false;
+          if (snapTo >= 1 && Math.abs(rU - snapTo) < SNAP_THRESHOLD) {
+            r = toMeters(snapTo, unit);
+            repositionHandle = true;
+            if (lastSnapRef.current !== snapTo) {
+              vibrate(6);
+              lastSnapRef.current = snapTo;
+            }
+          } else {
+            lastSnapRef.current = null;
+          }
+
+          const clamped = Math.max(MIN_RADIUS, Math.min(MAX_RADIUS, r));
+          if (clamped !== r) repositionHandle = true;
+          layers.circle.setRadius(clamped);
+
+          // On snap/clamp, pull the handle back onto the circle boundary along the drag bearing.
+          if (repositionHandle) {
+            const edge = destinationPoint(center.lat, center.lng, clamped, brg);
+            layers.edgeMarker.setLatLng([edge.lat, edge.lng]);
+          }
+
+          const radiusInUnit = fromMeters(clamped, unit);
+          const formatted = radiusInUnit >= 10 ? Math.round(radiusInUnit) : Math.round(radiusInUnit * 10) / 10;
+          onRadiusChangeRef.current(formatted);
+          onCircleUpdateRef.current(id, center.lat, center.lng, clamped);
+
+          const tip = dragTooltipRef.current;
+          if (tip) {
+            tip.setLatLng(layers.edgeMarker.getLatLng());
+            tip.setContent(edgeTooltipHtml(clamped, unit));
+          }
+        });
+        edgeMarker.on('dragend', () => {
+          const layers = circleLayersRef.current.get(id);
+          if (layers) {
+            const center = layers.circle.getLatLng();
+            const r = layers.circle.getRadius();
+            onCircleUpdateRef.current(id, center.lat, center.lng, r);
+            layers.edgeMarker.getElement()?.classList.remove('dragging');
+          }
+          const tip = dragTooltipRef.current;
+          if (tip) map.closeTooltip(tip);
+          isDraggingEdgeRef.current = null;
+          lastSnapRef.current = null;
+          map.dragging.enable();
+          onDragEndRef.current?.();
+        });
+        edgeMarker.on('click', (e: L.LeafletMouseEvent) => {
+          L.DomEvent.stopPropagation(e);
+          onCircleSelectRef.current(id);
         });
 
-        circleLayersRef.current.set(circleData.id, {
-          circle,
-          centerMarker,
-          edgeMarker,
-        });
+        setHandleColors(centerMarker, edgeMarker, circleData.color);
+        circleLayersRef.current.set(id, { circle, centerMarker, edgeMarker });
       }
     });
   }, [circles, selectedCircleId, isMapReady, createPopupContent, mapRef]);
 
-  // Add CSS for custom cursors and touch support
+  // Injected styles for the circle handles + the resize drag tooltip
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
-      .cursor-grab { cursor: grab !important; touch-action: none; }
-      .cursor-grab:active { cursor: grabbing !important; }
-      .cursor-ew-resize { cursor: ew-resize !important; touch-action: none; }
-      .leaflet-interactive.cursor-grab,
-      .leaflet-interactive.cursor-ew-resize { touch-action: none; }
-      .center-marker-icon {
+      /* 56px invisible hit area (WCAG/Apple >= 44px); touch-action:none so the browser
+         never claims the gesture as a scroll before Leaflet's Draggable can. */
+      .radius-handle {
         background: transparent !important;
         border: none !important;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
         touch-action: none;
+        display: grid;
+        place-items: center;
       }
-      .center-marker-inner {
-        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-        touch-action: none;
+      .radius-handle-dot {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.3);
       }
-      .edge-marker-icon {
-        background: transparent !important;
-        border: none !important;
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        touch-action: none;
+      .radius-handle.center { cursor: grab; }
+      .radius-handle.center:active { cursor: grabbing; }
+      .radius-handle.center .radius-handle-dot { background: #2563eb; border: 3.5px solid #fff; }
+      .radius-handle.edge { cursor: ew-resize; }
+      .radius-handle.edge .radius-handle-dot { background: #fff; border: 3.5px solid #2563eb; }
+      /* Touch-only grab affordance: the dot swells under the finger. Kept off desktop
+         (pointer: fine) so the desktop tool stays visually unchanged, and off for
+         reduced-motion users. */
+      @media (pointer: coarse) {
+        .radius-handle-dot { transition: transform 0.12s ease; }
+        .radius-handle.dragging .radius-handle-dot { transform: scale(1.35); }
       }
-      .edge-marker-inner {
-        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-        touch-action: none;
+      @media (prefers-reduced-motion: reduce) {
+        .radius-handle-dot { transition: none; }
+        .radius-handle.dragging .radius-handle-dot { transform: none; }
+      }
+
+      .leaflet-tooltip.radius-drag-tip {
+        background: #0f172a;
+        color: #fff;
+        border: 0;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.35);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        padding: 7px 12px;
+        border-radius: 12px;
+        white-space: nowrap;
+      }
+      .leaflet-tooltip.radius-drag-tip b { font-weight: 800; }
+      .leaflet-tooltip-top.radius-drag-tip::before { border-top-color: #0f172a; }
+
+      /* Keep the scale bar + attribution above the mobile bottom sheet (they used to
+         render through it). The sheet publishes its visible height as --mwr-chrome-offset. */
+      @media (max-width: 1023px) {
+        #radius-tool .leaflet-bottom { bottom: var(--mwr-chrome-offset, 0px); }
       }
     `;
     document.head.appendChild(style);
@@ -634,19 +482,63 @@ export default function RadiusMap({
   );
 }
 
-// Calculate north point of circle (for edge marker)
-function calculateNorthPoint(lat: number, lng: number, radiusMeters: number): { lat: number; lng: number } {
-  const earthRadius = 6371000; // meters
-  const angularDistance = radiusMeters / earthRadius;
-  const lat1 = (lat * Math.PI) / 180;
+// A circle handle: a 20px visual dot centered inside a 56px invisible, draggable hit area.
+function makeHandleIcon(kind: 'center' | 'edge', color: string): L.DivIcon {
+  const dotStyle = kind === 'center' ? `background:${color}` : `border-color:${color}`;
+  return L.divIcon({
+    className: `radius-handle ${kind}`,
+    html: `<div class="radius-handle-dot" style="${dotStyle}"></div>`,
+    iconSize: [56, 56],
+    iconAnchor: [28, 28],
+  });
+}
 
-  // North direction: bearing = 0
-  const lat2 = Math.asin(
-    Math.sin(lat1) * Math.cos(angularDistance) + Math.cos(lat1) * Math.sin(angularDistance)
+// Recolor handle dots in the DOM without swapping the icon (which would tear down Draggable).
+function setHandleColors(centerMarker: L.Marker, edgeMarker: L.Marker, color: string) {
+  const cDot = centerMarker.getElement()?.querySelector('.radius-handle-dot') as HTMLElement | null;
+  if (cDot) cDot.style.background = color;
+  const eDot = edgeMarker.getElement()?.querySelector('.radius-handle-dot') as HTMLElement | null;
+  if (eDot) eDot.style.borderColor = color;
+}
+
+// Tooltip content shown while resizing: both units, active unit bold. e.g. "12.4 mi · 20.0 km"
+function edgeTooltipHtml(radiusMeters: number, unit: DistanceUnit): string {
+  const mi = fromMeters(radiusMeters, 'miles');
+  const km = fromMeters(radiusMeters, 'kilometers');
+  const f = (v: number) => (v >= 100 ? Math.round(v).toLocaleString() : v.toFixed(1));
+  return unit === 'kilometers'
+    ? `<b>${f(km)} km</b> · ${f(mi)} mi`
+    : `<b>${f(mi)} mi</b> · ${f(km)} km`;
+}
+
+// Initial bearing from point 1 to point 2, radians, 0 = north, clockwise positive.
+function bearingBetween(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const phi1 = (lat1 * Math.PI) / 180;
+  const phi2 = (lat2 * Math.PI) / 180;
+  const dLambda = ((lng2 - lng1) * Math.PI) / 180;
+  const y = Math.sin(dLambda) * Math.cos(phi2);
+  const x = Math.cos(phi1) * Math.sin(phi2) - Math.sin(phi1) * Math.cos(phi2) * Math.cos(dLambda);
+  return Math.atan2(y, x);
+}
+
+// Point `distMeters` from (lat, lng) along `bearing` (radians, 0 = north). Inverse of bearingBetween.
+function destinationPoint(
+  lat: number,
+  lng: number,
+  distMeters: number,
+  bearing: number
+): { lat: number; lng: number } {
+  const delta = distMeters / EARTH_RADIUS_M;
+  const phi1 = (lat * Math.PI) / 180;
+  const lambda1 = (lng * Math.PI) / 180;
+  const phi2 = Math.asin(
+    Math.sin(phi1) * Math.cos(delta) + Math.cos(phi1) * Math.sin(delta) * Math.cos(bearing)
   );
-
-  return {
-    lat: (lat2 * 180) / Math.PI,
-    lng: lng, // Longitude stays the same for north direction
-  };
+  const lambda2 =
+    lambda1 +
+    Math.atan2(
+      Math.sin(bearing) * Math.sin(delta) * Math.cos(phi1),
+      Math.cos(delta) - Math.sin(phi1) * Math.sin(phi2)
+    );
+  return { lat: (phi2 * 180) / Math.PI, lng: (lambda2 * 180) / Math.PI };
 }
