@@ -78,16 +78,20 @@ export default function RootLayout({
             });
           `}
         </Script>
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=G-H8ZRCLN1TK"
-          strategy="afterInteractive"
-        />
+        {/* GA loads + configures ONLY on the production host, so localhost and Vercel
+            previews send zero analytics traffic. */}
         <Script id="google-analytics" strategy="afterInteractive">
           {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-H8ZRCLN1TK');
+            if (window.location.hostname === 'mapwithradius.com') {
+              var gaScript = document.createElement('script');
+              gaScript.async = true;
+              gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-H8ZRCLN1TK';
+              document.head.appendChild(gaScript);
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-H8ZRCLN1TK');
+            }
           `}
         </Script>
         {/* Raptive Head Tag (manual install). Runs once; Raptive's loader handles
@@ -100,6 +104,7 @@ export default function RootLayout({
           data-cfasync="false"
           dangerouslySetInnerHTML={{
             __html: `(function(w, d) {
+  if (w.location.hostname !== 'mapwithradius.com') return;
   w.adthrive = w.adthrive || {};
   w.adthrive.cmd = w.adthrive.cmd || [];
   w.adthrive.plugin = 'adthrive-ads-manual';
