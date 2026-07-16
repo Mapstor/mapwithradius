@@ -68,6 +68,7 @@ export default function AcreOverlayMap({
   const onDragEndRef = useRef(onDragEnd);
   const isDraggingRef = useRef(false);
   const skipNextFitRef = useRef(false);
+  const skipGeoRef = useRef(skipAutoGeolocation);
 
   useEffect(() => { areaRef.current = areaSqM; }, [areaSqM]);
   useEffect(() => { shapeRef.current = shape; }, [shape]);
@@ -76,6 +77,7 @@ export default function AcreOverlayMap({
   useEffect(() => { onCenterChangeRef.current = onCenterChange; }, [onCenterChange]);
   useEffect(() => { onDragStartRef.current = onDragStart; }, [onDragStart]);
   useEffect(() => { onDragEndRef.current = onDragEnd; }, [onDragEnd]);
+  useEffect(() => { skipGeoRef.current = skipAutoGeolocation; }, [skipAutoGeolocation]);
 
   // Write the *rendered* geodesic area onto the container so the UI (and the
   // Playwright scale test) can verify what was actually drawn.
@@ -198,11 +200,14 @@ export default function AcreOverlayMap({
     map.fitBounds(layer.getBounds().pad(0.6), { padding: [40, 40], animate: true, duration: 0.3, maxZoom: 18 });
   };
 
-  // ---- Init map once ----
+  // ---- Init the map EXACTLY once. Empty deps so no prop change (e.g. skipAutoGeolocation
+  //      flipping to true when a shared URL loads) can tear down and recreate the map; later
+  //      container/viewport size changes only call invalidateSize. ----
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
+    const container = containerRef.current;
 
-    const map = L.map(containerRef.current, {
+    const map = L.map(container, {
       center: [39.8283, -98.5795],
       zoom: 4,
       zoomControl: false,
@@ -221,7 +226,7 @@ export default function AcreOverlayMap({
     mapRef.current = map;
     setIsMapReady(true);
 
-    if (navigator.geolocation && !skipAutoGeolocation) {
+    if (navigator.geolocation && !skipGeoRef.current) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           if (!mapRef.current) return;
@@ -232,14 +237,34 @@ export default function AcreOverlayMap({
       );
     }
 
+    // Fix the first-paint sizing race (grey/blank map) and keep the map sized on any later
+    // container resize (mobile URL bar, sheet detents, rotation) WITHOUT recreating it.
+    let sizeRaf: number | null = null;
+    const invalidate = () => {
+      sizeRaf = null;
+      map.invalidateSize();
+    };
+    sizeRaf = requestAnimationFrame(invalidate);
+    const ro =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => {
+            if (sizeRaf != null) cancelAnimationFrame(sizeRaf);
+            sizeRaf = requestAnimationFrame(invalidate);
+          })
+        : null;
+    ro?.observe(container);
+
     return () => {
+      if (sizeRaf != null) cancelAnimationFrame(sizeRaf);
+      ro?.disconnect();
       map.remove();
       mapRef.current = null;
       shapeLayerRef.current = null;
       shapeKindRef.current = null;
       centerMarkerRef.current = null;
     };
-  }, [mapRef, skipAutoGeolocation]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ---- Draw / update the overlay when inputs change ----
   useEffect(() => {
