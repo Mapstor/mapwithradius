@@ -59,6 +59,22 @@ const FAQS: Array<{ q: string; a: string }> = [
     q: 'How is this different from the acre calculator?',
     a: 'The acre calculator drops a fixed, true-scale acre or hectare overlay that you place and drag to picture a size. This area calculator lets you trace the real outline of a field, roof, or lot and measures whatever irregular shape you draw.',
   },
+  {
+    q: 'How do I measure square footage from a map?',
+    a: 'Trace the outline of the area and set the unit to square feet (ft²). The readout updates as you drop each point, and you can switch to m², acres, or hectares afterward without redrawing. Zoom in before placing points for a tighter trace, since each point lands exactly where you tap.',
+  },
+  {
+    q: 'Can I measure a roof for solar panels?',
+    a: 'Yes. Trace each roof plane from satellite view and read the total in ft² or m². A standard residential panel is roughly 1.7 m² (about 18 ft²), so a rough panel count is your usable roof area divided by 1.7 m² — but derate for shading, vents, and fire setbacks, and treat the drawn area as the maximum rather than the installed size.',
+  },
+  {
+    q: 'Why doesn’t my measurement match the county or GIS parcel figure?',
+    a: 'Two reasons. You trace what is visible from above (fences, hedges, pavement), which may not match the surveyed legal boundary; and this tool uses a spherical Earth model, while official GIS uses an ellipsoid and a local projection — a sub-percent difference on a normal lot. For anything legal, rely on the recorded survey, not a map trace.',
+  },
+  {
+    q: 'Can I measure area on Google Maps instead?',
+    a: 'On the Google Maps desktop website you can: use Measure distance and click back on your first point to close the shape. The mobile app does not do closed-shape area (as of 2026), and the measure tool cannot save the outline, keep several labelled areas, switch between all six units, or export KML/PNG. This tool adds those and works on phones too.',
+  },
 ];
 
 export default function AreaCalculatorPage() {
@@ -170,6 +186,80 @@ export default function AreaCalculatorPage() {
         </div>
       </section>
 
+      {/* What can you measure */}
+      <section className="section-white py-12 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-6">What can you measure?</h2>
+          <p className="text-slate-700 mb-8">
+            Anything you can trace from above. Each job below reads a specific number off the tool — square
+            feet, acres, or the perimeter line — so pick the readout that answers your question.
+          </p>
+          <div className="space-y-6">
+            <div className="border-l-4 border-green-500 pl-4">
+              <h3 className="font-semibold text-slate-900 mb-1">Roof area for solar</h3>
+              <p className="text-slate-600 text-sm">
+                Trace each roof plane from satellite view and read the total in ft² or m². A standard residential
+                panel is roughly 1.7 m² (about 18 ft²), so a rough panel count is usable roof area divided by
+                1.7 m². Derate for shading, vents, and fire setbacks, and treat the drawn area as the ceiling,
+                not the installed size.
+              </p>
+            </div>
+            <div className="border-l-4 border-green-500 pl-4">
+              <h3 className="font-semibold text-slate-900 mb-1">Lawn: sod, seed, and fertilizer</h3>
+              <p className="text-slate-600 text-sm">
+                Trace the grass and read ft² or m². Sod, seed, and fertilizer are sold by a coverage rate printed
+                on the bag or pallet, so multiply your measured area by that rate instead of pacing the yard off
+                by foot. Draw beds and the driveway as separate areas if you want to subtract them.
+              </p>
+            </div>
+            <div className="border-l-4 border-green-500 pl-4">
+              <h3 className="font-semibold text-slate-900 mb-1">Lot and parcel size</h3>
+              <p className="text-slate-600 text-sm">
+                Trace the property boundary and read it in acres, ft², or hectares. It is a fast sanity check
+                against a listing&apos;s stated lot size, or a way to compare two lots before you pull the plat.
+                The trace follows what you can see — fences, hedges, pavement — which may not match the legal
+                parcel (see below).
+              </p>
+            </div>
+            <div className="border-l-4 border-emerald-600 pl-4">
+              <h3 className="font-semibold text-slate-900 mb-1">Fence line — use the perimeter readout</h3>
+              <p className="text-slate-600 text-sm">
+                For fencing you do not want the area, you want the <strong>perimeter</strong>. Trace the run and
+                read the perimeter figure the tool shows next to the area: that is your linear feet or metres of
+                fence, minus gate openings. The same number gives a retaining-wall run, bed edging, or the lap
+                distance around a track.
+              </p>
+            </div>
+            <div className="border-l-4 border-green-500 pl-4">
+              <h3 className="font-semibold text-slate-900 mb-1">Garden, field, or paddock</h3>
+              <p className="text-slate-600 text-sm">
+                Trace a raised bed, a paddock, or an irregular field and read m²/ft² for planting and compost
+                math, or acres/hectares for grazing and yield. Drop extra points along the curves — the geodesic
+                area handles any shape, not just rectangles.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Square footage */}
+      <section className="section-gray py-12 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-6">Measure square footage from a map</h2>
+          <p className="text-slate-700 mb-4">
+            To get square footage, trace the outline and set the unit to <strong>ft²</strong>. The readout
+            updates as you drop each point, and switching to m², acres, or hectares afterward changes only the
+            number, never the shape you drew. It is the fastest way to size a roof, patio, parking lot, or
+            building footprint from above without a tape measure.
+          </p>
+          <p className="text-slate-600 text-sm">
+            Two tips for a tight number: zoom in before placing points, since each point lands exactly where you
+            tap; and remember satellite view shows the building footprint, not interior rooms — for indoor floor
+            area you would trace the outer walls, then adjust for wall thickness.
+          </p>
+        </div>
+      </section>
+
       {/* Units reference */}
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -207,6 +297,64 @@ export default function AreaCalculatorPage() {
               beyond what a quick map measurement needs.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* Why measurements differ from official records */}
+      <section className="section-white py-12 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-6">Why your measurement may differ from official records</h2>
+          <p className="text-slate-700 mb-4">
+            A map trace is an estimate, not a survey. Two things make it read differently from a county
+            assessor, deed, or land-registry figure:
+          </p>
+          <div className="space-y-4">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h3 className="font-semibold text-slate-900 mb-1">Drawn outline vs. legal parcel</h3>
+              <p className="text-slate-600 text-sm">
+                You trace what is visible from above — fences, hedges, pavement — which often does not match the
+                surveyed legal boundary. Fences get built off the line, easements and setbacks are invisible from
+                the sky, and old boundaries drift. The recorded parcel comes from a licensed survey and the
+                official plat; treat a trace as a picture of it, not a replacement.
+              </p>
+            </div>
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <h3 className="font-semibold text-slate-900 mb-1">Spherical model and imagery offset</h3>
+              <p className="text-slate-600 text-sm">
+                This tool models Earth as a sphere; professional GIS typically uses an ellipsoid (WGS 84) and a
+                local projected coordinate system, a difference well under a percent on a normal lot. Satellite
+                imagery can also sit slightly off true ground position, and your point placement adds a little
+                more. For anything legal — a sale, permit, or dispute — use the recorded survey.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Can I calculate area on Google Maps? */}
+      <section className="section-gray py-12 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-6">Can I calculate area on Google Maps?</h2>
+          <p className="text-slate-700 mb-4">
+            Yes — on the Google Maps website. Right-click a spot, choose <strong>Measure distance</strong>, click
+            around the shape, and click your first point again to close it; the panel at the bottom shows the
+            distance and the enclosed area. For a one-off check, that is often all you need.
+          </p>
+          <p className="text-slate-700 mb-4">
+            Two limits are worth knowing. The Google Maps <strong>mobile app does not</strong> offer closed-shape
+            area (as of 2026) — you need a desktop browser, or Google Earth, which shows area and perimeter in its
+            side panel. And the measure tool is built for a quick look, not for keeping work: there is no way to
+            save the outline, hold several labelled areas with a running total, switch the same shape between
+            acres, hectares, ft², m², sq mi, and km², or export it as a KML or PNG file.
+          </p>
+          <p className="text-slate-700">
+            That is the gap this tool fills. It runs on your phone as well as desktop, keeps every area you draw
+            with its own colour and a running total, flips between all six units on tap, and exports KML (for
+            Google Earth, QGIS, or a CRM) or a PNG snapshot. Use Google Maps for a five-second check; use this
+            when the measurement has to travel. See Google&apos;s{' '}
+            <a href="https://support.google.com/maps/answer/1628031" target="_blank" rel="noopener noreferrer" className="content-link">Measure distance</a>{' '}
+            help page for their current steps.
+          </p>
         </div>
       </section>
 

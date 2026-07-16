@@ -129,6 +129,13 @@ const terms: Term[] = [
       'Converting a human-readable address ("221B Baker Street, London") into latitude/longitude coordinates. The reverse — coordinates to address — is reverse geocoding. Geocoding is harder than it looks: "123 Main St" is ambiguous without a city, zip codes can be shared across multiple towns, and address formats vary wildly by country. Modern geocoders (Nominatim, Google, Mapbox) use fuzzy matching to return the most likely candidate.',
   },
   {
+    term: 'Geodesic',
+    anchor: 'geodesic',
+    letter: 'G',
+    definition:
+      'Following the shortest path along a curved surface. A geodesic area or distance is measured on the Earth as a sphere (or ellipsoid) rather than on a flat map, so it stays correct as a shape grows or moves toward the poles — where treating latitude/longitude as flat x/y coordinates would overstate the area. The Area Calculator on this site computes geodesic area (spherical model) and a geodesic perimeter from great-circle edges; survey-grade work uses an ellipsoidal model such as WGS 84 for the last fraction of a percent. Related: great-circle distance and the Haversine formula.',
+  },
+  {
     term: 'GeoJSON',
     anchor: 'geojson',
     letter: 'G',
@@ -246,6 +253,13 @@ const terms: Term[] = [
     letter: 'O',
     definition:
       'Open Source Routing Machine — a fast routing engine optimized for OpenStreetMap road data. Used to compute driving, walking, and cycling routes and isochrones. OSRM is the engine of choice in many city-comparison studies because it\'s fast, deterministic, and reproducible. It powers many free routing services and is also self-hostable for custom workflows.',
+  },
+  {
+    term: 'Perimeter',
+    anchor: 'perimeter',
+    letter: 'P',
+    definition:
+      'The total length of the boundary around a shape — the sum of all its sides. For a drawn polygon it is the distance you would walk tracing the outline back to the start; for a circle it is the circumference (2πr). The Area Calculator on this site reports perimeter alongside area, computed as the sum of great-circle lengths between consecutive points, which makes it a quick way to read a fence line, property-boundary length, or running-track distance straight off the map.',
   },
   {
     term: 'POI (Point of Interest)',

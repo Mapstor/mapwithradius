@@ -54,6 +54,11 @@ const useCases = [
     title: 'Sales Territory Mapping',
     audience: 'Sales ops, regional managers, BD teams',
   },
+  {
+    id: 'land-area',
+    title: 'Land & Area Measurement',
+    audience: 'Landowners, farmers, roofers, landscapers',
+  },
 ];
 
 const FAQS = [
@@ -534,6 +539,42 @@ export default function UseCasesPage() {
                 Toronto radius map
               </Link>
               {' '}— shows why a circular radius distorts the linear east-west GTA territory.
+            </p>
+          </section>
+
+          {/* Land & Area Measurement */}
+          <section id="land-area" className="scroll-mt-24">
+            <p className="text-sm font-semibold text-accent uppercase tracking-wide mb-2">Land &amp; Area Measurement</p>
+            <h2 className="text-3xl font-bold text-slate-900 mb-4">Measure land, roofs, and lots straight off the map</h2>
+            <p className="text-slate-700 leading-relaxed mb-4">
+              Not every map job is a radius. When the question is &ldquo;how big is this?&rdquo; rather than
+              &ldquo;what is within range?&rdquo;, you trace the actual outline instead of drawing a circle. The{' '}
+              <Link href="/area-calculator" className="content-link">Area Calculator</Link> reports the enclosed
+              area and the perimeter of any shape you draw, in acres, sq ft, m², hectares, sq mi, or km².
+            </p>
+            <ul className="list-disc list-outside pl-6 space-y-2 text-slate-700 mb-4">
+              <li>
+                <strong>Lot and parcel size.</strong> Trace a boundary to sanity-check a listing&apos;s stated
+                acreage or compare two lots before ordering a survey. It estimates the visible outline, not the
+                legal parcel.
+              </li>
+              <li>
+                <strong>Roof and hardscape area.</strong> Size a roof for solar or a driveway for resurfacing in
+                ft² or m² without climbing up with a tape.
+              </li>
+              <li>
+                <strong>Fence and boundary length.</strong> Read the <strong>perimeter</strong>, not the area, to
+                get linear feet of fencing or edging.
+              </li>
+              <li>
+                <strong>Fields and lawns.</strong> Measure a paddock or lawn, then multiply by the coverage rate
+                on your seed, sod, or fertilizer.
+              </li>
+            </ul>
+            <p className="text-slate-700 leading-relaxed">
+              For a fixed reference size rather than a traced shape, the{' '}
+              <Link href="/acre-calculator" className="content-link">Acre Calculator</Link> drops a true-scale
+              acre or hectare overlay you can slide over any location.
             </p>
           </section>
         </div>
