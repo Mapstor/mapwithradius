@@ -14,6 +14,7 @@ const routes: Array<{
   { path: '/zip-code-radius',                changeFrequency: 'monthly', priority: 0.9 },
   { path: '/distance-calculator',            changeFrequency: 'monthly', priority: 0.9 },
   { path: '/acre-calculator',                changeFrequency: 'monthly', priority: 0.9 },
+  { path: '/area-calculator',                changeFrequency: 'monthly', priority: 0.9 },
   { path: '/walking-radius-map',             changeFrequency: 'monthly', priority: 0.9 },
   { path: '/geofence-map',                   changeFrequency: 'monthly', priority: 0.8 },
   { path: '/radius-on-google-maps',          changeFrequency: 'monthly', priority: 0.8 },

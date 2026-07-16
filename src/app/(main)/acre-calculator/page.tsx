@@ -288,6 +288,7 @@ export default function AcreCalculatorPage() {
           <h2 className="section-heading mb-8">More Map Tools</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
+              { href: '/area-calculator', title: 'Area Calculator', desc: 'Draw a shape and measure its area' },
               { href: '/', title: 'Radius Map', desc: 'Draw circles on any map by distance' },
               { href: '/distance-calculator', title: 'Distance Calculator', desc: 'Measure between two points' },
               { href: '/zip-code-radius', title: 'Zip Code Radius', desc: 'Find all zip codes within a radius' },
@@ -316,7 +317,9 @@ export default function AcreCalculatorPage() {
             <span className="text-slate-300">·</span>
             <Link href="/glossary#acre" className="content-link">What is an acre?</Link>
             <span className="text-slate-300">·</span>
-            <Link href="/use-cases" className="content-link">Use cases &rarr;</Link>
+            <Link href="/use-cases" className="content-link">Use cases</Link>
+            <span className="text-slate-300">·</span>
+            <Link href="/area-calculator" className="content-link">Measure any area &rarr;</Link>
           </div>
         </div>
       </section>

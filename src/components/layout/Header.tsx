@@ -76,6 +76,16 @@ const toolsLinks = [
       </svg>
     )
   },
+  {
+    href: '/area-calculator',
+    label: 'Area Calculator',
+    description: 'Draw & measure any area',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3l8 6-3 11H7L4 9z" />
+      </svg>
+    )
+  },
 ];
 
 const resourcesLinks = [

@@ -138,3 +138,77 @@ export function downloadKML(circles: Circle[]): void {
 
   URL.revokeObjectURL(url);
 }
+
+// ---- Freeform polygons (Area Calculator) — reuses hexToKmlColor + the blob download ----
+
+export interface PolygonExport {
+  id: string;
+  color: string;
+  vertices: Array<{ lat: number; lng: number }>;
+}
+
+/**
+ * Generate KML content for a set of measured polygons.
+ */
+export function generatePolygonKML(polygons: PolygonExport[]): string {
+  const placemarks = polygons
+    .filter((p) => p.vertices.length >= 3)
+    .map((poly, index) => {
+      // Close the ring explicitly for a valid LinearRing.
+      const coordinates = [...poly.vertices, poly.vertices[0]]
+        .map((v) => `${v.lng},${v.lat},0`)
+        .join(' ');
+      const kmlFillColor = hexToKmlColor(poly.color, 0.2);
+      const kmlStrokeColor = hexToKmlColor(poly.color, 0.9);
+
+      return `
+    <Placemark>
+      <name>Area ${index + 1}</name>
+      <Style>
+        <LineStyle>
+          <color>${kmlStrokeColor}</color>
+          <width>2</width>
+        </LineStyle>
+        <PolyStyle>
+          <color>${kmlFillColor}</color>
+        </PolyStyle>
+      </Style>
+      <Polygon>
+        <outerBoundaryIs>
+          <LinearRing>
+            <coordinates>${coordinates}</coordinates>
+          </LinearRing>
+        </outerBoundaryIs>
+      </Polygon>
+    </Placemark>`;
+    })
+    .join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Map With Radius — Area Export</name>
+    <description>Measured areas exported from mapwithradius.com</description>
+    ${placemarks}
+  </Document>
+</kml>`;
+}
+
+/**
+ * Download a KML file of measured polygons.
+ */
+export function downloadPolygonKML(polygons: PolygonExport[], filename = 'area-map.kml'): void {
+  const blob = new Blob([generatePolygonKML(polygons)], {
+    type: 'application/vnd.google-earth.kml+xml',
+  });
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  URL.revokeObjectURL(url);
+}
