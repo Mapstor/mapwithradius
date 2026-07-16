@@ -306,3 +306,172 @@
     display: none !important;
   }
 }
+
+/* ===== Phase 2: mobile bottom sheet + empty-state invitation ===== */
+
+/* Sheet transform transition (compositor-friendly); disabled while dragging */
+.mwr-sheet {
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0.24, 1);
+  will-change: transform;
+}
+.mwr-sheet.mwr-sheet-dragging {
+  transition: none;
+}
+
+/* Log-scale radius slider */
+.mwr-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 44px;
+  background: transparent;
+}
+.mwr-slider::-webkit-slider-runnable-track {
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #2563eb var(--fill, 30%), #e2e8f0 var(--fill, 30%));
+}
+.mwr-slider::-moz-range-track {
+  height: 8px;
+  border-radius: 4px;
+  background: #e2e8f0;
+}
+.mwr-slider::-moz-range-progress {
+  height: 8px;
+  border-radius: 4px;
+  background: #2563eb;
+}
+.mwr-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #2563eb;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+  margin-top: -11px;
+}
+.mwr-slider::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid #2563eb;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+}
+
+/* Toast fade-in */
+.mwr-toast {
+  animation: mwrToastIn 0.25s ease;
+}
+@keyframes mwrToastIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Empty-state invitation: radar pulse + floating label */
+.mwr-invite-rings {
+  position: relative;
+  width: 130px;
+  height: 130px;
+  margin: 0 auto;
+}
+.mwr-invite-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2.5px solid #2563eb;
+  opacity: 0;
+  animation: mwrPulse 2.4s ease-out infinite;
+}
+.mwr-invite-ring:nth-child(2) {
+  animation-delay: 0.8s;
+}
+.mwr-invite-ring:nth-child(3) {
+  animation-delay: 1.6s;
+}
+.mwr-invite-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: #2563eb;
+  box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.22);
+}
+@keyframes mwrPulse {
+  0% {
+    transform: scale(0.12);
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+.mwr-invite-label {
+  margin-top: 12px;
+  display: inline-block;
+  background: #0f172a;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 11px 17px;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.3);
+  animation: mwrLabelFloat 2.4s ease-in-out infinite;
+}
+@keyframes mwrLabelFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Desktop search-input glow until first interaction */
+.mwr-search-glow {
+  animation: mwrSearchGlow 2s ease-in-out infinite;
+}
+@keyframes mwrSearchGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 99, 235, 0);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.18);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mwr-sheet {
+    transition: none;
+  }
+  .mwr-invite-ring {
+    animation: none;
+    opacity: 0.35;
+    transform: scale(0.55);
+  }
+  .mwr-invite-label {
+    animation: none;
+  }
+  .mwr-search-glow {
+    animation: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  }
+  .mwr-toast {
+    animation: none;
+  }
+}

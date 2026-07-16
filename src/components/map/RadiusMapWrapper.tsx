@@ -36,10 +36,37 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isAddingCircle, setIsAddingCircle] = useState(true); // Start in "add mode"
   const [hasUrlParams, setHasUrlParams] = useState(false);
-  const [tooltipDismissed, setTooltipDismissed] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
-  const [isMobileSheetExpanded, setIsMobileSheetExpanded] = useState(false);
+  // Phase 2 UI state
+  const [hasInteracted, setHasInteracted] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+  const [toolInView, setToolInView] = useState(true);
+  const [toast, setToast] = useState<{ msg: string; id: number } | null>(null);
+  const [collapseSignal, setCollapseSignal] = useState(0); // ++ on map tap → sheet drops to peek
   const mapRef = useRef<L.Map | null>(null);
+  const toolRef = useRef<HTMLDivElement>(null);
+  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const toastId = useRef(0);
+
+  const markInteracted = useCallback(() => setHasInteracted(true), []);
+
+  const showToast = useCallback((msg: string) => {
+    toastId.current += 1;
+    setToast({ msg, id: toastId.current });
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setToast(null), 2600);
+  }, []);
+
+  useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
+
+  // Hide the mobile sheet + invitation once the tool scrolls out of view.
+  useEffect(() => {
+    const el = toolRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return;
+    const obs = new IntersectionObserver(([entry]) => setToolInView(entry.isIntersecting), { threshold: 0 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
 
   // Parse URL params on mount
   useEffect(() => {
@@ -60,6 +87,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
       }));
       setCircles(newCircles);
       setIsAddingCircle(false);
+      markInteracted(); // a shared link already has a circle → stop the desktop search glow
 
       // Update UI to match first circle
       if (params.circles[0]) {
@@ -75,9 +103,6 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
           const bounds = new (window as unknown as { L: typeof L }).L.LatLngBounds(
             newCircles.map((c) => [c.lat, c.lng] as [number, number])
           );
-          // Extend bounds by the largest radius
-          const maxRadius = Math.max(...newCircles.map((c) => c.radiusMeters));
-          const paddingDegrees = maxRadius / 111000; // Rough conversion
           bounds.pad(0.2);
           mapRef.current.fitBounds(bounds);
         }
@@ -103,6 +128,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
       setCircles([newCircle]);
       setSelectedCircleId(newCircle.id);
       setIsAddingCircle(false);
+      markInteracted(); // prefilled center already has a circle → stop the desktop search glow
       setTimeout(() => fitToCircle(initialCenter.lat, initialCenter.lng, radiusMeters), 500);
     }
   }, []);
@@ -115,17 +141,14 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
     const map = mapRef.current;
     const center = L.latLng(lat, lng);
 
-    // Always zoom to show the circle with good context
-    // For a 10-mile radius, we want ~40 miles total view, so use ~4x the radius
-    // This ensures the circle is nicely visible with surrounding context
-    const viewMultiplier = 4; // Shows circle with ~2x radius padding on each side
+    const viewMultiplier = 4;
     const paddedBounds = center.toBounds(radiusMeters * viewMultiplier);
 
     map.fitBounds(paddedBounds, {
       padding: [40, 40],
       animate: true,
       duration: 0.3,
-      maxZoom: 14 // Don't zoom in too far for very small radii
+      maxZoom: 14,
     });
   }, []);
 
@@ -140,7 +163,6 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
 
       // Fit map to the updated circle - but NOT during drag operations
       if (selectedCircle && !isDragging) {
-        // Use setTimeout to avoid calling during render
         setTimeout(() => {
           fitToCircle(selectedCircle.lat, selectedCircle.lng, newRadiusMeters);
         }, 0);
@@ -161,10 +183,8 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
 
   const handleMapClick = useCallback(
     (lat: number, lng: number) => {
-      // Dismiss tooltip permanently after first interaction
-      setTooltipDismissed(true);
-      // Collapse mobile sheet when interacting with map
-      setIsMobileSheetExpanded(false);
+      markInteracted();
+      setCollapseSignal((s) => s + 1); // map-first: collapse the mobile sheet to peek
 
       if (isAddingCircle) {
         // Create a new circle
@@ -177,11 +197,11 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
           unit,
         };
 
+        showToast(circles.length === 0 ? 'Drag the white dot to resize' : `Circle ${circles.length + 1} added`);
         setCircles((prev) => [...prev, newCircle]);
         setSelectedCircleId(newCircle.id);
         setIsAddingCircle(false);
 
-        // Zoom to fit the new circle
         fitToCircle(lat, lng, newCircle.radiusMeters);
       } else if (circles.length > 0) {
         // Move the existing circle (selected or first one)
@@ -189,21 +209,16 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
         const targetCircle = circles.find((c) => c.id === targetId);
 
         setCircles((prev) =>
-          prev.map((c) =>
-            c.id === targetId
-              ? { ...c, lat, lng }
-              : c
-          )
+          prev.map((c) => (c.id === targetId ? { ...c, lat, lng } : c))
         );
         setSelectedCircleId(targetId);
 
-        // Zoom to fit the moved circle
         if (targetCircle) {
           fitToCircle(lat, lng, targetCircle.radiusMeters);
         }
       }
     },
-    [isAddingCircle, radius, unit, color, circles, selectedCircleId, fitToCircle]
+    [isAddingCircle, radius, unit, color, circles, selectedCircleId, fitToCircle, markInteracted, showToast]
   );
 
   const handleCircleUpdate = useCallback((id: string, lat: number, lng: number, radiusMeters?: number) => {
@@ -225,6 +240,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
     (id: string | null) => {
       setSelectedCircleId(id);
       setIsAddingCircle(false);
+      markInteracted();
 
       if (id) {
         const circle = circles.find((c) => c.id === id);
@@ -235,29 +251,36 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
         }
       }
     },
-    [circles]
+    [circles, markInteracted]
+  );
+
+  const handleDeleteCircle = useCallback(
+    (id: string) => {
+      const remaining = circles.filter((c) => c.id !== id);
+      setCircles(remaining);
+      // If we removed the active circle, fall back to another so the controls keep driving a real circle.
+      if (selectedCircleId === id) {
+        const next = remaining[remaining.length - 1] ?? null;
+        setSelectedCircleId(next ? next.id : null);
+        if (next) {
+          setRadius(Math.round(fromMeters(next.radiusMeters, next.unit) * 100) / 100);
+          setUnit(next.unit);
+          setColor(next.color);
+        }
+      }
+    },
+    [circles, selectedCircleId]
   );
 
   const handleLocationSearch = useCallback(
     (lat: number, lng: number, displayName: string) => {
-      // Collapse mobile sheet after search
-      setIsMobileSheetExpanded(false);
+      markInteracted();
 
-      // If we have a selected circle, move it; otherwise create a new one
       if (selectedCircleId && !isAddingCircle) {
         const existingCircle = circles.find((c) => c.id === selectedCircleId);
         setCircles((prev) =>
-          prev.map((c) =>
-            c.id === selectedCircleId
-              ? {
-                  ...c,
-                  lat,
-                  lng,
-                }
-              : c
-          )
+          prev.map((c) => (c.id === selectedCircleId ? { ...c, lat, lng } : c))
         );
-        // Zoom to fit the moved circle
         if (existingCircle) {
           fitToCircle(lat, lng, existingCircle.radiusMeters);
         }
@@ -274,14 +297,14 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
         setCircles((prev) => [...prev, newCircle]);
         setSelectedCircleId(newCircle.id);
         setIsAddingCircle(false);
-        // Zoom to fit the new circle
         fitToCircle(lat, lng, newRadiusMeters);
       }
     },
-    [selectedCircleId, isAddingCircle, radius, unit, color, circles, fitToCircle]
+    [selectedCircleId, isAddingCircle, radius, unit, color, circles, fitToCircle, markInteracted]
   );
 
   const handleUseMyLocation = useCallback(() => {
+    markInteracted();
     if (!navigator.geolocation) {
       setLocationError('Geolocation is not supported by your browser.');
       return;
@@ -312,19 +335,15 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
             setLocationError('Unable to get your location. Please search for an address.');
         }
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 60000,
-      }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
-  }, [handleLocationSearch]);
+  }, [handleLocationSearch, markInteracted]);
 
   const handleAddCircle = useCallback(() => {
     setIsAddingCircle(true);
     setSelectedCircleId(null);
-    setIsMobileSheetExpanded(false);
-  }, []);
+    markInteracted();
+  }, [markInteracted]);
 
   const handleClearAll = useCallback(() => {
     setCircles([]);
@@ -334,7 +353,6 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
 
   const handleDragStart = useCallback(() => {
     setIsDragging(true);
-    setIsMobileSheetExpanded(false);
   }, []);
 
   const handleDragEnd = useCallback(() => {
@@ -358,7 +376,6 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
     if (!mapRef.current) return;
 
     try {
-      // Use html2canvas to capture the map
       const html2canvas = (await import('html2canvas')).default;
       const mapContainer = mapRef.current.getContainer();
 
@@ -368,7 +385,6 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
         logging: false,
       });
 
-      // Download the image
       const link = document.createElement('a');
       link.download = 'radius-map.png';
       link.href = canvas.toDataURL('image/png');
@@ -390,67 +406,69 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
     downloadKML(kmlCircles);
   }, [circles]);
 
-  // Get selected circle info for the info card
-  const selectedCircle = selectedCircleId ? circles.find((c) => c.id === selectedCircleId) : null;
+  const handleSearchOpenChange = useCallback((open: boolean) => setIsMobileSearchOpen(open), []);
 
-  // For info card: show selected circle, or fallback to first circle
+  // Get selected circle info for the desktop info card
+  const selectedCircle = selectedCircleId ? circles.find((c) => c.id === selectedCircleId) : null;
   const infoCardCircle = selectedCircle || circles[0] || null;
-  const circleInfo = infoCardCircle ? {
-    radiusMiles: fromMeters(infoCardCircle.radiusMeters, 'miles'),
-    radiusKm: fromMeters(infoCardCircle.radiusMeters, 'kilometers'),
-    areaMiles: calculateCircleArea(fromMeters(infoCardCircle.radiusMeters, 'miles'), 'miles'),
-    areaKm: calculateCircleArea(fromMeters(infoCardCircle.radiusMeters, 'kilometers'), 'kilometers'),
-    color: infoCardCircle.color,
-  } : null;
+  const circleInfo = infoCardCircle
+    ? {
+        radiusMiles: fromMeters(infoCardCircle.radiusMeters, 'miles'),
+        radiusKm: fromMeters(infoCardCircle.radiusMeters, 'kilometers'),
+        areaMiles: calculateCircleArea(fromMeters(infoCardCircle.radiusMeters, 'miles'), 'miles'),
+        areaKm: calculateCircleArea(fromMeters(infoCardCircle.radiusMeters, 'kilometers'), 'kilometers'),
+        color: infoCardCircle.color,
+      }
+    : null;
+
+  const showInvite = circles.length === 0 && !isMobileSearchOpen && toolInView;
 
   return (
-    <div id="radius-tool" className="relative">
-      {/* Status messages */}
+    // #radius-tool marks the whole interactive tool (map + controls/sheet) as a Raptive
+    // ad-exclusion zone so units are never auto-inserted into the touch surface.
+    <div id="radius-tool" ref={toolRef} className="relative">
+      {/* Status / error message (top-center) */}
       {locationError && (
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm shadow-lg max-w-[90vw]">
           {locationError}
         </div>
       )}
 
-      {isAddingCircle && circles.length === 0 && !tooltipDismissed && (
-        <div className="absolute top-4 left-1/2 lg:left-1/3 -translate-x-1/2 z-[1000] bg-primary-900/95 text-white px-4 py-2.5 rounded-lg text-sm shadow-lg backdrop-blur-sm max-w-[90vw] text-center">
-          <span className="hidden sm:inline">Click on the map or search for a location to draw your radius</span>
-          <span className="sm:hidden">Tap the map or search to draw radius</span>
+      {/* Transient toast (replaces the old blocking intro tooltip) */}
+      {toast && (
+        <div
+          key={toast.id}
+          className="mwr-toast lg:hidden pointer-events-none absolute top-4 left-1/2 -translate-x-1/2 z-[1100] bg-primary-900 text-white text-[14.5px] font-medium px-[18px] py-[11px] rounded-[14px] shadow-lg max-w-[86vw] text-center"
+        >
+          {toast.msg}
         </div>
       )}
 
-      {isAddingCircle && circles.length > 0 && !tooltipDismissed && (
-        <div className="absolute top-4 left-1/2 lg:left-1/3 -translate-x-1/2 z-[1000] bg-primary-900/95 text-white px-4 py-2.5 rounded-lg text-sm shadow-lg backdrop-blur-sm">
-          <span className="hidden sm:inline">Click on the map to add another circle</span>
-          <span className="sm:hidden">Tap to add another circle</span>
-        </div>
-      )}
-
-      {/* Circle Info Card - Desktop: bottom-left, Mobile: top-right */}
+      {/* Circle Info Card — desktop only (mobile uses the sheet's pill + stats + drag tooltip) */}
       {circleInfo && (
-        <div className="absolute top-4 right-3 lg:left-4 lg:right-auto lg:bottom-20 lg:top-auto z-[1000] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200 p-3 text-sm min-w-[160px] lg:min-w-[200px]">
+        <div className="hidden lg:block absolute left-4 bottom-20 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200 p-3 text-sm min-w-[200px]">
           <div className="flex items-center justify-between mb-2">
-            <span className="font-semibold text-slate-900 text-xs lg:text-sm">Circle Info</span>
+            <span className="font-semibold text-slate-900 text-sm">Circle Info</span>
             <div
-              className="w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full border-2 border-white shadow-sm"
+              className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
               style={{ backgroundColor: circleInfo.color }}
             />
           </div>
-          <div className="space-y-1 lg:space-y-1.5 text-slate-600 text-xs lg:text-sm">
-            <div className="flex justify-between gap-2 lg:gap-3">
+          <div className="space-y-1.5 text-slate-600 text-sm">
+            <div className="flex justify-between gap-3">
               <span>Radius:</span>
               <span className="font-medium text-slate-900 text-right">
                 {formatDistance(circleInfo.radiusMiles, 'miles')}
-                <span className="text-slate-400 mx-0.5 lg:mx-1">/</span>
-                <span className="text-slate-500 lg:text-slate-900">{formatDistance(circleInfo.radiusKm, 'kilometers')}</span>
+                <span className="text-slate-400 mx-1">/</span>
+                <span className="text-slate-900">{formatDistance(circleInfo.radiusKm, 'kilometers')}</span>
               </span>
             </div>
-            <div className="flex justify-between gap-2 lg:gap-3">
+            <div className="flex justify-between gap-3">
               <span>Area:</span>
               <span className="font-medium text-slate-900 text-right">
                 {formatArea(circleInfo.areaMiles, 'miles')}
-                <span className="text-slate-400 mx-0.5 lg:mx-1">/</span>
-                <span className="text-slate-500 lg:text-slate-900">{formatArea(circleInfo.areaKm, 'kilometers')}</span>
+                <span className="text-slate-400 mx-1">/</span>
+                <span className="text-slate-900">{formatArea(circleInfo.areaKm, 'kilometers')}</span>
               </span>
             </div>
           </div>
@@ -459,7 +477,23 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
 
       {/* Map container */}
       <div className="relative">
-        {/* Map - Full height on mobile, fixed height on desktop */}
+        {/* Empty-state invitation — radar pulse + label (mobile + desktop) */}
+        {showInvite && (
+          <div className="mwr-invite pointer-events-none absolute left-1/2 top-[42%] -translate-x-1/2 -translate-y-1/2 z-[400] text-center">
+            <div className="mwr-invite-rings">
+              <span className="mwr-invite-ring" />
+              <span className="mwr-invite-ring" />
+              <span className="mwr-invite-ring" />
+              <span className="mwr-invite-core" />
+            </div>
+            <div className="mwr-invite-label">
+              <span className="lg:hidden">Tap anywhere to draw a radius</span>
+              <span className="hidden lg:inline">Click anywhere on the map — or search for a place</span>
+            </div>
+          </div>
+        )}
+
+        {/* Map */}
         <div className="w-full">
           <RadiusMap
             circles={circles}
@@ -496,31 +530,38 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
             onExportKML={handleExportKML}
             circleCount={circles.length}
             isLocating={isLocating}
+            highlightSearch={!hasInteracted}
           />
         </div>
 
-        {/* Mobile Bottom Sheet */}
-        <div className="lg:hidden">
+        {/* Mobile Bottom Sheet (self-gates below 1024px; hidden when tool scrolled away) */}
+        {toolInView && (
           <MobileBottomSheet
-            isExpanded={isMobileSheetExpanded}
-            onToggle={() => setIsMobileSheetExpanded(!isMobileSheetExpanded)}
+            circles={circles}
+            selectedCircleId={selectedCircleId}
             radius={radius}
             unit={unit}
             color={color}
+            isLocating={isLocating}
             onRadiusChange={setRadius}
             onUnitChange={setUnit}
             onColorChange={setColor}
             onLocationSearch={handleLocationSearch}
             onUseMyLocation={handleUseMyLocation}
-            onAddCircle={handleAddCircle}
+            onNewCircle={handleAddCircle}
+            onSelectCircle={handleCircleSelect}
+            onDeleteCircle={handleDeleteCircle}
             onClearAll={handleClearAll}
             onCopyLink={handleCopyLink}
             onDownloadPNG={handleDownloadPNG}
             onExportKML={handleExportKML}
-            circleCount={circles.length}
-            isLocating={isLocating}
+            onToast={showToast}
+            onSearchOpenChange={handleSearchOpenChange}
+            onAdjustStart={handleDragStart}
+            onAdjustEnd={handleDragEnd}
+            collapseSignal={collapseSignal}
           />
-        </div>
+        )}
       </div>
     </div>
   );
