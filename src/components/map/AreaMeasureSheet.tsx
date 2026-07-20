@@ -368,7 +368,10 @@ export default function AreaMeasureSheet({
         {/* Body */}
         {!searchOpen && (
           <div
-            className="flex-1 overflow-y-auto overscroll-contain px-4"
+            // min-h-0 lets this flex child shrink to the sheet height and scroll its own
+            // overflow, instead of growing to content height and pushing the last control
+            // below the viewport (an unreachable region the old ad box hid).
+            className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4"
             // Bottom padding clears safe-area inset + anchor so the last control stays
             // reachable at full detent (the collapsed ad slot no longer reserves that space).
             style={{ WebkitOverflowScrolling: 'touch', paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + var(--mwr-anchor-h, 0px) + 1.5rem)' }}

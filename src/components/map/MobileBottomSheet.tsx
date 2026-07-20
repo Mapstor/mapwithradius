@@ -521,7 +521,10 @@ export default function MobileBottomSheet({
           {/* Scrollable body */}
           {!searchOpen && (
             <div
-              className="flex-1 overflow-y-auto overscroll-contain px-4"
+              // min-h-0 lets this flex child shrink to the sheet's height and scroll its
+              // own overflow, instead of growing to content height and pushing the last
+              // controls below the viewport (an unreachable region the old ad box hid).
+              className="flex-1 min-h-0 overflow-y-auto overscroll-contain px-4"
               // Bottom padding clears the safe-area inset + any anchor offset so the last
               // control stays fully reachable at full detent (the collapsed ad slot no
               // longer reserves that space).

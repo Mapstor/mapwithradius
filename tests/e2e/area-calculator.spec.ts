@@ -114,3 +114,20 @@ test('unit switching changes the readout', async ({ page }) => {
   // 1 acre = 4046.86 m² — sanity that it's a real conversion, not a relabel.
   expect(sqm / acres).toBeGreaterThan(3000);
 });
+
+// 4) Sheet-scroll regression gate: at FULL detent the last export control (KML) must scroll
+//    fully into view and be clickable (the body must not overflow below the viewport).
+test('full-detent body scrolls to the KML button (reachable + clickable)', async ({ page }) => {
+  await drawTriangle(page);
+  const peek = await page.getByTestId('area-peek').boundingBox();
+  expect(peek).not.toBeNull();
+  const from = { x: peek!.x + peek!.width / 2, y: peek!.y + peek!.height / 2 };
+  // Slow, long drag up → snaps to the nearest detent = full.
+  await touchDrag(page, from, { x: from.x, y: 50 }, { steps: 25, delay: 30 });
+  await expect(page.getByTestId('area-sheet')).toHaveAttribute('data-detent', 'full');
+
+  const kml = page.getByRole('button', { name: /KML/ });
+  await kml.scrollIntoViewIfNeeded();
+  await expect(kml).toBeInViewport({ ratio: 1 });
+  await kml.click({ trial: true });
+});

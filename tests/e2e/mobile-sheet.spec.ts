@@ -188,3 +188,31 @@ test('selecting the first circle highlights its row', async ({ page }) => {
   await expect(rows.nth(0)).toHaveAttribute('data-active', 'true');
   await expect(rows.nth(1)).toHaveAttribute('data-active', 'false');
 });
+
+// 8) Sheet-scroll regression gate: with a long body (multiple circles) at FULL detent, the
+//    last export control (KML) must scroll fully into view and be clickable. Guards against
+//    the body overflowing below the viewport when the ad slot stopped reserving space.
+async function expandFull(page: Page) {
+  const peek = await center(page, 'mwr-peek');
+  // Slow, long drag from the peek row up to the top → snaps to the nearest detent = full.
+  await touchDrag(page, peek, { x: peek.x, y: 50 }, { steps: 25, delay: 30 });
+  await expect(page.getByTestId('mwr-sheet')).toHaveAttribute('data-detent', 'full');
+}
+
+test('full-detent body scrolls to the KML button (reachable + clickable)', async ({ page }) => {
+  // Build a body tall enough to overflow the sheet: three circles → circle list + controls.
+  await createCircle(page, 0.4, 0.28);
+  for (const [fx, fy] of [[0.62, 0.26], [0.4, 0.52]] as const) {
+    await expandFull(page);
+    await page.getByRole('button', { name: /New circle/ }).tap();
+    await tapMap(page, fx, fy); // map-first collapses back to peek
+    await page.waitForTimeout(900);
+  }
+  await expect(page.getByTestId('mwr-circle-row')).toHaveCount(3);
+
+  await expandFull(page);
+  const kml = page.getByRole('button', { name: /KML/ });
+  await kml.scrollIntoViewIfNeeded();
+  await expect(kml).toBeInViewport({ ratio: 1 }); // fully on-screen at full detent
+  await kml.click({ trial: true }); // actionable/clickable, without triggering the export
+});

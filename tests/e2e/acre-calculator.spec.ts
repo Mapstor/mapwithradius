@@ -108,3 +108,20 @@ test('mobile sheet opens with one upward drag', async ({ page }) => {
   await page.waitForTimeout(500);
   await expect(page.getByTestId('acre-sheet')).toHaveAttribute('data-detent', 'mid');
 });
+
+// 5) Sheet-scroll regression gate: at FULL detent the last control (Copy link — this sheet
+//    has no KML) must scroll fully into view and be clickable (body must not overflow off-screen).
+test('full-detent body scrolls to the last control (reachable + clickable)', async ({ page }) => {
+  await placeOverlay(page);
+  const box = await page.getByTestId('acre-peek').boundingBox();
+  expect(box).not.toBeNull();
+  const from = { x: box!.x + box!.width / 2, y: box!.y + box!.height / 2 };
+  // Slow, long drag up → snaps to the nearest detent = full.
+  await touchDrag(page, from, { x: from.x, y: 50 }, { steps: 25, delay: 30 });
+  await expect(page.getByTestId('acre-sheet')).toHaveAttribute('data-detent', 'full');
+
+  const copy = page.getByRole('button', { name: /Copy link/ });
+  await copy.scrollIntoViewIfNeeded();
+  await expect(copy).toBeInViewport({ ratio: 1 });
+  await copy.click({ trial: true });
+});
