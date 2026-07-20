@@ -318,6 +318,18 @@
   transition: none;
 }
 
+/* In-sheet ad slot (reserved for Raptive). Collapses entirely when empty — no
+   border, no label, no reserved height — so an unfilled slot leaves no trace. The
+   min-height + spacing apply only once an ad is injected. It's the last element in
+   the sheet body, so growing it never pushes content above it (CLS-safe). */
+.mwr-ad-slot:empty {
+  display: none;
+}
+.mwr-ad-slot:not(:empty) {
+  margin-top: 22px;
+  min-height: 110px;
+}
+
 /* Log-scale radius slider */
 .mwr-slider {
   -webkit-appearance: none;

@@ -176,6 +176,14 @@ export default function MobileBottomSheet({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collapseSignal]);
 
+  // Publish the committed detent on <html> so the map's CSS can drop the Leaflet zoom
+  // control below the sheet and hide it once the sheet is expanded (see RadiusMap style).
+  useEffect(() => {
+    if (!isMobile) return;
+    document.documentElement.dataset.mwrDetent = detent;
+    return () => { delete document.documentElement.dataset.mwrDetent; };
+  }, [detent, isMobile]);
+
   // ---- Sheet drag (pointer events, 10px commit threshold, fling-to-detent) ----
   const dragRef = useRef<{
     startY: number;
@@ -713,14 +721,10 @@ export default function MobileBottomSheet({
                 </>
               )}
 
-              {/* Reserved ad slot — fixed 110px, hard-reserved so it can never shift layout */}
-              <div
-                id="mwr-sheet-ad"
-                className="mt-[22px] rounded-[14px] bg-slate-100 border-[1.5px] border-dashed border-slate-300 grid place-items-center text-center text-slate-400 text-[12.5px] font-semibold leading-relaxed"
-                style={{ minHeight: 110 }}
-              >
-                Advertisement
-              </div>
+              {/* Reserved ad slot for Raptive — collapses entirely when empty (no border,
+                  no label, no reserved height; see .mwr-ad-slot in globals.css). It's the
+                  last element in the sheet body, so filling it can't shift anything above. */}
+              <div id="mwr-sheet-ad" className="mwr-ad-slot" />
             </div>
           )}
 

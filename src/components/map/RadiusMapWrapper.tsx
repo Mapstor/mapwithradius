@@ -6,6 +6,7 @@ import MapControls from './MapControls';
 import MobileBottomSheet from './MobileBottomSheet';
 import { DistanceUnit, toMeters, fromMeters, calculateCircleArea, formatDistance, formatArea } from '@/lib/haversine';
 import { downloadKML } from '@/lib/kmlExport';
+import { shareOrDownloadFile } from '@/lib/shareDownload';
 import { generateShareUrl, parseUrlParams, CircleParams } from '@/lib/urlParams';
 import type { RadiusCircle } from './RadiusMap';
 import type L from 'leaflet';
@@ -377,18 +378,17 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
 
     try {
       const html2canvas = (await import('html2canvas')).default;
-      const mapContainer = mapRef.current.getContainer();
-
-      const canvas = await html2canvas(mapContainer, {
+      // useCORS + tile crossOrigin keep the canvas untainted (no allowTaint) so
+      // toBlob() succeeds; the blob routes through the iOS-safe share/download path.
+      const canvas = await html2canvas(mapRef.current.getContainer(), {
         useCORS: true,
-        allowTaint: true,
         logging: false,
       });
-
-      const link = document.createElement('a');
-      link.download = 'radius-map.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, 'image/png')
+      );
+      if (!blob) throw new Error('Canvas produced no image data');
+      await shareOrDownloadFile(blob, 'radius-map.png');
     } catch (error) {
       console.error('PNG export failed:', error);
       alert('Unable to export PNG. Please try again.');

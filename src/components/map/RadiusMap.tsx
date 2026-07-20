@@ -119,6 +119,7 @@ export default function RadiusMap({
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
+      crossOrigin: 'anonymous', // keep the PNG-export canvas untainted (toBlob)
     }).addTo(map);
 
     // One reusable tooltip that rides the edge handle during a resize drag.
@@ -467,6 +468,12 @@ export default function RadiusMap({
          render through it). The sheet publishes its visible height as --mwr-chrome-offset. */
       @media (max-width: 1023px) {
         #radius-tool .leaflet-bottom { bottom: var(--mwr-chrome-offset, 0px); }
+        /* Zoom control sits below the bottom sheet (z-[999]) instead of poking above it,
+           and hides entirely once the sheet is expanded past peek. The sheet publishes its
+           committed detent as data-mwr-detent on <html>. */
+        #radius-tool .leaflet-top { z-index: 500; }
+        :root[data-mwr-detent='mid'] #radius-tool .leaflet-control-zoom,
+        :root[data-mwr-detent='full'] #radius-tool .leaflet-control-zoom { display: none; }
       }
     `;
     document.head.appendChild(style);

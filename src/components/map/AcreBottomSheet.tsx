@@ -507,14 +507,9 @@ export default function AcreBottomSheet({
               </button>
             </div>
 
-            {/* Reserved ad slot — fixed 110px so it can never shift layout */}
-            <div
-              id="acre-sheet-ad"
-              className="mt-[22px] rounded-[14px] bg-slate-100 border-[1.5px] border-dashed border-slate-300 grid place-items-center text-center text-slate-400 text-[12.5px] font-semibold leading-relaxed"
-              style={{ minHeight: 110 }}
-            >
-              Advertisement
-            </div>
+            {/* Reserved ad slot for Raptive — collapses entirely when empty (see
+                .mwr-ad-slot in globals.css). Last element in the sheet body → CLS-safe. */}
+            <div id="acre-sheet-ad" className="mwr-ad-slot" />
           </div>
         )}
 

@@ -1,5 +1,7 @@
 // KML file generation for circle polygons
 
+import { shareOrDownloadFile } from './shareDownload';
+
 export interface Circle {
   id: string;
   lat: number;
@@ -122,21 +124,13 @@ Radius: ${radiusMiles} miles (${(circle.radiusMeters / 1000).toFixed(2)} km)</de
 }
 
 /**
- * Download KML file
+ * Download KML file (share-sheet-first on iOS so the .kml extension survives)
  */
 export function downloadKML(circles: Circle[]): void {
-  const kmlContent = generateKML(circles);
-  const blob = new Blob([kmlContent], { type: 'application/vnd.google-earth.kml+xml' });
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'radius-map.kml';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  URL.revokeObjectURL(url);
+  const blob = new Blob([generateKML(circles)], {
+    type: 'application/vnd.google-earth.kml+xml',
+  });
+  void shareOrDownloadFile(blob, 'radius-map.kml');
 }
 
 // ---- Freeform polygons (Area Calculator) — reuses hexToKmlColor + the blob download ----
@@ -195,20 +189,11 @@ export function generatePolygonKML(polygons: PolygonExport[]): string {
 }
 
 /**
- * Download a KML file of measured polygons.
+ * Download a KML file of measured polygons (share-sheet-first on iOS).
  */
 export function downloadPolygonKML(polygons: PolygonExport[], filename = 'area-map.kml'): void {
   const blob = new Blob([generatePolygonKML(polygons)], {
     type: 'application/vnd.google-earth.kml+xml',
   });
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  URL.revokeObjectURL(url);
+  void shareOrDownloadFile(blob, filename);
 }

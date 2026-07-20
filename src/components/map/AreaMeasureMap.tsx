@@ -202,6 +202,7 @@ export default function AreaMeasureMap({
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
+      crossOrigin: 'anonymous', // keep the PNG-export canvas untainted (toBlob)
     }).addTo(map);
 
     map.on('click', (e: L.LeafletMouseEvent) => {

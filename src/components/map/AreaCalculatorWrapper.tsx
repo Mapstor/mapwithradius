@@ -17,6 +17,7 @@ import {
   formatPerimeter,
 } from '@/lib/measure';
 import { downloadPolygonKML } from '@/lib/kmlExport';
+import { shareOrDownloadFile } from '@/lib/shareDownload';
 
 const AreaMeasureMap = dynamic(() => import('./AreaMeasureMap'), {
   ssr: false,
@@ -194,11 +195,11 @@ export default function AreaCalculatorWrapper() {
     if (!mapRef.current) return;
     try {
       const html2canvas = (await import('html2canvas')).default;
-      const canvas = await html2canvas(mapRef.current.getContainer(), { useCORS: true, allowTaint: true, logging: false });
-      const link = document.createElement('a');
-      link.download = 'area-map.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+      // useCORS + tile crossOrigin keep the canvas untainted (no allowTaint) so toBlob works.
+      const canvas = await html2canvas(mapRef.current.getContainer(), { useCORS: true, logging: false });
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
+      if (!blob) throw new Error('Canvas produced no image data');
+      await shareOrDownloadFile(blob, 'area-map.png');
     } catch (e) {
       console.error('PNG export failed:', e);
     }
