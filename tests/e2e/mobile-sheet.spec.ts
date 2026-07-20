@@ -110,8 +110,9 @@ test('mi/km toggle converts every readout', async ({ page }) => {
   await expect(page.getByTestId('mwr-stat-diameter')).toContainText('km');
 });
 
-// 5) Nothing overlaps the reserved ad region and the tool section holds CLS ≈ 0.
-test('reserved ad slot is fixed height and layout stays stable', async ({ page }) => {
+// 5) The empty ad slot collapses (reserves no space) yet its container persists for
+//    Raptive, and expanding/collapsing the sheet holds CLS ≈ 0.
+test('empty ad slot collapses without reserving space and layout stays stable', async ({ page }) => {
   await page.evaluate(() => {
     (window as unknown as { __cls: number }).__cls = 0;
     new PerformanceObserver((list) => {
@@ -123,14 +124,16 @@ test('reserved ad slot is fixed height and layout stays stable', async ({ page }
   });
 
   await createCircle(page);
-  // Expand + collapse the sheet — the reserved slot must not shift layout.
+  // Expand + collapse the sheet — the empty slot must not shift layout.
   const peek = await center(page, 'mwr-peek');
   await touchDrag(page, peek, { x: peek.x, y: peek.y - 260 }, { steps: 20, delay: 30 });
   await page.waitForTimeout(400);
 
+  // The container stays in the DOM for Raptive to fill…
+  await expect(page.locator('#mwr-sheet-ad')).toHaveCount(1);
+  // …but while empty it collapses (display:none) and reserves no space.
   const ad = await page.locator('#mwr-sheet-ad').boundingBox();
-  expect(ad).not.toBeNull();
-  expect(ad!.height).toBeGreaterThanOrEqual(110);
+  expect(ad).toBeNull();
 
   const cls = await page.evaluate(() => (window as unknown as { __cls: number }).__cls || 0);
   expect(cls).toBeLessThan(0.1);

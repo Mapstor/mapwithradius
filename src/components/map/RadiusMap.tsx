@@ -111,6 +111,10 @@ export default function RadiusMap({
       center: defaultCenter,
       zoom: defaultZoom,
       zoomControl: false,
+      // Render vector layers (the circles) into a <canvas> instead of SVG so html2canvas
+      // can composite them into the PNG export — it cannot rasterize Leaflet's SVG pane.
+      // Handles/popups are markers/HTML and click-select uses canvas hit-testing, both unaffected.
+      preferCanvas: true,
     });
 
     L.control.zoom({ position: 'topleft' }).addTo(map);

@@ -196,6 +196,10 @@ export default function AreaMeasureMap({
       center: [39.8283, -98.5795],
       zoom: 4,
       zoomControl: false,
+      // Render vector layers (polygons/polylines) into a <canvas> instead of SVG so
+      // html2canvas can composite them into the PNG export — it cannot rasterize Leaflet's
+      // SVG pane. Vertex handles are markers/HTML and click-select uses canvas hit-testing.
+      preferCanvas: true,
     });
     L.control.zoom({ position: 'topleft' }).addTo(map);
     L.control.scale({ position: 'bottomleft', imperial: true, metric: true }).addTo(map);

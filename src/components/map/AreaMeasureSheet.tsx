@@ -367,7 +367,12 @@ export default function AreaMeasureSheet({
 
         {/* Body */}
         {!searchOpen && (
-          <div className="flex-1 overflow-y-auto overscroll-contain px-4 pb-6" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div
+            className="flex-1 overflow-y-auto overscroll-contain px-4"
+            // Bottom padding clears safe-area inset + anchor so the last control stays
+            // reachable at full detent (the collapsed ad slot no longer reserves that space).
+            style={{ WebkitOverflowScrolling: 'touch', paddingBottom: 'calc(env(safe-area-inset-bottom, 0px) + var(--mwr-anchor-h, 0px) + 1.5rem)' }}
+          >
             {/* Units */}
             <div className="mt-1">
               <div className="text-[11.5px] font-extrabold tracking-[0.09em] text-slate-400 mb-2">UNITS</div>
