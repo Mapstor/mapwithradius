@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
+import { buildToolPageSchema } from '@/lib/toolSchema';
 
 export const metadata: Metadata = {
   title: 'KM Radius Map — Free Metric Radius Tool',
@@ -46,43 +47,17 @@ export default function KMRadiusMapPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              {
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Home',
-                item: 'https://mapwithradius.com',
-              },
-              {
-                '@type': 'ListItem',
-                position: 2,
-                name: 'KM Radius Map',
-                item: 'https://mapwithradius.com/km-radius-map',
-              },
-            ],
-          }),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebApplication',
-            name: 'KM Radius Map',
-            description: 'Draw a radius in kilometers on any map. Free metric radius tool.',
-            url: 'https://mapwithradius.com/km-radius-map',
-            applicationCategory: 'UtilitiesApplication',
-            operatingSystem: 'Any',
-            offers: {
-              '@type': 'Offer',
-              price: '0',
-              priceCurrency: 'USD',
-            },
-          }),
+          __html: JSON.stringify(
+            buildToolPageSchema({
+              path: '/km-radius-map',
+              name: 'KM Radius Map',
+              description:
+                'Draw a radius in kilometers on any map. Free metric radius tool — enter an address and distance in km. No signup, no limits.',
+              breadcrumbName: 'KM Radius Map',
+              image: '/images/km-radius-map-10-km-london.png',
+              imageCaption: 'A 10-kilometer radius centered on London, drawn with the km radius map tool.',
+            })
+          ),
         }}
       />
 

@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
+import { buildToolPageSchema } from '@/lib/toolSchema';
 
 const HOME_TITLE = 'Radius Map Tool: Draw 1, 5, 10, 50 Mile Circles (Free)';
 
@@ -777,61 +778,16 @@ export default function HomePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              {
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Home',
-                item: 'https://mapwithradius.com',
-              },
-            ],
-          }),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebPage',
-            '@id': 'https://mapwithradius.com/',
-            url: 'https://mapwithradius.com/',
-            name: 'Map With Radius — Draw a Radius Circle on Any Map (Free)',
-            isPartOf: { '@id': 'https://mapwithradius.com/#website' },
-            author: { '@id': 'https://mapwithradius.com/about#marko' },
-            publisher: { '@id': 'https://mapwithradius.com/#organization' },
-            dateModified: '2026-06-10',
-          }),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebApplication',
-            name: 'Map With Radius',
-            url: 'https://mapwithradius.com/',
-            description:
-              'Free tool to draw radius circles on a map. Enter an address and distance to visualize coverage areas instantly.',
-            applicationCategory: 'UtilitiesApplication',
-            operatingSystem: 'All',
-            offers: {
-              '@type': 'Offer',
-              price: '0',
-              priceCurrency: 'USD',
-            },
-            browserRequirements: 'Requires JavaScript. Works in all modern browsers.',
-            softwareVersion: '1.0',
-            creator: {
-              '@type': 'Organization',
-              name: 'Map With Radius',
-              url: 'https://mapwithradius.com',
-            },
-          }),
+          __html: JSON.stringify(
+            buildToolPageSchema({
+              path: '',
+              name: 'Radius Map Tool',
+              description:
+                'Free radius map tool. Draw circles on a map by distance, find what\'s within your radius, and share your map. No signup, no limits. Works on mobile.',
+              image: '/images/radius-map-10-mile-las-vegas.png',
+              imageCaption: 'A 10-mile radius drawn around Las Vegas, NV with the free radius map tool.',
+            })
+          ),
         }}
       />
       <script

@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
+import { buildToolPageSchema } from '@/lib/toolSchema';
 
 export const metadata: Metadata = {
   title: 'Geofence Map Tool — Create a Geofence',
@@ -44,62 +45,21 @@ const RadiusMapWrapper = dynamic(() => import('@/components/map/RadiusMapWrapper
 export default function GeofenceMapPage() {
   return (
     <>
-      {/* JSON-LD Schemas */}
+      {/* JSON-LD Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebApplication',
-            name: 'Geofence Map Tool',
-            description:
-              'Plan a geofence visually, then export as KML or extract the coordinates for Radar, Google Geofencing API, Braze, or any geofencing platform.',
-            url: 'https://mapwithradius.com/geofence-map',
-            applicationCategory: 'UtilitiesApplication',
-            operatingSystem: 'Any',
-            offers: {
-              '@type': 'Offer',
-              price: '0',
-              priceCurrency: 'USD',
-            },
-            featureList: [
-              'Visualize circle geofences on an interactive map',
-              'Adjust radius from meters to hundreds of kilometers',
-              'Export as KML for Radar.io, Google Earth, QGIS',
-              'Export as PNG for design mocks and documentation',
-              'Shareable URL with encoded coordinates',
-              'WGS84 coordinate datum — universal standard',
-              'Cookie-free embed endpoint for GDPR-friendly integration',
-            ],
-          }),
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebPage',
-            name: 'Geofence Map Tool',
-            description:
-              'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
-            url: 'https://mapwithradius.com/geofence-map',
-          }),
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://mapwithradius.com' },
-              { '@type': 'ListItem', position: 2, name: 'Geofence Map', item: 'https://mapwithradius.com/geofence-map' },
-            ],
-          }),
+          __html: JSON.stringify(
+            buildToolPageSchema({
+              path: '/geofence-map',
+              name: 'Geofence Map Tool',
+              description:
+                'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
+              breadcrumbName: 'Geofence Map',
+              image: '/images/geofence-map-delivery-zone-austin.png',
+              imageCaption: 'A 5-km geofence zone around Austin, TX, planned with the geofence map tool.',
+            })
+          ),
         }}
       />
 

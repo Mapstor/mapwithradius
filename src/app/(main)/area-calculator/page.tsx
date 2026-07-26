@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
+import { buildToolPageSchema } from '@/lib/toolSchema';
 
 const TITLE = 'Map Area Calculator: Draw & Measure Acres, Sq Ft (Free)';
 const DESCRIPTION =
@@ -94,30 +95,16 @@ export default function AreaCalculatorPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://mapwithradius.com' },
-              { '@type': 'ListItem', position: 2, name: 'Area Calculator', item: 'https://mapwithradius.com/area-calculator' },
-            ],
-          }),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebApplication',
-            name: 'Map Area Calculator',
-            description:
-              'Draw polygons on a map to measure area and perimeter geodesically, in acres, square feet, m², hectares, square miles, or square kilometres.',
-            url: 'https://mapwithradius.com/area-calculator',
-            applicationCategory: 'UtilitiesApplication',
-            operatingSystem: 'Any',
-            offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-          }),
+          __html: JSON.stringify(
+            buildToolPageSchema({
+              path: '/area-calculator',
+              name: 'Map Area Calculator',
+              description: DESCRIPTION,
+              breadcrumbName: 'Area Calculator',
+              image: '/images/area-calculator-farmland-polygon.png',
+              imageCaption: 'A field traced with the area calculator, which reports the acres and square feet.',
+            })
+          ),
         }}
       />
       <script

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import zipDensity from '@/data/zip-density.json';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
+import { buildToolPageSchema } from '@/lib/toolSchema';
 
 export const metadata: Metadata = {
   title: 'Zip Code Radius Map — Free Tool',
@@ -47,43 +48,17 @@ export default function ZipCodeRadiusPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              {
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Home',
-                item: 'https://mapwithradius.com',
-              },
-              {
-                '@type': 'ListItem',
-                position: 2,
-                name: 'Zip Code Radius',
-                item: 'https://mapwithradius.com/zip-code-radius',
-              },
-            ],
-          }),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebApplication',
-            name: 'Zip Code Radius Map',
-            description: 'Enter a zip code and distance to find all zip codes within that radius. Export the list as CSV.',
-            url: 'https://mapwithradius.com/zip-code-radius',
-            applicationCategory: 'UtilitiesApplication',
-            operatingSystem: 'Any',
-            offers: {
-              '@type': 'Offer',
-              price: '0',
-              priceCurrency: 'USD',
-            },
-          }),
+          __html: JSON.stringify(
+            buildToolPageSchema({
+              path: '/zip-code-radius',
+              name: 'Zip Code Radius Map',
+              description:
+                'Enter a zip code and distance to find all zip codes within that radius. Export the list as CSV. Free, no signup.',
+              breadcrumbName: 'Zip Code Radius',
+              image: '/images/zip-code-radius-map-dallas.png',
+              imageCaption: 'Every ZIP code within 10 miles of downtown Dallas, mapped with the ZIP code radius tool.',
+            })
+          ),
         }}
       />
       {/* HowTo Schema */}

@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
+import { buildToolPageSchema } from '@/lib/toolSchema';
 
 const TITLE = 'Acre Calculator: See How Big 1, 5, 10 Acres Is on a Map';
 const DESCRIPTION =
@@ -92,30 +93,16 @@ export default function AcreCalculatorPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://mapwithradius.com' },
-              { '@type': 'ListItem', position: 2, name: 'Acre Calculator', item: 'https://mapwithradius.com/acre-calculator' },
-            ],
-          }),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'WebApplication',
-            name: 'Acre Calculator',
-            description:
-              'Draw a true-scale overlay of any number of acres — as a square or circle — on a real map, and convert between acres, hectares, square feet, and square metres.',
-            url: 'https://mapwithradius.com/acre-calculator',
-            applicationCategory: 'UtilitiesApplication',
-            operatingSystem: 'Any',
-            offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-          }),
+          __html: JSON.stringify(
+            buildToolPageSchema({
+              path: '/acre-calculator',
+              name: 'Acre Calculator',
+              description: DESCRIPTION,
+              breadcrumbName: 'Acre Calculator',
+              image: '/images/5-acre-lot-overlay-suburban.png',
+              imageCaption: 'A 5-acre square overlaid on a suburban lot grid, sized to scale with the acre calculator.',
+            })
+          ),
         }}
       />
       <script
