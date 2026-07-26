@@ -417,6 +417,38 @@ export default function RadiusMap({
     });
   }, [circles, selectedCircleId, isMapReady, createPopupContent, mapRef]);
 
+  // Dev/script-only framing hook for the SERP hero-shot generator
+  // (scripts/generate-hero-shots.ts). It fits the map to the drawn circle(s) with
+  // asymmetric padding (extra reserve on the right so the top-right controls panel never
+  // overlaps the shape) so a screenshot frames the whole circle deterministically.
+  // Guarded to development so it is dead-code-eliminated from the production bundle and
+  // never attaches on the live site; no application code calls it.
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return;
+    const w = window as unknown as {
+      __mwrFitActiveShape?: (opts?: { pad?: number; reserveRight?: number }) => boolean;
+    };
+    w.__mwrFitActiveShape = (opts) => {
+      const map = mapRef.current;
+      if (!map) return false;
+      const pad = opts?.pad ?? 70;
+      const reserveRight = opts?.reserveRight ?? 360;
+      const allBounds: L.LatLngBounds[] = [];
+      circleLayersRef.current.forEach(({ circle }) => allBounds.push(circle.getBounds()));
+      if (allBounds.length === 0) return false;
+      const bounds = allBounds.reduce((acc, b) => acc.extend(b));
+      map.fitBounds(bounds, {
+        paddingTopLeft: L.point(pad, pad),
+        paddingBottomRight: L.point(reserveRight + pad, pad),
+        animate: false,
+      });
+      return true;
+    };
+    return () => {
+      delete w.__mwrFitActiveShape;
+    };
+  }, [mapRef]);
+
   // Injected styles for the circle handles + the resize drag tooltip
   useEffect(() => {
     const style = document.createElement('style');

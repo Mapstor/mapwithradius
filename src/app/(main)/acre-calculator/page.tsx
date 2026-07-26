@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import ToolHeroImage from '@/components/content/ToolHeroImage';
 
 const TITLE = 'Acre Calculator: See How Big 1, 5, 10 Acres Is on a Map';
 const DESCRIPTION =
@@ -16,11 +17,20 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://mapwithradius.com/acre-calculator',
+    images: [
+      {
+        url: '/images/5-acre-lot-overlay-suburban.png',
+        width: 1600,
+        height: 900,
+        alt: '5 acre square overlay placed over a suburban street grid to show how big 5 acres is',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
+    images: ['/images/5-acre-lot-overlay-suburban.png'],
   },
 };
 
@@ -141,6 +151,12 @@ export default function AcreCalculatorPage() {
       {/* Instant answer (featured-snippet target) */}
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ToolHeroImage
+            src="/images/5-acre-lot-overlay-suburban.png"
+            alt="5 acre square overlay placed over a suburban street grid to show how big 5 acres is"
+            caption="A 5-acre square overlaid on a suburban lot grid — sized to scale with the acre calculator above."
+          />
+
           <h2 className="section-heading mb-6">How big is an acre?</h2>
           <div className="bg-green-50 border border-green-200 rounded-xl p-6">
             <p className="text-lg text-slate-800 leading-relaxed">

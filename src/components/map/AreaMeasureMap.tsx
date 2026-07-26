@@ -263,6 +263,40 @@ export default function AreaMeasureMap({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [polygons, activeId, isMapReady]);
 
+  // Dev/script-only framing hook for the SERP hero-shot generator
+  // (scripts/generate-hero-shots.ts). Fits the map to the drawn polygon(s) with asymmetric
+  // padding (extra reserve on the right so the controls panel never overlaps the shape).
+  // Guarded to development so it is dead-code-eliminated from the production bundle and
+  // never attaches on the live site; no application code calls it.
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'production') return;
+    const w = window as unknown as {
+      __mwrFitActiveShape?: (opts?: { pad?: number; reserveRight?: number }) => boolean;
+    };
+    w.__mwrFitActiveShape = (opts) => {
+      const map = mapRef.current;
+      if (!map) return false;
+      const pad = opts?.pad ?? 70;
+      const reserveRight = opts?.reserveRight ?? 360;
+      const allBounds: L.LatLngBounds[] = [];
+      layersRef.current.forEach((l) => {
+        if (l instanceof L.Polygon) allBounds.push(l.getBounds());
+      });
+      if (allBounds.length === 0) return false;
+      const bounds = allBounds.reduce((acc, b) => acc.extend(b));
+      map.fitBounds(bounds, {
+        paddingTopLeft: L.point(pad, pad),
+        paddingBottomRight: L.point(reserveRight + pad, pad),
+        animate: false,
+      });
+      return true;
+    };
+    return () => {
+      delete w.__mwrFitActiveShape;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapRef]);
+
   // ---- Injected vertex styles ----
   useEffect(() => {
     const style = document.createElement('style');

@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import zipDensity from '@/data/zip-density.json';
+import ToolHeroImage from '@/components/content/ToolHeroImage';
 
 export const metadata: Metadata = {
   title: 'Zip Code Radius Map — Free Tool',
@@ -13,6 +14,18 @@ export const metadata: Metadata = {
     title: 'Zip Code Radius Map — Find Zip Codes Within a Radius (Free)',
     description: 'Enter a zip code and distance to find all zip codes within that radius. Export the list as CSV.',
     url: 'https://mapwithradius.com/zip-code-radius',
+    images: [
+      {
+        url: '/images/zip-code-radius-map-dallas.png',
+        width: 1600,
+        height: 900,
+        alt: 'ZIP codes within a 10 mile radius of Dallas shown as pins inside the radius circle',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/images/zip-code-radius-map-dallas.png'],
   },
 };
 
@@ -139,6 +152,12 @@ export default function ZipCodeRadiusPage() {
       {/* How to Use - Step by Step */}
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ToolHeroImage
+            src="/images/zip-code-radius-map-dallas.png"
+            alt="ZIP codes within a 10 mile radius of Dallas shown as pins inside the radius circle"
+            caption="Every ZIP code within 10 miles of downtown Dallas, mapped with the ZIP code radius tool above."
+          />
+
           <h2 className="section-heading mb-8">How to Find Zip Codes Within a Radius</h2>
 
           <div className="space-y-6">

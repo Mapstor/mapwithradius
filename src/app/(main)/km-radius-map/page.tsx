@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import ToolHeroImage from '@/components/content/ToolHeroImage';
 
 export const metadata: Metadata = {
   title: 'KM Radius Map — Free Metric Radius Tool',
@@ -12,6 +13,18 @@ export const metadata: Metadata = {
     title: 'KM Radius Map — Draw a Kilometer Radius Circle on a Map (Free)',
     description: 'Draw a radius in kilometers on any map. Free metric radius tool — enter an address and distance in km.',
     url: 'https://mapwithradius.com/km-radius-map',
+    images: [
+      {
+        url: '/images/km-radius-map-10-km-london.png',
+        width: 1600,
+        height: 900,
+        alt: '10 kilometer radius circle drawn around central London on the km radius map',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/images/km-radius-map-10-km-london.png'],
   },
 };
 
@@ -98,6 +111,12 @@ export default function KMRadiusMapPage() {
           <div className="mb-8 pb-6 border-b border-slate-200 text-sm text-slate-500">
             By the Map With Radius editorial team · Last reviewed 29 May 2026
           </div>
+
+          <ToolHeroImage
+            src="/images/km-radius-map-10-km-london.png"
+            alt="10 kilometer radius circle drawn around central London on the km radius map"
+            caption="A 10-kilometer radius centered on London, drawn with the km radius map tool above."
+          />
 
           {/* Intro — reframed for technical/GIS audience */}
           <div className="mb-12">

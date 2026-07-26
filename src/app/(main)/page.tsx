@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { OG_IMAGES } from '@/lib/og';
+import ToolHeroImage from '@/components/content/ToolHeroImage';
 
 const HOME_TITLE = 'Radius Map Tool: Draw 1, 5, 10, 50 Mile Circles (Free)';
 
@@ -18,13 +18,21 @@ export const metadata: Metadata = {
     title: HOME_TITLE,
     description:
       'Free radius map tool. Draw circles on a map by distance, find what\'s within your radius, and share your map.',
+    images: [
+      {
+        url: '/images/radius-map-10-mile-las-vegas.png',
+        width: 1600,
+        height: 900,
+        alt: '10 mile radius circle drawn around Las Vegas with the free radius map tool',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: HOME_TITLE,
     description:
       'Free radius map tool. Draw circles on a map by distance, find what\'s within your radius, and share your map.',
-    images: OG_IMAGES,
+    images: ['/images/radius-map-10-mile-las-vegas.png'],
   },
 };
 
@@ -70,6 +78,13 @@ export default function HomePage() {
       {/* Content Below the Fold */}
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ToolHeroImage
+            src="/images/radius-map-10-mile-las-vegas.png"
+            alt="10 mile radius circle drawn around Las Vegas with the free radius map tool"
+            caption="A 10-mile radius drawn around Las Vegas, NV using the radius map tool above."
+            eager
+          />
+
           {/* How to Draw a Radius */}
           <div className="mb-12">
             <h2 className="section-heading mb-6">How to Draw a Radius on a Map</h2>

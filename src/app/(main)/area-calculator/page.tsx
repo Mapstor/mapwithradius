@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import ToolHeroImage from '@/components/content/ToolHeroImage';
 
 const TITLE = 'Map Area Calculator: Draw & Measure Acres, Sq Ft (Free)';
 const DESCRIPTION =
@@ -16,11 +17,20 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://mapwithradius.com/area-calculator',
+    images: [
+      {
+        url: '/images/area-calculator-farmland-polygon.png',
+        width: 1600,
+        height: 900,
+        alt: 'Irregular polygon drawn over farmland with the measured acreage shown by the area calculator',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
+    images: ['/images/area-calculator-farmland-polygon.png'],
   },
 };
 
@@ -143,6 +153,12 @@ export default function AreaCalculatorPage() {
       {/* Instant answer */}
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ToolHeroImage
+            src="/images/area-calculator-farmland-polygon.png"
+            alt="Irregular polygon drawn over farmland with the measured acreage shown by the area calculator"
+            caption="Measuring a field by tracing its edges — the area calculator above reports the acres and square feet."
+          />
+
           <h2 className="section-heading mb-6">What this tool measures</h2>
           <div className="bg-green-50 border border-green-200 rounded-xl p-6">
             <p className="text-lg text-slate-800 leading-relaxed">

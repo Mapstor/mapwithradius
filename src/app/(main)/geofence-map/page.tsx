@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import ToolHeroImage from '@/components/content/ToolHeroImage';
 
 export const metadata: Metadata = {
   title: 'Geofence Map Tool — Create a Geofence',
@@ -14,6 +15,18 @@ export const metadata: Metadata = {
     description:
       'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
     url: 'https://mapwithradius.com/geofence-map',
+    images: [
+      {
+        url: '/images/geofence-map-delivery-zone-austin.png',
+        width: 1600,
+        height: 900,
+        alt: 'A 5 kilometer circular geofence zone drawn around Austin on the geofence map tool',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/images/geofence-map-delivery-zone-austin.png'],
   },
 };
 
@@ -111,6 +124,12 @@ export default function GeofenceMapPage() {
       {/* Section B — Plan a Geofence in Under 60 Seconds */}
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ToolHeroImage
+            src="/images/geofence-map-delivery-zone-austin.png"
+            alt="A 5 kilometer circular geofence zone drawn around Austin on the geofence map tool"
+            caption="A 5-km geofence zone around Austin, TX — draw and label service areas with the geofence map above."
+          />
+
           <h2 className="section-heading mb-6">Plan a Geofence in Under 60 Seconds</h2>
           <p className="text-slate-700 mb-6">
             Geofence planning doesn&apos;t need to happen inside your app&apos;s SDK. Design the boundary here first — where it sits, how large it should be, what it should cover — then export the coordinates to your production geofencing platform. This separates the planning step from the implementation step, which is usually how product and engineering teams collaborate.
