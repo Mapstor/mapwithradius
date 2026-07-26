@@ -17,6 +17,8 @@ export interface ToolPageSchemaInput {
   imageCaption: string;
   /** Breadcrumb leaf label; omit on the homepage (breadcrumb is just Home). */
   breadcrumbName?: string;
+  /** Optional WebApplication.featureList (schema.org Text[]) — quotable feature bullets. */
+  featureList?: string[];
   imageWidth?: number;
   imageHeight?: number;
 }
@@ -66,6 +68,7 @@ export function buildToolPageSchema(input: ToolPageSchemaInput) {
         applicationCategory: 'UtilityApplication',
         operatingSystem: 'Any',
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+        ...(input.featureList && input.featureList.length ? { featureList: input.featureList } : {}),
         isPartOf: { '@id': `${BASE}/#website` },
         publisher: { '@id': `${BASE}/#organization` },
       },

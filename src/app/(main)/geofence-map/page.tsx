@@ -58,6 +58,15 @@ export default function GeofenceMapPage() {
               breadcrumbName: 'Geofence Map',
               image: '/images/geofence-map-delivery-zone-austin.png',
               imageCaption: 'A 5-km geofence zone around Austin, TX, planned with the geofence map tool.',
+              featureList: [
+                'Visualize circle geofences on an interactive map',
+                'Adjust radius from meters to hundreds of kilometers',
+                'Export as KML for Radar.io, Google Earth, QGIS',
+                'Export as PNG for design mocks and documentation',
+                'Shareable URL with encoded coordinates',
+                'WGS84 coordinate datum — universal standard',
+                'Cookie-free embed endpoint for GDPR-friendly integration',
+              ],
             })
           ),
         }}
