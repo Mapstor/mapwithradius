@@ -12,25 +12,26 @@
     "verify": "node scripts/build-uszips-json.mjs && node scripts/build-zip-density.mjs && node scripts/verify-zip-coverage.mjs && node scripts/verify-city-coverage.mjs && node scripts/verify-homepage-examples.mjs"
   },
   "dependencies": {
+    "file-saver": "^2.0.5",
+    "html2canvas": "^1.4.1",
+    "leaflet": "^1.9.4",
+    "next": "14.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "next": "14.2.0",
-    "leaflet": "^1.9.4",
-    "react-leaflet": "^4.2.1",
-    "file-saver": "^2.0.5",
-    "html2canvas": "^1.4.1"
+    "react-leaflet": "^4.2.1"
   },
   "devDependencies": {
-    "typescript": "^5.3.0",
+    "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.62.0",
+    "@types/file-saver": "^2.0.7",
+    "@types/leaflet": "^1.9.8",
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
-    "@types/leaflet": "^1.9.8",
-    "@types/file-saver": "^2.0.7",
-    "@eslint/eslintrc": "^3",
     "eslint": "^8.0.0",
     "eslint-config-next": "14.2.0",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.3.0"
   }
 }
