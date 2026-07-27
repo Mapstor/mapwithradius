@@ -14,6 +14,8 @@ export interface ZipCodeData {
   state: string;
   lat: number;
   lng: number;
+  /** 2020 Census ZCTA total population (P1_001N). 0 for territory ZIPs with no ZCTA. */
+  pop: number;
 }
 
 export interface ZipDatabase {
@@ -35,7 +37,7 @@ interface RawPayload {
   count: number;
   states: number;
   fields: string[];
-  rows: [string, number, number, string, string][];
+  rows: [string, number, number, string, string, number?][];
 }
 
 const DATA_URL = '/data/us-zip-points.json';
@@ -54,12 +56,13 @@ export function loadZipDatabase(): Promise<ZipDatabase> {
       return res.json() as Promise<RawPayload>;
     })
     .then((payload) => {
-      const all: ZipCodeData[] = payload.rows.map(([zip, lat, lng, city, state]) => ({
+      const all: ZipCodeData[] = payload.rows.map(([zip, lat, lng, city, state, pop]) => ({
         zip,
         lat,
         lng,
         city,
         state,
+        pop: pop ?? 0,
       }));
       const byZip = new Map<string, ZipCodeData>();
       for (const z of all) byZip.set(z.zip, z);

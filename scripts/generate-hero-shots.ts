@@ -344,6 +344,26 @@ const SHOTS: Shot[] = [
     },
   },
   {
+    key: 'population-within-radius',
+    outputName: 'population-within-radius-chicago-rings.png',
+    // Chicago Loop — 1/3/5-mile rings render from URL lat/lng; the map auto-fits the 5-mi ring.
+    path: '/population-within-radius?lat=41.8781&lng=-87.6298',
+    container: '[data-testid="population-map"]',
+    ready: async (page, sel) => {
+      await waitForTiles(page, sel, 8);
+      await page.waitForSelector('[data-testid="population-map"][data-ready="true"]', { timeout: 20000 });
+      await page.waitForSelector('path.leaflet-interactive', { timeout: 15000 }); // the ring circles (SVG)
+      await waitForTilesStable(page, sel);
+    },
+    settleMs: 500,
+    meta: {
+      heroFor: '/population-within-radius',
+      alt: 'Estimated population within 1, 3, and 5 mile rings around downtown Chicago',
+      caption:
+        'Estimated population within 1, 3, and 5 miles of downtown Chicago — the standard site-selection rings.',
+    },
+  },
+  {
     key: 'geofence-map',
     outputName: 'geofence-map-delivery-zone-austin.png',
     path: `/geofence-map?lat=${PLACES.geofenceZone.lat}&lng=${PLACES.geofenceZone.lng}&r=5km&color=e11d48`,

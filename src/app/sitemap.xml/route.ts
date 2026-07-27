@@ -15,6 +15,7 @@ const routes: Array<{
   { path: '/km-radius-map',                  changeFrequency: 'monthly', priority: 0.9, images: [`${BASE}/images/km-radius-map-10-km-london.png`] },
   { path: '/drive-time-map',                 changeFrequency: 'monthly', priority: 0.9 },
   { path: '/zip-code-radius',                changeFrequency: 'monthly', priority: 0.9, images: [`${BASE}/images/zip-code-radius-map-dallas.png`] },
+  { path: '/population-within-radius',       changeFrequency: 'monthly', priority: 0.9, images: [`${BASE}/images/population-within-radius-chicago-rings.png`] },
   { path: '/distance-calculator',            changeFrequency: 'monthly', priority: 0.9 },
   { path: '/acre-calculator',                changeFrequency: 'monthly', priority: 0.9, images: [`${BASE}/images/5-acre-lot-overlay-suburban.png`] },
   { path: '/area-calculator',                changeFrequency: 'monthly', priority: 0.9, images: [`${BASE}/images/area-calculator-farmland-polygon.png`] },
