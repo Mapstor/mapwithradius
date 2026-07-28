@@ -27,17 +27,40 @@ L.Icon.Default.mergeOptions({
 // Ring shades indexed smallest→largest (inner darkest).
 const RING_COLORS = ['#1d4ed8', '#3b82f6', '#7dabf8'];
 const SINGLE_COLOR = '#2563eb';
+const CUSTOM_PRESETS: Record<Unit, number[]> = {
+  miles: [1, 3, 5, 10, 25],
+  kilometers: [1, 5, 10, 25, 50],
+};
 
 interface Center {
   lat: number;
   lng: number;
 }
 
+function metersToUnit(m: number, unit: Unit): number {
+  return unit === 'kilometers' ? m / 1000 : m / 1609.344;
+}
+
+/** Round a radius the way the homepage does: integers at ≥10, one decimal below. */
+function tidyRadius(v: number): number {
+  return v >= 10 ? Math.round(v) : Math.max(0.1, Math.round(v * 10) / 10);
+}
+
+function fmtRadius(unitVal: number, unit: Unit): string {
+  return `${tidyRadius(unitVal)} ${unitShort(unit)}`;
+}
+
+// Locale-tolerant: accept both "5.5" and "5,5".
+function parseDecimal(raw: string): number | null {
+  const n = parseFloat(raw.replace(',', '.'));
+  return Number.isFinite(n) ? n : null;
+}
+
 function parseRadiusParam(raw: string): { radius: number; unit: Unit } | null {
-  const m = raw.trim().match(/^([\d.]+)\s*(mi|km|mile|miles|kilometer|kilometers|kilometre|kilometres)?$/i);
+  const m = raw.trim().match(/^([\d.,]+)\s*(mi|km|mile|miles|kilometer|kilometers|kilometre|kilometres)?$/i);
   if (!m) return null;
-  const radius = parseFloat(m[1]);
-  if (!Number.isFinite(radius) || radius <= 0) return null;
+  const radius = parseDecimal(m[1]);
+  if (radius === null || radius <= 0) return null;
   const unit: Unit = m[2] && /^k/i.test(m[2]) ? 'kilometers' : 'miles';
   return { radius, unit };
 }
@@ -47,6 +70,10 @@ export default function PopulationRadiusMap() {
   const mapRef = useRef<L.Map | null>(null);
   const circleLayersRef = useRef<L.Circle[]>([]);
   const centerMarkerRef = useRef<L.Marker | null>(null);
+  const edgeMarkerRef = useRef<L.Marker | null>(null);
+  const tooltipRef = useRef<L.Tooltip | null>(null);
+  const isDraggingRef = useRef(false);
+  const skipFitRef = useRef(false);
 
   const [isMapReady, setIsMapReady] = useState(false);
   const [db, setDb] = useState<ZipDatabase | null>(null);
@@ -55,19 +82,21 @@ export default function PopulationRadiusMap() {
 
   const [center, setCenter] = useState<Center | null>(null);
   const [unit, setUnit] = useState<Unit>('miles');
-  const [mode, setMode] = useState<'rings' | 'custom'>('rings');
-  const [customRadius, setCustomRadius] = useState(10);
+  // P1c: custom single-radius is the default; 1-3-5 rings is one tap away.
+  const [mode, setMode] = useState<'rings' | 'custom'>('custom');
+  const [customRadius, setCustomRadius] = useState(5);
+  const [radiusText, setRadiusText] = useState('5'); // raw input text (comma-tolerant)
   const [searchValue, setSearchValue] = useState('');
   const [isLocating, setIsLocating] = useState(false);
 
   const [rings, setRings] = useState<RingResult[]>([]);
   const [single, setSingle] = useState<{ population: number; zipCount: number } | null>(null);
 
-  // Refs so long-lived Leaflet handlers read current state.
-  const centerRef = useRef(center);
-  useEffect(() => {
-    centerRef.current = center;
-  }, [center]);
+  const setRadius = useCallback((r: number) => {
+    const t = tidyRadius(r);
+    setCustomRadius(t);
+    setRadiusText(String(t));
+  }, []);
 
   // ---- Init map once ----
   useEffect(() => {
@@ -84,7 +113,16 @@ export default function PopulationRadiusMap() {
       maxZoom: 19,
     }).addTo(map);
 
+    tooltipRef.current = L.tooltip({
+      direction: 'top',
+      offset: L.point(0, -10),
+      opacity: 1,
+      className: 'pop-drag-tip',
+      interactive: false,
+    });
+
     map.on('click', (e: L.LeafletMouseEvent) => {
+      if (isDraggingRef.current) return; // ignore clicks that end a handle drag
       setSearchValue('');
       setCenter({ lat: e.latlng.lat, lng: e.latlng.lng });
     });
@@ -94,6 +132,7 @@ export default function PopulationRadiusMap() {
     return () => {
       map.remove();
       mapRef.current = null;
+      tooltipRef.current = null;
     };
   }, []);
 
@@ -116,19 +155,24 @@ export default function PopulationRadiusMap() {
     };
   }, []);
 
-  // ---- Parse shareable URL params once ----
+  // ---- Parse shareable URL params once (?lat&lng&r&unit&mode) ----
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const p = new URLSearchParams(window.location.search);
+    const wantRings = p.get('mode') === 'rings';
+    if (wantRings) setMode('rings'); // else keep the custom default (old links → custom)
+
     const unitParam = p.get('unit');
     if (unitParam && /^k/i.test(unitParam)) setUnit('kilometers');
+
     const r = p.get('r');
     if (r) {
       const parsed = parseRadiusParam(r);
       if (parsed) {
-        setMode('custom');
         setCustomRadius(parsed.radius);
+        setRadiusText(String(parsed.radius));
         setUnit(parsed.unit);
+        if (!wantRings) setMode('custom');
       }
     }
     const lat = parseFloat(p.get('lat') || '');
@@ -156,13 +200,12 @@ export default function PopulationRadiusMap() {
     const map = mapRef.current;
     if (!map || !isMapReady) return;
 
-    // Clear previous overlays.
     circleLayersRef.current.forEach((c) => c.remove());
     circleLayersRef.current = [];
-    if (centerMarkerRef.current) {
-      centerMarkerRef.current.remove();
-      centerMarkerRef.current = null;
-    }
+    centerMarkerRef.current?.remove();
+    centerMarkerRef.current = null;
+    edgeMarkerRef.current?.remove();
+    edgeMarkerRef.current = null;
 
     if (!center || !db) {
       setRings([]);
@@ -171,15 +214,13 @@ export default function PopulationRadiusMap() {
       return;
     }
 
-    // Radii (active unit) to draw + measure.
     const radiiUnit = mode === 'rings' ? RING_PRESET : [customRadius];
     const sorted = [...radiiUnit].filter((r) => r > 0).sort((a, b) => a - b);
     if (sorted.length === 0) return;
 
-    // Draw circles largest→smallest so the inner (darker) sits on top.
+    // Circles largest→smallest so the inner (darker) sits on top.
     for (let i = sorted.length - 1; i >= 0; i--) {
-      const rUnit = sorted[i];
-      const meters = toMiles(rUnit, unit) * 1609.344;
+      const meters = toMiles(sorted[i], unit) * 1609.344;
       const color = mode === 'rings' ? RING_COLORS[i] ?? SINGLE_COLOR : SINGLE_COLOR;
       const circle = L.circle([center.lat, center.lng], {
         radius: meters,
@@ -189,27 +230,84 @@ export default function PopulationRadiusMap() {
         fillColor: color,
         fillOpacity: 0.1,
       }).addTo(map);
-      circleLayersRef.current.push(circle);
+      circleLayersRef.current.unshift(circle); // keep [smallest..largest]
     }
 
-    // Draggable centre marker.
-    const dot = L.divIcon({
+    // Draggable centre dot.
+    const centerIcon = L.divIcon({
       className: 'pop-center-handle',
       html: '<div class="pop-center-dot"></div>',
       iconSize: [22, 22],
       iconAnchor: [11, 11],
     });
-    const marker = L.marker([center.lat, center.lng], { icon: dot, draggable: true, keyboard: false }).addTo(map);
-    marker.on('dragend', () => {
-      const p = marker.getLatLng();
+    const centerMarker = L.marker([center.lat, center.lng], {
+      icon: centerIcon,
+      draggable: true,
+      keyboard: false,
+      zIndexOffset: 1000,
+    }).addTo(map);
+    centerMarker.on('dragstart', () => {
+      isDraggingRef.current = true;
+    });
+    centerMarker.on('dragend', () => {
+      const p = centerMarker.getLatLng();
+      skipFitRef.current = true; // don't re-zoom when the user is repositioning
       setSearchValue('');
       setCenter({ lat: p.lat, lng: p.lng });
+      setTimeout(() => (isDraggingRef.current = false), 0);
     });
-    centerMarkerRef.current = marker;
+    centerMarkerRef.current = centerMarker;
 
-    // Fit to the largest circle.
-    const largest = circleLayersRef.current.reduce((a, b) => (a.getRadius() >= b.getRadius() ? a : b));
-    map.fitBounds(largest.getBounds(), { padding: [40, 40] });
+    // Custom mode: homepage-parity edge handle to resize (56px hit area, first-touch works).
+    if (mode === 'custom') {
+      const circle = circleLayersRef.current[0];
+      const edgeLatLng = L.latLng(center.lat, circle.getBounds().getEast());
+      const edgeIcon = L.divIcon({
+        className: 'radius-handle edge',
+        html: '<div class="radius-handle-dot"></div>',
+        iconSize: [56, 56],
+        iconAnchor: [28, 28],
+      });
+      const edge = L.marker(edgeLatLng, { icon: edgeIcon, draggable: true, keyboard: false, zIndexOffset: 900 }).addTo(map);
+
+      edge.on('dragstart', () => {
+        isDraggingRef.current = true;
+        map.dragging.disable();
+        edge.getElement()?.classList.add('dragging');
+        const tip = tooltipRef.current;
+        if (tip) tip.setLatLng(edge.getLatLng()).setContent(fmtRadius(customRadius, unit)).openOn(map);
+      });
+      edge.on('drag', () => {
+        const handle = edge.getLatLng();
+        const rMeters = map.distance([center.lat, center.lng], handle);
+        circle.setRadius(rMeters); // live visual only — population recomputes on release
+        const tip = tooltipRef.current;
+        if (tip) {
+          tip.setLatLng(handle);
+          tip.setContent(fmtRadius(metersToUnit(rMeters, unit), unit));
+        }
+      });
+      edge.on('dragend', () => {
+        map.dragging.enable();
+        edge.getElement()?.classList.remove('dragging');
+        const tip = tooltipRef.current;
+        if (tip) map.closeTooltip(tip);
+        const rMeters = map.distance([center.lat, center.lng], edge.getLatLng());
+        skipFitRef.current = true; // stay put while resizing
+        setRadius(metersToUnit(rMeters, unit));
+        setTimeout(() => (isDraggingRef.current = false), 0);
+      });
+      edge.on('click', (e: L.LeafletMouseEvent) => L.DomEvent.stopPropagation(e));
+      edgeMarkerRef.current = edge;
+    }
+
+    // Frame the shape on a new location; leave the view alone while resizing/dragging.
+    if (skipFitRef.current) {
+      skipFitRef.current = false;
+    } else {
+      const largest = circleLayersRef.current[circleLayersRef.current.length - 1];
+      map.fitBounds(largest.getBounds(), { padding: [40, 40] });
+    }
 
     // Measure + publish.
     if (mode === 'rings') {
@@ -279,6 +377,21 @@ export default function PopulationRadiusMap() {
         .pop-center-handle { background: transparent !important; border: 0 !important; }
         .pop-center-dot { width: 16px; height: 16px; border-radius: 50%; background: ${SINGLE_COLOR};
           border: 3px solid #fff; box-shadow: 0 1px 4px rgba(15,23,42,0.4); cursor: grab; }
+        /* Edge resize handle — reuse the proven RadiusMap pattern: 56px hit area,
+           touch-action:none so the first touch resizes instead of scrolling. */
+        .radius-handle { background: transparent !important; border: none !important; touch-action: none;
+          display: grid; place-items: center; }
+        .radius-handle-dot { width: 20px; height: 20px; border-radius: 50%; box-shadow: 0 2px 8px rgba(15,23,42,0.3); }
+        .radius-handle.edge { cursor: ew-resize; }
+        .radius-handle.edge .radius-handle-dot { background: #fff; border: 3.5px solid ${SINGLE_COLOR}; }
+        @media (pointer: coarse) {
+          .radius-handle-dot { transition: transform 0.12s ease; }
+          .radius-handle.dragging .radius-handle-dot { transform: scale(1.35); }
+        }
+        .leaflet-tooltip.pop-drag-tip { background: #0f172a; color: #fff; border: 0;
+          box-shadow: 0 4px 14px rgba(15,23,42,0.35); font-size: 14px; font-weight: 700;
+          padding: 6px 11px; border-radius: 10px; white-space: nowrap; }
+        .leaflet-tooltip-top.pop-drag-tip::before { border-top-color: #0f172a; }
       `}</style>
 
       <div
@@ -319,17 +432,9 @@ export default function PopulationRadiusMap() {
         className="absolute z-[1000] left-3 right-3 bottom-3 lg:left-auto lg:right-3 lg:top-3 lg:bottom-auto lg:w-96 bg-white rounded-xl shadow-lg overflow-auto max-h-[46vh] lg:max-h-[calc(75vh-1.5rem)]"
       >
         <div className="p-4">
-          {/* Controls */}
+          {/* Controls: mode + unit toggles */}
           <div className="flex items-center justify-between gap-2 mb-3">
             <div className="inline-flex rounded-lg border border-slate-200 overflow-hidden text-sm">
-              <button
-                type="button"
-                onClick={() => setMode('rings')}
-                aria-pressed={mode === 'rings'}
-                className={`px-3 py-1.5 font-medium ${mode === 'rings' ? 'bg-accent text-white' : 'bg-white text-slate-600'}`}
-              >
-                1-3-5 rings
-              </button>
               <button
                 type="button"
                 onClick={() => setMode('custom')}
@@ -337,6 +442,14 @@ export default function PopulationRadiusMap() {
                 className={`px-3 py-1.5 font-medium ${mode === 'custom' ? 'bg-accent text-white' : 'bg-white text-slate-600'}`}
               >
                 Custom
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('rings')}
+                aria-pressed={mode === 'rings'}
+                className={`px-3 py-1.5 font-medium ${mode === 'rings' ? 'bg-accent text-white' : 'bg-white text-slate-600'}`}
+              >
+                1-3-5 rings
               </button>
             </div>
             <div className="inline-flex rounded-lg border border-slate-200 overflow-hidden text-sm">
@@ -360,27 +473,62 @@ export default function PopulationRadiusMap() {
           </div>
 
           {mode === 'custom' && (
-            <div className="mb-3 flex items-center gap-2">
-              <label className="text-sm text-slate-600">Radius</label>
-              <input
-                type="number"
-                min={0.1}
-                step={0.5}
-                value={customRadius}
-                onChange={(e) => setCustomRadius(Math.max(0.1, parseFloat(e.target.value) || 0.1))}
-                className="w-24 px-2 py-1.5 border border-slate-300 rounded-lg text-sm"
-              />
-              <span className="text-sm text-slate-500">{u}</span>
+            <div className="mb-3">
+              <div className="flex items-center gap-2 mb-2">
+                <label className="text-sm text-slate-600">Radius</label>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  data-testid="radius-input"
+                  value={radiusText}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    setRadiusText(raw);
+                    const n = parseDecimal(raw);
+                    if (n !== null && n > 0) setCustomRadius(n);
+                  }}
+                  onBlur={() => setRadiusText(String(customRadius))}
+                  className="w-24 px-2 py-1.5 border border-slate-300 rounded-lg text-sm"
+                />
+                <span className="text-sm text-slate-500">{u}</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {CUSTOM_PRESETS[unit].map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setRadius(p)}
+                    aria-pressed={customRadius === p}
+                    className={`px-2.5 py-1 rounded-md text-[13px] font-medium border transition-colors ${
+                      customRadius === p ? 'bg-accent text-white border-accent' : 'bg-white text-slate-600 border-slate-200 hover:border-accent-200'
+                    }`}
+                  >
+                    {p} {u}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
-          {/* Loading / empty / error states */}
           {dbLoading && <p className="text-sm text-slate-500">Loading population data…</p>}
           {dbError && <p className="text-sm text-red-600">{dbError}</p>}
           {!dbLoading && !dbError && !center && (
             <p className="text-sm text-slate-500">
               Search an address or ZIP, tap the map, or use your location to estimate the population within a radius.
             </p>
+          )}
+
+          {/* Custom radius result */}
+          {hasResult && mode === 'custom' && single && (
+            <div>
+              <div className="text-[11px] font-bold text-slate-400 tracking-wide">
+                ESTIMATED POPULATION WITHIN {customRadius} {u}
+              </div>
+              <div data-testid="single-population" data-raw={single.population} className="text-3xl font-extrabold text-primary-900 tabular-nums">
+                {formatPop(single.population)}
+              </div>
+              <div className="text-sm text-slate-500 mt-1">across {single.zipCount.toLocaleString()} ZIP areas</div>
+            </div>
           )}
 
           {/* Rings result */}
@@ -415,19 +563,6 @@ export default function PopulationRadiusMap() {
                 Export CSV
               </button>
             </>
-          )}
-
-          {/* Custom radius result */}
-          {hasResult && mode === 'custom' && single && (
-            <div>
-              <div className="text-[11px] font-bold text-slate-400 tracking-wide">
-                ESTIMATED POPULATION WITHIN {customRadius} {u}
-              </div>
-              <div data-testid="single-population" data-raw={single.population} className="text-3xl font-extrabold text-primary-900 tabular-nums">
-                {formatPop(single.population)}
-              </div>
-              <div className="text-sm text-slate-500 mt-1">across {single.zipCount.toLocaleString()} ZIP areas</div>
-            </div>
           )}
 
           {/* Methodology — always visible, honest about coverage + estimate nature */}

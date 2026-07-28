@@ -7,46 +7,73 @@ import { test, expect } from '@playwright/test';
 // Local run: npm i -D @playwright/test && npx playwright install chromium
 //            npx playwright test tests/e2e/population-within-radius.spec.ts
 
-// Chicago Loop. Expected cumulative population within each ring, computed directly from
+// Chicago Loop. Cumulative population within each ring, computed directly from
 // public/data/us-zip-points.json (2020 Census ZCTA sums): 1 mi 69,115 · 3 mi 392,943 · 5 mi 903,250.
-const FIXTURE = '/population-within-radius?lat=41.8781&lng=-87.6298';
+const CENTER = 'lat=41.8781&lng=-87.6298';
+const RINGS_URL = `/population-within-radius?${CENTER}&mode=rings`; // pin mode — tool now defaults to custom
+const CUSTOM_URL = `/population-within-radius?${CENTER}`; // no mode → custom (the new default)
 const EXPECT: Record<number, number> = { 1: 69115, 3: 392943, 5: 903250 };
 const TOL = 0.02; // 2% — deterministic, but tolerant of a minor data refresh
 
-async function gotoReady(page: import('@playwright/test').Page) {
-  await page.goto(FIXTURE);
+async function gotoReady(page: import('@playwright/test').Page, url: string) {
+  await page.goto(url);
   await expect(page.getByTestId('population-map')).toHaveAttribute('data-ready', 'true', { timeout: 30_000 });
 }
 
-test('population within 1/3/5-mile rings matches the Census fixture', async ({ page }) => {
-  await gotoReady(page);
-  const cumJson = await page.getByTestId('population-map').getAttribute('data-cumulative');
-  expect(cumJson).toBeTruthy();
-  const cum = JSON.parse(cumJson as string) as Record<string, number>;
-
+test('rings mode: population within 1/3/5-mile rings matches the Census fixture', async ({ page }) => {
+  await gotoReady(page, RINGS_URL);
+  const map = page.getByTestId('population-map');
+  await expect(map).toHaveAttribute('data-mode', 'rings'); // must not silently depend on the default
+  const cum = JSON.parse((await map.getAttribute('data-cumulative')) as string) as Record<string, number>;
   for (const r of [1, 3, 5]) {
-    const val = cum[String(r)];
-    expect(val).toBeGreaterThan(0);
-    expect(Math.abs(val - EXPECT[r]) / EXPECT[r]).toBeLessThan(TOL);
+    expect(cum[String(r)]).toBeGreaterThan(0);
+    expect(Math.abs(cum[String(r)] - EXPECT[r]) / EXPECT[r]).toBeLessThan(TOL);
   }
-  // Cumulative circles must be monotonically increasing.
   expect(cum['5']).toBeGreaterThan(cum['3']);
   expect(cum['3']).toBeGreaterThan(cum['1']);
 });
 
-test('ring table renders one row per ring', async ({ page }) => {
-  await gotoReady(page);
+test('rings mode: ring table renders one row per ring', async ({ page }) => {
+  await gotoReady(page, RINGS_URL);
+  await expect(page.getByTestId('population-map')).toHaveAttribute('data-mode', 'rings');
   await expect(page.getByTestId('ring-table')).toBeVisible();
   for (const r of [1, 3, 5]) {
     await expect(page.getByTestId(`ring-row-${r}`)).toBeVisible();
   }
 });
 
-test('export CSV downloads the ring table', async ({ page }) => {
-  await gotoReady(page);
+test('rings mode: export CSV downloads the ring table', async ({ page }) => {
+  await gotoReady(page, RINGS_URL);
   const [download] = await Promise.all([
     page.waitForEvent('download'),
     page.getByTestId('export-csv').click(),
   ]);
   expect(download.suggestedFilename()).toMatch(/population-rings.*\.csv/);
 });
+
+test('custom mode is the default; population within a typed radius matches the fixture', async ({ page }) => {
+  await gotoReady(page, CUSTOM_URL);
+  const map = page.getByTestId('population-map');
+  await expect(map).toHaveAttribute('data-mode', 'custom'); // custom is the P1c default
+
+  // Default radius is 5 mi → population within 5 mi.
+  const p5 = Number(await page.getByTestId('single-population').getAttribute('data-raw'));
+  expect(Math.abs(p5 - EXPECT[5]) / EXPECT[5]).toBeLessThan(TOL);
+
+  // Set the radius via the input to 3 mi → population within 3 mi.
+  await page.getByTestId('radius-input').fill('3');
+  await expect
+    .poll(
+      async () => {
+        const v = Number(await page.getByTestId('single-population').getAttribute('data-raw'));
+        return Math.abs(v - EXPECT[3]) / EXPECT[3];
+      },
+      { timeout: 5_000 }
+    )
+    .toBeLessThan(TOL);
+});
+
+// NOTE: no drag-resize smoke test. Per the P1c spec it is added only if it can reuse a
+// proven pointer approach from a PASSING suite — this population suite has no pointer test,
+// and the marker-drag helper lives in the acre/area specs which are currently failing
+// (test-code debt). Drag-resize is covered by the device checklist instead.

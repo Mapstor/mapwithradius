@@ -347,7 +347,8 @@ const SHOTS: Shot[] = [
     key: 'population-within-radius',
     outputName: 'population-within-radius-chicago-rings.png',
     // Chicago Loop — 1/3/5-mile rings render from URL lat/lng; the map auto-fits the 5-mi ring.
-    path: '/population-within-radius?lat=41.8781&lng=-87.6298',
+    // mode=rings is explicit now that the tool defaults to custom single-radius (P1c).
+    path: '/population-within-radius?lat=41.8781&lng=-87.6298&mode=rings',
     container: '[data-testid="population-map"]',
     ready: async (page, sel) => {
       await waitForTiles(page, sel, 8);
