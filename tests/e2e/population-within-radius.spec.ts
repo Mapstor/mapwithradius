@@ -60,8 +60,9 @@ test('custom mode is the default; population within a typed radius matches the f
   const p5 = Number(await page.getByTestId('single-population').getAttribute('data-raw'));
   expect(Math.abs(p5 - EXPECT[5]) / EXPECT[5]).toBeLessThan(TOL);
 
-  // Set the radius via the input to 3 mi → population within 3 mi.
+  // Set the radius via the input to 3 mi (commit with Enter) → population within 3 mi.
   await page.getByTestId('radius-input').fill('3');
+  await page.getByTestId('radius-input').press('Enter');
   await expect
     .poll(
       async () => {

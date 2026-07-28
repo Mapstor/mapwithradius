@@ -65,6 +65,32 @@ function parseRadiusParam(raw: string): { radius: number; unit: Unit } | null {
   return { radius, unit };
 }
 
+function prefersReducedMotion(): boolean {
+  return (
+    typeof window !== 'undefined' &&
+    !!window.matchMedia &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
+// True when `bounds` already sits inside the current view with ≥10% margin — so we can
+// skip a fit and avoid a jarring micro-zoom on a small radius tweak.
+function comfortablyInView(map: L.Map, bounds: L.LatLngBounds): boolean {
+  return map.getBounds().pad(-0.1).contains(bounds);
+}
+
+// Frame the circle. animate=false → instant (new location / reduced-motion); animate=true →
+// smooth flyToBounds on a radius commit, skipped when it already fits comfortably.
+function fitToShape(map: L.Map, circle: L.Circle, animate: boolean): void {
+  const b = circle.getBounds();
+  if (animate && comfortablyInView(map, b)) return;
+  if (!animate || prefersReducedMotion()) {
+    map.fitBounds(b, { padding: [40, 40] });
+  } else {
+    map.flyToBounds(b, { padding: [40, 40], duration: 0.6 });
+  }
+}
+
 export default function PopulationRadiusMap() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -74,6 +100,7 @@ export default function PopulationRadiusMap() {
   const tooltipRef = useRef<L.Tooltip | null>(null);
   const isDraggingRef = useRef(false);
   const skipFitRef = useRef(false);
+  const lastCenterRef = useRef<Center | null>(null);
 
   const [isMapReady, setIsMapReady] = useState(false);
   const [db, setDb] = useState<ZipDatabase | null>(null);
@@ -293,20 +320,25 @@ export default function PopulationRadiusMap() {
         const tip = tooltipRef.current;
         if (tip) map.closeTooltip(tip);
         const rMeters = map.distance([center.lat, center.lng], edge.getLatLng());
-        skipFitRef.current = true; // stay put while resizing
-        setRadius(metersToUnit(rMeters, unit));
+        setRadius(metersToUnit(rMeters, unit)); // release → recompute + smooth fly-to-fit
         setTimeout(() => (isDraggingRef.current = false), 0);
       });
       edge.on('click', (e: L.LeafletMouseEvent) => L.DomEvent.stopPropagation(e));
       edgeMarkerRef.current = edge;
     }
 
-    // Frame the shape on a new location; leave the view alone while resizing/dragging.
+    // Fit behavior: instant frame on a new location; smooth fly on a radius/unit/mode
+    // commit (skipped if already comfortably framed); leave the view alone on a centre drag.
+    const outer = circleLayersRef.current[circleLayersRef.current.length - 1];
+    const last = lastCenterRef.current;
+    const centerChanged = !last || last.lat !== center.lat || last.lng !== center.lng;
+    lastCenterRef.current = { lat: center.lat, lng: center.lng };
     if (skipFitRef.current) {
-      skipFitRef.current = false;
+      skipFitRef.current = false; // centre drag: keep the view
+    } else if (centerChanged) {
+      fitToShape(map, outer, false); // new location → instant frame
     } else {
-      const largest = circleLayersRef.current[circleLayersRef.current.length - 1];
-      map.fitBounds(largest.getBounds(), { padding: [40, 40] });
+      fitToShape(map, outer, true); // radius / unit / mode commit → smooth fly-to-fit
     }
 
     // Measure + publish.
@@ -481,13 +513,16 @@ export default function PopulationRadiusMap() {
                   inputMode="decimal"
                   data-testid="radius-input"
                   value={radiusText}
-                  onChange={(e) => {
-                    const raw = e.target.value;
-                    setRadiusText(raw);
-                    const n = parseDecimal(raw);
-                    if (n !== null && n > 0) setCustomRadius(n);
+                  onChange={(e) => setRadiusText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') e.currentTarget.blur(); // Enter → commit via onBlur
                   }}
-                  onBlur={() => setRadiusText(String(customRadius))}
+                  onBlur={() => {
+                    // Commit on blur/Enter (not per keystroke): recompute + smooth fly.
+                    const n = parseDecimal(radiusText);
+                    if (n !== null && n > 0) setRadius(n);
+                    else setRadiusText(String(customRadius));
+                  }}
                   className="w-24 px-2 py-1.5 border border-slate-300 rounded-lg text-sm"
                 />
                 <span className="text-sm text-slate-500">{u}</span>
