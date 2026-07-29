@@ -47,7 +47,7 @@ const PopulationRadiusMap = dynamic(() => import('@/components/map/PopulationRad
 const FAQS: Array<{ q: string; a: string }> = [
   {
     q: 'How is the population within a radius estimated?',
-    a: 'The tool adds up the 2020 Census population of every ZIP Code Tabulation Area (ZCTA) whose center point falls inside the circle. It is an estimate: a ZIP that straddles the boundary is counted as wholly in or out, so very small radii in dense areas are approximate. Larger radii average this boundary effect out and are more reliable.',
+    a: 'Each ZIP area (ZCTA) is approximated as a circle of the same land area at its location, and the tool counts its 2020 Census population in proportion to how much of that circle your radius covers — full overlap counts fully, a partial overlap counts partially, no overlap counts zero. This area-overlap weighting is why a large rural ZIP still contributes when a circle only clips its edge. Boundaries are approximated, so figures are estimates — most accurate at radii larger than the local ZIP areas.',
   },
   {
     q: 'Why is this different from an ESRI or commercial site-selection report?',
@@ -130,9 +130,9 @@ export default function PopulationWithinRadiusPage() {
             <h2 className="section-heading mb-6">Population within a radius, from official Census counts</h2>
             <div className="bg-green-50 border border-green-200 rounded-xl p-6">
               <p className="text-lg text-slate-800 leading-relaxed">
-                Drop a point and this tool <strong>adds up the 2020 US Census population</strong> of every ZIP area
-                inside the circle — shown as <strong>1, 3, and 5-mile rings</strong> with running totals, the format
-                retail and restaurant site-selection teams use.
+                Drop a point and this tool estimates the <strong>2020 US Census population</strong> inside the circle —
+                area-weighting each ZIP so partial ones count in proportion — with a single custom radius or{' '}
+                <strong>1, 3, and 5-mile rings</strong>, the format retail and restaurant site-selection teams use.
               </p>
               <p className="text-slate-700 mt-3">
                 The numbers are official <strong>2020 Census counts</strong> (a 100% enumeration), not modeled
@@ -163,10 +163,12 @@ export default function PopulationWithinRadiusPage() {
           <div className="mb-12">
             <h2 className="section-heading mb-6">Method, accuracy, and coverage</h2>
             <p className="text-slate-700 mb-4">
-              Population is summed by ZIP Code Tabulation Area (ZCTA): a ZIP whose center point falls inside the circle
-              contributes its full 2020 population; one whose center falls outside contributes nothing. That boundary
-              rounding makes <strong>small radii in dense areas approximate</strong> — a half-mile circle downtown can
-              swing by a whole ZIP — while larger radii average out and track the real figure closely.
+              Each ZIP area (ZCTA) is approximated as a circle of the same land area at its point, and its 2020
+              population is counted by <strong>how much of that circle your radius overlaps</strong> — full overlap
+              counts fully, partial overlap counts partially. This area-overlap weighting keeps a large rural ZIP from
+              dropping to zero just because its center sits outside a moderate circle. Boundaries are still
+              approximated, so figures are <strong>estimates — most accurate at radii larger than the local ZIP
+              areas</strong>.
             </p>
             <p className="text-slate-700">
               Coverage is <strong>all 50 states, DC, and Puerto Rico</strong>. US island territories (US Virgin

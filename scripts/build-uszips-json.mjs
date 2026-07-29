@@ -20,8 +20,22 @@
 //     curl -s "https://api.census.gov/data/2020/dec/dhc?get=P1_001N&for=zip%20code%20tabulation%20area:*&key=$CENSUS_KEY" \
 //       | jq -r '(["zcta","pop"], (.[1:][] | [.[1], .[0]])) | @csv' > data/census-zcta-pop-2020.csv
 //
+// LAND-AREA SOURCE (public domain) — used for area-overlap population weighting
+//   US Census Bureau — 2020 Census ZCTA Gazetteer file, column ALAND (land area, m²).
+//   Vendored to data/census-zcta-area-2020.csv (zcta,aland_sqm). Optional input: if
+//   absent, rzm is 0 and the tool falls back to centroid inclusion.
+//   NOTE: www2.census.gov returns 403 to scripted / non-US clients, so DOWNLOAD
+//   2020_Gaz_zcta_national.zip in a BROWSER (the "ZIP Code Tabulation Areas" file at
+//   https://www.census.gov/geographies/reference-files/time-series/geo/gazetteer-files.2020.html),
+//   then run this extract snippet on the local zip (GEOID col 1, ALAND col 2, tab-delimited):
+//     { echo 'zcta,aland_sqm'; unzip -p 2020_Gaz_zcta_national.zip | tail -n +2 \
+//         | awk -F'\t' '{gsub(/^[ \t]+|[ \t]+$/,"",$1); gsub(/^[ \t]+|[ \t]+$/,"",$2); \
+//                        if($1 ~ /^[0-9]{5}$/) print $1","$2}'; } > data/census-zcta-area-2020.csv
+//   From ALAND we precompute rzm = round(sqrt(ALAND/π)) — the radius (m) of the equal-area
+//   circle for the ZCTA — stored per ZIP (smaller + no runtime sqrt).
+//
 // PROVENANCE / LICENSING (two sources, kept distinct)
-//   - Population values: US Census Bureau — PUBLIC DOMAIN (no attribution required).
+//   - Population + land area: US Census Bureau — PUBLIC DOMAIN (no attribution required).
 //   - ZIP coordinates, city/state, and ZIP->ZCTA mapping: SimpleMaps US ZIPs Free —
 //     CC BY 4.0 (already attributed site-wide as the ZIP points source).
 //
@@ -42,6 +56,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const CSV_PATH = resolve(ROOT, 'data', 'uszips.csv');
 const CENSUS_PATH = resolve(ROOT, 'data', 'census-zcta-pop-2020.csv');
+const CENSUS_AREA_PATH = resolve(ROOT, 'data', 'census-zcta-area-2020.csv');
 const OUT_PATH = resolve(ROOT, 'public', 'data', 'us-zip-points.json');
 
 // Census API now requires a free key (https://api.census.gov/data/key_signup.html);
@@ -49,6 +64,11 @@ const OUT_PATH = resolve(ROOT, 'public', 'data', 'us-zip-points.json');
 const FETCH_HINT =
   'curl -s "https://api.census.gov/data/2020/dec/dhc?get=P1_001N&for=zip%20code%20tabulation%20area:*&key=$CENSUS_KEY" ' +
   '| jq -r \'(["zcta","pop"], (.[1:][] | [.[1], .[0]])) | @csv\' > data/census-zcta-pop-2020.csv';
+
+const FETCH_AREA_HINT =
+  'download 2020_Gaz_zcta_national.zip in a browser (www2.census.gov 403s scripted/non-US clients) ' +
+  'from census.gov gazetteer-files.2020, then run the extract snippet in this script header ' +
+  '> data/census-zcta-area-2020.csv';
 
 // The vendored CSVs may be absent on CI (Vercel) — the committed JSON is used as-is.
 // Regenerate only when BOTH inputs are present; otherwise reuse the existing JSON.
@@ -149,6 +169,36 @@ function loadCensusPopulation() {
   return map;
 }
 
+// Parse the Census ZCTA land-area CSV into Map<zcta5, aland_sqm:int>. Optional input:
+// returns an empty map (with a hint) when the file is absent → rzm falls back to 0.
+function loadCensusArea() {
+  if (!existsSync(CENSUS_AREA_PATH)) {
+    process.stderr.write(
+      `build-uszips-json: ${CENSUS_AREA_PATH} not found — ZCTA land area omitted (rzm=0 → centroid fallback).\n` +
+        `  For area-overlap accuracy, fetch it with:\n    ${FETCH_AREA_HINT}\n`
+    );
+    return new Map();
+  }
+  const rows = parseCSV(readFileSync(CENSUS_AREA_PATH, 'utf8'));
+  if (rows.length < 2) return new Map();
+  const header = rows[0].map((h) => h.trim().toLowerCase());
+  const zctaCol = header.findIndex((h) => /^zcta$|zcta|geoid/.test(h));
+  const areaCol = header.findIndex((h) => /aland|area|sqm/.test(h));
+  if (zctaCol < 0 || areaCol < 0) {
+    throw new Error(`area CSV: could not find zcta + land-area columns in [${header.join(', ')}]`);
+  }
+  const map = new Map();
+  for (let r = 1; r < rows.length; r++) {
+    const row = rows[r];
+    if (!row || row.length <= Math.max(zctaCol, areaCol)) continue;
+    const zcta = zpad5(row[zctaCol]);
+    const aland = Math.round(Number(row[areaCol]));
+    if (!/^\d{5}$/.test(zcta) || !Number.isFinite(aland) || aland < 0) continue;
+    map.set(zcta, aland);
+  }
+  return map;
+}
+
 const R_MILES = 3958.7613;
 function milesBetween(aLat, aLng, bLat, bLng) {
   const toRad = (d) => (d * Math.PI) / 180;
@@ -162,6 +212,7 @@ function milesBetween(aLat, aLng, bLat, bLng) {
 
 function main() {
   const censusPop = loadCensusPopulation();
+  const censusArea = loadCensusArea();
 
   const rows = parseCSV(readFileSync(CSV_PATH, 'utf8'));
   if (rows.length === 0) throw new Error('uszips.csv parsed to zero rows');
@@ -184,7 +235,8 @@ function main() {
   let skipped = 0;
   // Join accounting
   let primaryCount = 0; // ZIPs that are their own ZCTA (population bearer)
-  let matched = 0; // primaries found in the Census file
+  let matched = 0; // primaries found in the Census pop file
+  let areaMatched = 0; // primaries found in the Census area file
   let zeroPop = 0;
   const unmatchedExamples = [];
 
@@ -209,20 +261,27 @@ function main() {
     const isPrimary = zctaFlag === 'TRUE' || parentZcta === '';
 
     let pop = 0;
+    let rzm = 0;
     if (isPrimary) {
       primaryCount++;
-      const p = censusPop.get(zpad5(zip));
+      const key = zpad5(zip);
+      const p = censusPop.get(key);
       if (p !== undefined) {
         pop = p;
         matched++;
       } else if (unmatchedExamples.length < 25) {
         unmatchedExamples.push(`${zip} (${city}, ${state})`);
       }
+      const aland = censusArea.get(key);
+      if (aland && aland > 0) {
+        rzm = Math.round(Math.sqrt(aland / Math.PI)); // equal-area circle radius (m)
+        areaMatched++;
+      }
     }
     // Non-primary child ZIPs keep pop 0 (their ZCTA is counted on its primary ZIP).
 
     if (pop === 0) zeroPop++;
-    out.push([zip, lat, lng, city, state, pop]);
+    out.push([zip, lat, lng, city, state, pop, rzm]);
     seenStates.add(state);
   }
 
@@ -231,9 +290,10 @@ function main() {
     generated: today,
     source: 'SimpleMaps US ZIPs Free (CC BY 4.0)',
     populationSource: 'US Census 2020 DHC P1_001N by ZCTA (public domain)',
+    areaSource: 'US Census 2020 ZCTA Gazetteer ALAND → rzm equal-area radius (public domain)',
     count: out.length,
     states: seenStates.size,
-    fields: ['zip', 'lat', 'lng', 'city', 'state', 'pop'],
+    fields: ['zip', 'lat', 'lng', 'city', 'state', 'pop', 'rzm'],
     rows: out,
   };
 
@@ -272,6 +332,15 @@ function main() {
   e.write(`[size]        ${mb(newSize)} (was ${mb(prevSize)}, delta ${delta >= 0 ? '+' : ''}${mb(delta)})  — budget < +1 MB\n`);
   e.write(`[join rate]   ${joinRate.toFixed(2)}% of ${primaryCount} ZCTA ZIPs matched Census pop`);
   e.write(joinRate < 95 ? `  <<< BELOW 95% — FLAG\n` : `  (>= 95% OK)\n`);
+  const areaRate = primaryCount ? (areaMatched / primaryCount) * 100 : 0;
+  e.write(`[area rate]   ${areaRate.toFixed(2)}% of ${primaryCount} ZCTA ZIPs have land area (rzm)`);
+  e.write(
+    areaMatched === 0
+      ? `  <<< NO AREA — overlap weighting inactive (fetch the Gazetteer)\n`
+      : areaRate < 95
+        ? `  <<< BELOW 95% — FLAG\n`
+        : `  (>= 95% OK)\n`
+  );
   if (unmatchedExamples.length) e.write(`              unmatched e.g.: ${unmatchedExamples.slice(0, 12).join('; ')}\n`);
   e.write(`[national]    ${nationalSum.toLocaleString()} vs ${REF_2020.toLocaleString()} ref = ${pctVsRef >= 0 ? '+' : ''}${pctVsRef.toFixed(2)}%`);
   e.write(Math.abs(pctVsRef) <= 3 ? `  (within +/-3% OK)\n` : `  <<< OUTSIDE +/-3% — FLAG\n`);

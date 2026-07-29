@@ -602,7 +602,8 @@ export default function PopulationRadiusMap() {
 
           {/* Methodology — always visible, honest about coverage + estimate nature */}
           <p className="mt-3 text-[11px] leading-snug text-slate-400">
-            Estimate based on 2020 Census ZIP-area (ZCTA) populations; small radii in dense areas are approximate.
+            Estimates use area-overlap weighting of 2020 Census ZIP-area (ZCTA) populations; boundaries are
+            approximated, so figures are estimates — most accurate at radii larger than the local ZIP areas.
             Covers all 50 states, DC, and Puerto Rico; US island territories (USVI, Guam, American Samoa) have no
             2020 ZCTA data and read zero.
           </p>

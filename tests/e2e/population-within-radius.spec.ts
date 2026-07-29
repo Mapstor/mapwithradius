@@ -7,12 +7,13 @@ import { test, expect } from '@playwright/test';
 // Local run: npm i -D @playwright/test && npx playwright install chromium
 //            npx playwright test tests/e2e/population-within-radius.spec.ts
 
-// Chicago Loop. Cumulative population within each ring, computed directly from
-// public/data/us-zip-points.json (2020 Census ZCTA sums): 1 mi 69,115 · 3 mi 392,943 · 5 mi 903,250.
+// Chicago Loop. Cumulative population within each ring, computed by the area-overlap method
+// (lib/population.ts) over the committed 2020 Census ZCTA data: 1 mi 74,590 · 3 mi 365,664 ·
+// 5 mi 793,730. (Re-baselined from the earlier centroid-in-circle values 69,115/392,943/903,250.)
 const CENTER = 'lat=41.8781&lng=-87.6298';
 const RINGS_URL = `/population-within-radius?${CENTER}&mode=rings`; // pin mode — tool now defaults to custom
 const CUSTOM_URL = `/population-within-radius?${CENTER}`; // no mode → custom (the new default)
-const EXPECT: Record<number, number> = { 1: 69115, 3: 392943, 5: 903250 };
+const EXPECT: Record<number, number> = { 1: 74590, 3: 365664, 5: 793730 };
 const TOL = 0.02; // 2% — deterministic, but tolerant of a minor data refresh
 
 async function gotoReady(page: import('@playwright/test').Page, url: string) {
