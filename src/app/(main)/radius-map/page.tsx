@@ -12,22 +12,24 @@ const CityIndexMap = dynamic(() => import('@/components/map/CityIndexMap'), {
   ),
 });
 
+const TITLE = 'City Radius Maps: New York, London, LA, Tokyo + 21 More';
+
 export const metadata: Metadata = {
-  title: 'City Radius Maps — Pre-Centered Tools for 25 Cities',
+  title: { absolute: TITLE },
   description:
     'Pre-centered radius maps for 25 major cities across 4 continents. Hand-authored coverage, local use cases, and city-specific quirks for New York, London, Paris, Tokyo, Sydney, and more.',
   alternates: {
     canonical: '/radius-map',
   },
   openGraph: {
-    title: 'City Radius Maps — Pre-Centered Tools for 25 Cities',
+    title: TITLE,
     description:
       'Pre-centered radius maps for 25 major cities across 4 continents — New York, London, Paris, Tokyo, Sydney, and more.',
     url: 'https://mapwithradius.com/radius-map',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'City Radius Maps — 25 Cities Across 4 Continents',
+    title: TITLE,
     description:
       'Pre-centered radius maps for major cities. Hand-authored coverage, local use cases, and city-specific quirks.',
   },

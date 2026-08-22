@@ -1,17 +1,25 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
+
+const TITLE = 'Distance Between 2 Points: A-to-B Distance (+ Map)';
 
 export const metadata: Metadata = {
-  title: 'Distance Between Two Points Calculator',
+  title: { absolute: TITLE },
   description: 'Measure the straight-line or driving distance between any two points on a map. Shows both "as the crow flies" and road distance.',
   alternates: {
     canonical: '/distance-calculator',
   },
   openGraph: {
-    title: 'Distance Between Two Points on a Map — Free Calculator',
+    title: TITLE,
     description: 'Measure the straight-line or driving distance between any two points on a map.',
     url: 'https://mapwithradius.com/distance-calculator',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    images: OG_IMAGES,
   },
 };
 

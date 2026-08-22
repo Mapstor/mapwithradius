@@ -1,17 +1,25 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
+
+const TITLE = 'Walking Radius Map: How Far in 5, 15, 30 Minutes?';
 
 export const metadata: Metadata = {
-  title: 'Walking & Cycling Radius Map (Free)',
+  title: { absolute: TITLE },
   description: 'See how far you can walk or cycle in 5, 10, 15, or 30 minutes. Shows real walking/biking area based on actual roads and paths.',
   alternates: {
     canonical: '/walking-radius-map',
   },
   openGraph: {
-    title: 'Walking & Cycling Radius Map — How Far Can You Walk or Bike? (Free)',
+    title: TITLE,
     description: 'See how far you can actually walk or cycle in a given time — based on real roads and paths.',
     url: 'https://mapwithradius.com/walking-radius-map',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    images: OG_IMAGES,
   },
 };
 

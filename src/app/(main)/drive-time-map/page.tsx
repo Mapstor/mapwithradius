@@ -1,17 +1,25 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { OG_IMAGES } from '@/lib/og';
+
+const TITLE = 'Drive Time Map: How Far Can You Drive in 15–60 Min?';
 
 export const metadata: Metadata = {
-  title: 'Drive Time Map — Free Isochrone Tool',
+  title: { absolute: TITLE },
   description: 'Free drive time radius map. Enter a location and time limit to see how far you can actually travel by car, foot, or bike. Uses real road data.',
   alternates: {
     canonical: '/drive-time-map',
   },
   openGraph: {
-    title: 'Drive Time Map — See How Far You Can Drive, Walk, or Cycle (Free)',
+    title: TITLE,
     description: 'Enter a location and time limit to see how far you can actually travel.',
     url: 'https://mapwithradius.com/drive-time-map',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    images: OG_IMAGES,
   },
 };
 

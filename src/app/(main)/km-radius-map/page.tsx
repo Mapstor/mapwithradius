@@ -4,14 +4,16 @@ import type { Metadata } from 'next';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
 import { buildToolPageSchema } from '@/lib/toolSchema';
 
+const TITLE = 'KM Radius Map: Draw 1, 5, 10, 50, 100 km Circles (Free)';
+
 export const metadata: Metadata = {
-  title: 'KM Radius Map — Free Metric Radius Tool',
+  title: { absolute: TITLE },
   description: 'Draw a radius in kilometers on any map. Free metric radius tool — enter an address and distance in km. No signup, no limits.',
   alternates: {
     canonical: '/km-radius-map',
   },
   openGraph: {
-    title: 'KM Radius Map — Draw a Kilometer Radius Circle on a Map (Free)',
+    title: TITLE,
     description: 'Draw a radius in kilometers on any map. Free metric radius tool — enter an address and distance in km.',
     url: 'https://mapwithradius.com/km-radius-map',
     images: [
@@ -25,6 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    title: TITLE,
     images: ['/images/km-radius-map-10-km-london.png'],
   },
 };

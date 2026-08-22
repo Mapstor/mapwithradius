@@ -13,14 +13,21 @@ export function generateStaticParams(): Params[] {
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const city = getCityBySlug(params.city);
   if (!city) {
-    return { title: 'City Radius Map' };
+    return { title: { absolute: 'City Radius Map' } };
   }
-  const title = `Radius Map of ${city.name}`;
+  const unit = city.defaultUnit === 'miles' ? 'miles' : 'km';
+  const presets = city.coverage.slice(0, 3).map((c) => c.radius);
+  const composeTitle = (count: number) =>
+    `${city.name} Radius Map: What's Within ${presets.slice(0, count).join(', ')} ${unit}?`;
+  // Keep the rendered <title> within Google's ~60-char cutoff: three presets for
+  // most cities, dropping to two if a longer city name pushes it over.
+  const full = composeTitle(3);
+  const title = full.length <= 60 ? full : composeTitle(2);
   const description = `What's within a radius of ${city.name}, ${city.country}. Mile-by-mile (or kilometer-by-kilometer) coverage from ${city.centralLandmark}, plus city-specific use cases, geographic quirks, and FAQs. Free interactive map.`;
   const url = `https://mapwithradius.com/radius-map/${city.slug}`;
   const altNames = city.alternateNames.join(', ').toLowerCase();
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: `/radius-map/${city.slug}` },
     openGraph: {

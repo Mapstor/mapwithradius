@@ -4,15 +4,17 @@ import type { Metadata } from 'next';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
 import { buildToolPageSchema } from '@/lib/toolSchema';
 
+const TITLE = 'Geofence Map Tool: Create a Geofence (Map + Free)';
+
 export const metadata: Metadata = {
-  title: 'Geofence Map Tool — Create a Geofence',
+  title: { absolute: TITLE },
   description:
     'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
   alternates: {
     canonical: '/geofence-map',
   },
   openGraph: {
-    title: 'Geofence Map Tool — Create a Radius Geofence (Free)',
+    title: TITLE,
     description:
       'What is a geofence and how to visualize one on a map. Plan geofence boundaries with our free radius tool, then export KML for your geofencing platform.',
     url: 'https://mapwithradius.com/geofence-map',
@@ -27,6 +29,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    title: TITLE,
     images: ['/images/geofence-map-delivery-zone-austin.png'],
   },
 };

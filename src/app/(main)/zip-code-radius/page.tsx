@@ -5,14 +5,16 @@ import zipDensity from '@/data/zip-density.json';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
 import { buildToolPageSchema } from '@/lib/toolSchema';
 
+const TITLE = 'ZIP Code Radius Map: Find ZIPs Within 5–100 Miles (Free)';
+
 export const metadata: Metadata = {
-  title: 'Zip Code Radius Map — Free Tool',
+  title: { absolute: TITLE },
   description: 'Enter a zip code and distance to find all zip codes within that radius. Export the list as CSV. Free, no signup.',
   alternates: {
     canonical: '/zip-code-radius',
   },
   openGraph: {
-    title: 'Zip Code Radius Map — Find Zip Codes Within a Radius (Free)',
+    title: TITLE,
     description: 'Enter a zip code and distance to find all zip codes within that radius. Export the list as CSV.',
     url: 'https://mapwithradius.com/zip-code-radius',
     images: [
@@ -26,6 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    title: TITLE,
     images: ['/images/zip-code-radius-map-dallas.png'],
   },
 };
