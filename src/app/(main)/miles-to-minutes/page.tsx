@@ -202,11 +202,6 @@ export default function MilesToMinutesPage() {
                 of a straight line? Use the{' '}
                 <Link href="/drive-time-map" className="content-link">drive time map</Link>.
               </li>
-              <li>
-                Need the distance between two specific points first? Measure it with the{' '}
-                <Link href="/distance-calculator" className="content-link">distance calculator</Link>, then bring
-                the miles back here.
-              </li>
             </ul>
           </div>
 

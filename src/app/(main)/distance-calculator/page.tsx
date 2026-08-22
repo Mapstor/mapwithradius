@@ -160,6 +160,12 @@ export default function DistanceCalculatorPage() {
               </div>
             ))}
           </div>
+
+          <p className="text-sm text-slate-600">
+            Just wondering how far a distance like 10 miles actually is from where you are — rather than the gap
+            between two points? Try{' '}
+            <Link href="/how-far-is-x-miles" className="content-link">How Far Is X Miles</Link> instead.
+          </p>
         </div>
       </section>
 

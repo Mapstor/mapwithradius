@@ -220,11 +220,6 @@ export default function HowFarIsXMilesPage() {
                 <Link href="/miles-to-minutes" className="content-link">miles to minutes</Link>.
               </li>
               <li>
-                To turn a time limit into the real area you can reach by car — following actual roads, not a
-                straight line — use the{' '}
-                <Link href="/drive-time-map" className="content-link">drive time map</Link>.
-              </li>
-              <li>
                 To measure the straight-line or road distance between two specific points, use the{' '}
                 <Link href="/distance-calculator" className="content-link">distance calculator</Link>.
               </li>
