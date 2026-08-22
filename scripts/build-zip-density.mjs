@@ -73,6 +73,9 @@ for (const m of METROS) {
 }
 
 const out = {
+  // `generated` + `source` are inherited from the us-zip-points payload, whose `generated` date
+  // is frozen (see GENERATED in build-uszips-json.mjs). So this artifact is byte-deterministic as
+  // long as the upstream stays frozen; it only changes when the vendored inputs are re-vendored.
   generated: payload.generated,
   source: `Computed from ${payload.source} (${payload.count} ZIPs)`,
   radiiMi: RADII_MI,
