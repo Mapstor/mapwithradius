@@ -421,6 +421,17 @@ export default function ZipCodeRadiusPage() {
               <li>Geofencing applications</li>
               <li>International locations (zip codes are US-only)</li>
             </ul>
+
+            <h3>Counting People Instead of ZIPs</h3>
+            <p>
+              A ZIP list tells you which areas fall inside the circle, not how many people live there. To
+              estimate the population inside a radius — 1, 3, and 5-mile rings or a custom circle, from official
+              2020 US Census counts — use the{' '}
+              <Link href="/population-within-radius" className="content-link">
+                population within a radius tool
+              </Link>
+              .
+            </p>
           </div>
         </div>
       </section>

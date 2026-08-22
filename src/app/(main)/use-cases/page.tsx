@@ -391,9 +391,10 @@ export default function UseCasesPage() {
                 pockets, and major employers.
               </li>
               <li>
-                <strong>Market-size estimation.</strong> Pull population from the radius using
-                a census-overlay tool (separate from this site), and you have a rough
-                addressable population.
+                <strong>Market-size estimation.</strong> Pull the{' '}
+                <Link href="/population-within-radius" className="content-link">population within the radius</Link>{' '}
+                — 1, 3, and 5-mile rings from 2020 US Census counts — and you have a rough addressable
+                population for a candidate site.
               </li>
               <li>
                 <strong>Cannibalization check.</strong> If your existing store has a 5-mile

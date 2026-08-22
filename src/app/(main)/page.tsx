@@ -582,6 +582,27 @@ export default function HomePage() {
                 </Link>{' '}
                 — Measure the straight-line or driving distance between any two points on a map.
               </li>
+              <li>
+                <Link href="/population-within-radius" className="content-link font-medium">
+                  Population Within a Radius
+                </Link>{' '}
+                — Estimate how many people live inside a radius — 1, 3, and 5-mile rings or a custom
+                circle — from official 2020 US Census counts.
+              </li>
+              <li>
+                <Link href="/acre-calculator" className="content-link font-medium">
+                  Acre Calculator
+                </Link>{' '}
+                — Drop a true-scale 1, 5, or 10-acre overlay on any map to see exactly how big an
+                acreage is.
+              </li>
+              <li>
+                <Link href="/area-calculator" className="content-link font-medium">
+                  Area Calculator
+                </Link>{' '}
+                — Trace any shape to measure its area and perimeter in acres, hectares, square feet,
+                m², sq mi, or km².
+              </li>
             </ul>
           </div>
 
