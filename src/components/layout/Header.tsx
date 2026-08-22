@@ -107,6 +107,17 @@ const toolsLinks = [
       </svg>
     )
   },
+  {
+    href: '/miles-to-minutes',
+    label: 'Miles to Minutes',
+    description: 'Distance to drive & walk time',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <circle cx="12" cy="12" r="9" strokeWidth={2} />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 7v5l3 2" />
+      </svg>
+    )
+  },
 ];
 
 const resourcesLinks = [

@@ -393,6 +393,21 @@ const SHOTS: Shot[] = [
       caption: 'A 10-mile distance from downtown Chicago, shown on the how-far tool above.',
     },
   },
+  {
+    key: 'miles-to-minutes',
+    outputName: 'miles-to-minutes-10-miles-chicago.png',
+    // Default state is 10 miles at the Chicago center; the ring frames deterministically.
+    path: '/miles-to-minutes',
+    container: '#miles-to-minutes-tool .leaflet-container',
+    ready: waitRadiusReady,
+    fit: { pad: 90 },
+    settleMs: 600,
+    meta: {
+      heroFor: '/miles-to-minutes',
+      alt: 'A 10-mile distance on a map beside its driving and walking times',
+      caption: 'A 10-mile distance and its drive and walk times, from the miles-to-minutes tool above.',
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------

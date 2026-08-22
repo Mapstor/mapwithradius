@@ -876,6 +876,19 @@ export default function DriveTimeMapPage() {
               <p className="text-sm text-slate-600">Measure between two points</p>
             </Link>
 
+            <Link href="/miles-to-minutes" className="bg-white rounded-xl p-5 border border-slate-200 hover:border-accent hover:shadow-md transition-all group">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                  <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <circle cx="12" cy="12" r="9" strokeWidth={2} />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 7v5l3 2" />
+                  </svg>
+                </div>
+                <h3 className="font-semibold text-slate-900">Miles to Minutes</h3>
+              </div>
+              <p className="text-sm text-slate-600">Turn a distance into drive &amp; walk time</p>
+            </Link>
+
             <Link href="/radius-on-google-maps" className="bg-white rounded-xl p-5 border border-slate-200 hover:border-accent hover:shadow-md transition-all group">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center group-hover:bg-accent/20 transition-colors">

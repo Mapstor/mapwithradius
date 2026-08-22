@@ -557,6 +557,12 @@ export default function HomePage() {
                 and walk times.
               </li>
               <li>
+                <Link href="/miles-to-minutes" className="content-link font-medium">
+                  Miles to Minutes
+                </Link>{' '}
+                — Convert a distance into driving and walking minutes at a speed you choose.
+              </li>
+              <li>
                 <Link href="/drive-time-map" className="content-link font-medium">
                   Drive Time Map
                 </Link>{' '}

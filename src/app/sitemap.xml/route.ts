@@ -18,6 +18,7 @@ const routes: Array<{
   { path: '/population-within-radius',       changeFrequency: 'monthly', priority: 0.9, images: [`${BASE}/images/population-within-radius-chicago-rings.png`] },
   { path: '/distance-calculator',            changeFrequency: 'monthly', priority: 0.9 },
   { path: '/how-far-is-x-miles',             changeFrequency: 'monthly', priority: 0.9, images: [`${BASE}/images/how-far-is-10-miles-chicago.png`] },
+  { path: '/miles-to-minutes',               changeFrequency: 'monthly', priority: 0.9, images: [`${BASE}/images/miles-to-minutes-10-miles-chicago.png`] },
   { path: '/acre-calculator',                changeFrequency: 'monthly', priority: 0.9, images: [`${BASE}/images/5-acre-lot-overlay-suburban.png`] },
   { path: '/area-calculator',                changeFrequency: 'monthly', priority: 0.9, images: [`${BASE}/images/area-calculator-farmland-polygon.png`] },
   { path: '/walking-radius-map',             changeFrequency: 'monthly', priority: 0.9 },
