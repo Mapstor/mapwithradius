@@ -64,3 +64,11 @@ test('walking chip uses walking pace', async ({ page }) => {
   expect(await stateNum(page, 'active-speed')).toBe(3);
   expect(await stateNum(page, 'active-min')).toBe(minutesFor(10, 3)); // 200
 });
+
+// 7) Migrated how-far demand: the spatial H2 + dictionary-intent FAQs live here now.
+test('migrated how-far content is present (H2 + FAQ)', async ({ page }) => {
+  await expect(page.getByRole('heading', { level: 2, name: 'How far is 10 miles?' })).toBeVisible();
+  for (const q of ['How far is 5 miles?', 'How far is a mile?', 'How far is a kilometer?']) {
+    await expect(page.getByText(q, { exact: true })).toBeVisible();
+  }
+});

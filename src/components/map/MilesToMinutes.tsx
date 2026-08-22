@@ -88,7 +88,7 @@ export default function MilesToMinutes({ defaultMiles = 10 }: MilesToMinutesProp
   }, []);
 
   // Parse ?lat&lng&r&unit on mount; with no URL params, geolocate once so the ring opens
-  // on the visitor's own location (same behavior as /how-far-is-x-miles).
+  // on the visitor's own location.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const p = new URLSearchParams(window.location.search);

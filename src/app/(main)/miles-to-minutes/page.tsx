@@ -64,6 +64,18 @@ const FAQS: Array<{ q: string; a: string }> = [
     q: 'Is this the real drive time along roads?',
     a: 'No. These are distance ÷ speed estimates at the speed you pick — a quick planning number, not a routed drive time. For time along actual roads, accounting for the road network, use the drive time map.',
   },
+  {
+    q: 'How far is 5 miles?',
+    a: 'Five miles is far enough to cross most mid-size towns — on the map above it is the distance out to the edge of the ring. In time that is about a 12-minute drive at 25 mph, roughly 5 minutes at 65 mph, or a 1-hour-40-minute walk at 3 mph.',
+  },
+  {
+    q: 'How far is a mile?',
+    a: 'One mile is 5,280 feet (about 1,609 meters) — the classic "20-minute neighborhood" distance. On foot that is roughly 20 minutes at a 3 mph pace; by car about 2 minutes at a 25 mph city average.',
+  },
+  {
+    q: 'How far is a kilometer?',
+    a: 'A kilometer is 1,000 meters, about 0.62 miles — roughly a 12-minute walk at a 3 mph pace. Switch the distance unit to km in the tool to enter kilometers directly.',
+  },
 ];
 
 export default function MilesToMinutesPage() {
@@ -136,14 +148,27 @@ export default function MilesToMinutesPage() {
               <p className="text-lg text-slate-800 leading-relaxed">
                 Ten miles takes roughly <strong>9 minutes</strong> at highway speed (65 mph) up to about{' '}
                 <strong>24 minutes</strong> on city streets (25 mph) — and about a{' '}
-                <strong>3-hour-20-minute walk</strong> (3 mph). Type any distance and pick a speed in the tool
-                above to see the exact minutes.
+                <strong>3-hour-20-minute walk</strong> (3 mph). And how far is 10 miles? It&apos;s the distance
+                out to the edge of the ring on the map above — far enough to cross a mid-size city. Type any
+                distance and pick a speed to see it both ways, as a shape and as minutes.
               </p>
               <p className="text-sm text-slate-500 mt-3">
                 Each figure is distance ÷ speed, rounded to whole minutes and labeled with the speed it assumes
                 — a planning estimate, not a routed drive time.
               </p>
             </div>
+          </div>
+
+          {/* How far is 10 miles — spatial + temporal (migrated intent) */}
+          <div className="mb-10">
+            <h2 className="section-heading mb-3">How far is 10 miles?</h2>
+            <p className="text-slate-700">
+              Ten miles is far enough to cross most mid-size cities — on the map above it&apos;s the distance out
+              to the edge of the circle. In travel time that&apos;s about a <strong>24-minute</strong> drive on
+              city streets (25 mph), <strong>9 minutes</strong> on the highway (65 mph), or a{' '}
+              <strong>3-hour-20-minute</strong> walk (3 mph). Drag the ring or type a distance to see any number
+              both ways — as a shape and as minutes.
+            </p>
           </div>
 
           {/* 5 miles */}
@@ -193,9 +218,8 @@ export default function MilesToMinutesPage() {
             <h2 className="section-heading mb-3">Distance, time, and reachable area</h2>
             <ul className="list-disc list-outside pl-6 space-y-2 text-slate-700">
               <li>
-                Want to see the distance on a map from where you are?{' '}
-                <Link href="/how-far-is-x-miles" className="content-link">How far is X miles</Link> draws it from
-                your location.
+                To draw a distance on a full-screen map{' '}
+                <Link href="/" className="content-link">from my location</Link>, use the radius map.
               </li>
               <li>
                 Want the reverse — how far you can actually reach in a set time by car, along real roads instead

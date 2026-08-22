@@ -1,6 +1,6 @@
-// Plain arithmetic for the distance/time comprehension tools (/how-far-is-x-miles,
-// /miles-to-minutes). Every figure shown on those pages comes from these pure functions
-// with an explicitly-labeled speed assumption — no fabricated "average" statistics.
+// Plain arithmetic for the /miles-to-minutes comprehension tool. Every figure shown on the
+// page comes from these pure functions with an explicitly-labeled speed assumption — no
+// fabricated "average" statistics.
 
 /** Reference speeds, labeled on-page next to every figure they produce. */
 export const SPEEDS = {
