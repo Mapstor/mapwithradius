@@ -59,6 +59,13 @@ const CENSUS_PATH = resolve(ROOT, 'data', 'census-zcta-pop-2020.csv');
 const CENSUS_AREA_PATH = resolve(ROOT, 'data', 'census-zcta-area-2020.csv');
 const OUT_PATH = resolve(ROOT, 'public', 'data', 'us-zip-points.json');
 
+// Data build date, stamped into the artifact's `generated` field (shown to users as the
+// "verified" date). FROZEN to the vendored inputs' build date so `prebuild`/`predev`
+// regeneration is byte-deterministic. This was `new Date().toISOString()`, which re-stamped
+// the current date every run and dirtied the committed JSON on any day after it was built.
+// Bump this ONLY when you re-vendor the data/*.csv inputs.
+const GENERATED = '2026-07-29';
+
 // Census API now requires a free key (https://api.census.gov/data/key_signup.html);
 // export CENSUS_KEY=<your key> before running.
 const FETCH_HINT =
@@ -285,9 +292,8 @@ function main() {
     seenStates.add(state);
   }
 
-  const today = new Date().toISOString().slice(0, 10);
   const payload = {
-    generated: today,
+    generated: GENERATED,
     source: 'SimpleMaps US ZIPs Free (CC BY 4.0)',
     populationSource: 'US Census 2020 DHC P1_001N by ZCTA (public domain)',
     areaSource: 'US Census 2020 ZCTA Gazetteer ALAND → rzm equal-area radius (public domain)',
