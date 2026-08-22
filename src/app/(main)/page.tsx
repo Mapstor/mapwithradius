@@ -550,6 +550,13 @@ export default function HomePage() {
 
             <ul className="space-y-3 text-slate-600">
               <li>
+                <Link href="/how-far-is-x-miles" className="content-link font-medium">
+                  How Far Is X Miles
+                </Link>{' '}
+                — See how far 1, 5, 10, or 50 miles reaches from your exact location, with approximate drive
+                and walk times.
+              </li>
+              <li>
                 <Link href="/drive-time-map" className="content-link font-medium">
                   Drive Time Map
                 </Link>{' '}

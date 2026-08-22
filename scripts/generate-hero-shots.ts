@@ -378,6 +378,21 @@ const SHOTS: Shot[] = [
       caption: 'A 5-km geofence zone around Austin, TX — draw and label service areas with the geofence map above.',
     },
   },
+  {
+    key: 'how-far-is-x-miles',
+    outputName: 'how-far-is-10-miles-chicago.png',
+    // Chicago Loop — a 10-mile circle from URL lat/lng; the center handle marks the "from you" point.
+    path: '/how-far-is-x-miles?lat=41.8781&lng=-87.6298&r=10mi',
+    container: '#how-far-tool .leaflet-container',
+    ready: waitRadiusReady,
+    fit: { pad: 90 },
+    settleMs: 600,
+    meta: {
+      heroFor: '/how-far-is-x-miles',
+      alt: 'A 10-mile circle centered on downtown Chicago showing how far 10 miles reaches from a point',
+      caption: 'A 10-mile distance from downtown Chicago, shown on the how-far tool above.',
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------

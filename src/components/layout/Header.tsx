@@ -96,6 +96,17 @@ const toolsLinks = [
       </svg>
     )
   },
+  {
+    href: '/how-far-is-x-miles',
+    label: 'How Far Is X Miles',
+    description: 'See a distance from your location',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <circle cx="12" cy="12" r="3" strokeWidth={2} />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2v3m0 14v3m9-11h-3M5 12H2" />
+      </svg>
+    )
+  },
 ];
 
 const resourcesLinks = [
