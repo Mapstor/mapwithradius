@@ -396,8 +396,8 @@ const SHOTS: Shot[] = [
   {
     key: 'miles-to-minutes',
     outputName: 'miles-to-minutes-10-miles-chicago.png',
-    // Default state is 10 miles at the Chicago center; the ring frames deterministically.
-    path: '/miles-to-minutes',
+    // Chicago 10-mile ring via URL lat/lng so the shot skips auto-geolocation (deterministic).
+    path: '/miles-to-minutes?lat=41.8781&lng=-87.6298&r=10mi',
     container: '#miles-to-minutes-tool .leaflet-container',
     ready: waitRadiusReady,
     fit: { pad: 90 },

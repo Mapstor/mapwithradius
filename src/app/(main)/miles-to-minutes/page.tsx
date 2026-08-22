@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
 import { buildToolPageSchema } from '@/lib/toolSchema';
 
-const TITLE = 'How Many Minutes Is 5, 10, 20 Miles? Driving & Walking';
+const TITLE = 'Miles to Minutes: How Many Minutes Is 5, 10, 20, 100 Miles?';
 const DESCRIPTION =
   'Convert miles to minutes: how long 1 to 100 miles takes to drive on city streets or the highway, or to walk — at a speed you choose. Live calculator with a map. Free.';
 const HERO = '/images/miles-to-minutes-10-miles-chicago.png';
@@ -109,7 +109,7 @@ export default function MilesToMinutesPage() {
       <section className="bg-slate-50">
         <div className="bg-primary-900 py-3 lg:py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">How Many Minutes Is 10 Miles?</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">How Many Minutes Is 5, 10, 20, 100 Miles?</h1>
             <p className="text-slate-300 hidden lg:block">
               Turn any distance into driving and walking minutes — at a speed you choose.
             </p>

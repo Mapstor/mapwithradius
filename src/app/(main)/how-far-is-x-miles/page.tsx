@@ -4,7 +4,7 @@ import type { Metadata } from 'next';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
 import { buildToolPageSchema } from '@/lib/toolSchema';
 
-const TITLE = 'How Far Is 5, 10, 50 Miles? See It From Your Location';
+const TITLE = 'How Far Is 5, 10, 50 Miles From My Location? (See on Map)';
 const DESCRIPTION =
   'See how far 1, 2, 3, 5, 10, 50, or 100 miles really is from your exact location on a map — with approximate drive and walk times for each distance. Free, no signup.';
 const HERO = '/images/how-far-is-10-miles-chicago.png';
@@ -120,7 +120,7 @@ export default function HowFarIsXMilesPage() {
       <section className="bg-slate-50">
         <div className="bg-primary-900 py-3 lg:py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">How Far Is 10 Miles?</h1>
+            <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">How Far Is 5, 10, 50 Miles From My Location?</h1>
             <p className="text-slate-300 hidden lg:block">
               See how far any distance reaches from your exact location — with approximate drive and walk times.
             </p>
