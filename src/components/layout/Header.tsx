@@ -107,6 +107,18 @@ const toolsLinks = [
       </svg>
     )
   },
+  {
+    href: '/how-far-did-i-run',
+    label: 'How Far Did I Run',
+    description: 'Trace a route to measure it',
+    icon: (
+      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 19l5-10 4 6 5-9" />
+        <circle cx="5" cy="19" r="1.5" strokeWidth={2} />
+        <circle cx="19" cy="6" r="1.5" strokeWidth={2} />
+      </svg>
+    )
+  },
 ];
 
 const resourcesLinks = [

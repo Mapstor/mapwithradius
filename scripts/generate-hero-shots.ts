@@ -393,6 +393,24 @@ const SHOTS: Shot[] = [
       caption: 'A 10-mile distance and its drive and walk times, from the miles-to-minutes tool above.',
     },
   },
+  {
+    key: 'how-far-did-i-run',
+    outputName: 'how-far-did-i-run-central-park-loop.png',
+    // Central Park perimeter loop seeded via ?route=; the tool auto-fits the polyline.
+    path: '/how-far-did-i-run?route=40.7681,-73.9819;40.7648,-73.9730;40.7968,-73.9495;40.7989,-73.9583;40.7681,-73.9819',
+    container: '#how-far-did-i-run-tool .leaflet-container',
+    ready: async (page, sel) => {
+      await waitForTiles(page, sel, 8);
+      await page.waitForSelector('#how-far-did-i-run-tool path.leaflet-interactive', { timeout: 15000 });
+      await waitForTilesStable(page, sel);
+    },
+    settleMs: 700,
+    meta: {
+      heroFor: '/how-far-did-i-run',
+      alt: 'A running route traced point by point around Central Park with its measured distance',
+      caption: 'A route traced around Central Park — tap each turn and the distance adds up as you go.',
+    },
+  },
 ];
 
 // ---------------------------------------------------------------------------

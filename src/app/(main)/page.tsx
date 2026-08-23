@@ -556,6 +556,12 @@ export default function HomePage() {
                 — Convert a distance into driving and walking minutes at a speed you choose.
               </li>
               <li>
+                <Link href="/how-far-did-i-run" className="content-link font-medium">
+                  How Far Did I Run
+                </Link>{' '}
+                — Trace a running, walking, or cycling route on the map to measure its distance and time.
+              </li>
+              <li>
                 <Link href="/drive-time-map" className="content-link font-medium">
                   Drive Time Map
                 </Link>{' '}

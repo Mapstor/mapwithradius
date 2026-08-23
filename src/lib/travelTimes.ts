@@ -20,6 +20,12 @@ export function minutesFor(miles: number, mph: number): number {
   return (miles / mph) * 60;
 }
 
+/** Minutes to cover `miles` at a running/walking/cycling pace of `minPerMile`. */
+export function minutesAtPace(miles: number, minPerMile: number): number {
+  if (!(miles > 0) || !(minPerMile > 0)) return 0;
+  return miles * minPerMile;
+}
+
 /** Convert kilometers to miles (for driving/walking-time math stated in mph). */
 export function kmToMiles(km: number): number {
   return km * MILES_PER_KM;
