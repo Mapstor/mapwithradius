@@ -59,7 +59,7 @@ export default function HomePage() {
             <div>
               <h1 className="text-lg lg:text-xl font-semibold text-white">Radius Map Tool</h1>
               <p className="text-slate-400 text-sm hidden sm:block">
-                Haversine-accurate circles on OpenStreetMap
+                Haversine-accurate circles on an interactive map
               </p>
             </div>
             <div className="flex items-center gap-4 text-xs text-slate-400">
@@ -439,7 +439,7 @@ export default function HomePage() {
                 API (~200KB+). The map loads faster, especially on mobile.
               </li>
               <li>
-                <strong className="text-slate-900">Tool-side privacy.</strong> Map tiles come from OpenStreetMap, not Google Maps, so the map itself doesn&apos;t send your location or search queries to Google. (For analytics, ads, and EEA/UK consent, see our <Link href="/privacy" className="content-link">Privacy Policy</Link>.)
+                <strong className="text-slate-900">Tool-side privacy.</strong> Map tiles come from Esri, not Google Maps, so the map itself doesn&apos;t send your location or search queries to Google. (For analytics, ads, and EEA/UK consent, see our <Link href="/privacy" className="content-link">Privacy Policy</Link>.)
               </li>
             </ul>
 
@@ -492,7 +492,7 @@ export default function HomePage() {
                 <tbody>
                   <tr>
                     <td>Map provider</td>
-                    <td>OpenStreetMap (free)</td>
+                    <td>Esri (free)</td>
                   </tr>
                   <tr>
                     <td>Multiple circles</td>
@@ -680,8 +680,8 @@ export default function HomePage() {
                 </summary>
                 <div className="faq-content">
                   Google Maps does not have a built-in radius tool. You cannot draw a circle directly in Google Maps or
-                  Google My Maps without workarounds involving KML files. Use our tool instead — it works with
-                  OpenStreetMap and lets you draw radius circles instantly.{' '}
+                  Google My Maps without workarounds involving KML files. Use our tool instead — it works right in
+                  your browser and lets you draw radius circles instantly.{' '}
                   <Link href="/radius-on-google-maps" className="content-link">
                     Read our full guide on radius on Google Maps &rarr;
                   </Link>
@@ -711,7 +711,7 @@ export default function HomePage() {
                 </summary>
                 <div className="faq-content">
                   Yes. Map With Radius is completely free with no limits. There&apos;s no account to create, no premium
-                  tier, and no usage cap. The tool runs on open-source technology (Leaflet + OpenStreetMap) which has no
+                  tier, and no usage cap. The tool runs on lightweight open-source technology (Leaflet), which has no
                   per-use costs.
                 </div>
               </details>
@@ -865,7 +865,7 @@ export default function HomePage() {
                 name: 'Can I draw a radius on Google Maps?',
                 acceptedAnswer: {
                   '@type': 'Answer',
-                  text: 'Google Maps does not have a built-in radius tool. You cannot draw a circle directly in Google Maps or Google My Maps without workarounds involving KML files. Use Map With Radius instead — it works with OpenStreetMap and lets you draw radius circles instantly.',
+                  text: 'Google Maps does not have a built-in radius tool. You cannot draw a circle directly in Google Maps or Google My Maps without workarounds involving KML files. Use Map With Radius instead — it works right in your browser and lets you draw radius circles instantly.',
                 },
               },
               {
