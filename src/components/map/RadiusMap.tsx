@@ -501,10 +501,12 @@ export default function RadiusMap({
       .leaflet-tooltip.radius-edge-label b { font-weight: 800; }
       .leaflet-tooltip-top.radius-edge-label::before { border-top-color: #0f172a; }
 
-      /* Keep the scale bar + attribution above the mobile bottom sheet (they used to
-         render through it). The sheet publishes its visible height as --mwr-chrome-offset. */
+      /* Pin the scale bar + attribution just above the sheet's PEEK (~158px); capped so
+         they don't ride the sheet up into mid-map when it expands (the sheet then covers
+         them, which is fine — the map is covered too). The sheet publishes its height as
+         --mwr-chrome-offset. */
       @media (max-width: 1023px) {
-        #radius-tool .leaflet-bottom { bottom: var(--mwr-chrome-offset, 0px); }
+        #radius-tool .leaflet-bottom { bottom: min(var(--mwr-chrome-offset, 0px), 158px); }
         /* Zoom control sits below the bottom sheet (z-[999]) instead of poking above it,
            and hides entirely once the sheet is expanded past peek. The sheet publishes its
            committed detent as data-mwr-detent on <html>. */

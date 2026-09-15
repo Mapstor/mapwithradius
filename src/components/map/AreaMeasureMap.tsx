@@ -324,7 +324,7 @@ export default function AreaMeasureMap({
         .measure-vertex.active .measure-vertex-dot { transition: none; }
       }
       @media (max-width: 1023px) {
-        #area-tool .leaflet-bottom { bottom: var(--mwr-chrome-offset, 0px); }
+        #area-tool .leaflet-bottom { bottom: min(var(--mwr-chrome-offset, 0px), 158px); }
       }
     `;
     document.head.appendChild(style);

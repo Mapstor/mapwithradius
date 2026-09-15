@@ -312,7 +312,7 @@ export default function AcreOverlayMap({
       }
       /* Keep scale bar + attribution above the mobile sheet (it publishes its height). */
       @media (max-width: 1023px) {
-        #acre-tool .leaflet-bottom { bottom: var(--mwr-chrome-offset, 0px); }
+        #acre-tool .leaflet-bottom { bottom: min(var(--mwr-chrome-offset, 0px), 158px); }
       }
     `;
     document.head.appendChild(style);
