@@ -40,11 +40,16 @@ async function tapMap(page: Page, fx = 0.5, fy = 0.32) {
   await page.touchscreen.tap(size.width * fx, size.height * fy);
 }
 
-/** Create the first circle by tapping the map, then wait for the fit-to-circle zoom. */
+/**
+ * Ensure a circle sits at the tapped point. Phase 1 (homepage-ux) draws a starter circle on
+ * load, so this tap MOVES that circle (handleMapClick, isAddingCircle=false) rather than
+ * creating a fresh one — the edge handle is already present. The waitFor is a cheap
+ * circle-exists guard; the fixed sleep covers the move's fit-to-circle animation + settle.
+ */
 async function createCircle(page: Page, fx = 0.5, fy = 0.32) {
   await tapMap(page, fx, fy);
   await page.locator('.radius-handle.edge').first().waitFor({ state: 'visible' });
-  await page.waitForTimeout(900); // fitBounds animation + marker settle
+  await page.waitForTimeout(900); // fit animation + marker settle
 }
 
 async function radiusValue(page: Page): Promise<number> {
@@ -56,6 +61,10 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
   // Sheet is client-only; wait for it to mount at the peek detent.
   await expect(page.getByTestId('mwr-sheet')).toBeVisible();
+  // Phase 1 (homepage-ux): a starter circle is now drawn on load. Geolocation is granted +
+  // pinned in this project, so it's a 1 mi circle at the pinned center. Wait for it so every
+  // test starts from a deterministic single-circle state (taps then MOVE it, not create).
+  await page.locator('.radius-handle.edge').first().waitFor({ state: 'visible' });
 });
 
 // 1) First touchscreen drag on the edge handle changes the radius (bug-1a regression gate).
@@ -97,12 +106,12 @@ test('radius pill accepts direct numeric entry', async ({ page }) => {
 
 // 4) mi/km toggle converts the pill, stats and presets (preserves physical size).
 test('mi/km toggle converts every readout', async ({ page }) => {
-  await createCircle(page); // 10 mi default
-  await expect(page.getByTestId('mwr-radius-value')).toHaveText('10.0');
+  await createCircle(page); // moves the 1 mi starter circle to the tap point
+  await expect(page.getByTestId('mwr-radius-value')).toHaveText('1.0');
 
   await page.getByTestId('mwr-unit-km').tap();
-  // 10 mi ≈ 16.09 km
-  await expect(page.getByTestId('mwr-radius-value')).toHaveText('16.1');
+  // 1 mi ≈ 1.61 km
+  await expect(page.getByTestId('mwr-radius-value')).toHaveText('1.6');
   // open the body so presets/stats are on screen, then check labels
   const peek = await center(page, 'mwr-peek');
   await touchDrag(page, peek, { x: peek.x, y: peek.y - 260 }, { steps: 20, delay: 30 });
@@ -215,4 +224,52 @@ test('full-detent body scrolls to the KML button (reachable + clickable)', async
   await kml.scrollIntoViewIfNeeded();
   await expect(kml).toBeInViewport({ ratio: 1 }); // fully on-screen at full detent
   await kml.click({ trial: true }); // actionable/clickable, without triggering the export
+});
+
+// ---- Phase 1 (homepage-ux): starter circle + persistent radius label -------------------
+
+// Pixel distance between the center and edge handles = the circle's on-screen radius.
+async function onScreenDiameterPx(page: Page): Promise<number> {
+  const c = await page.locator('.radius-handle.center').first().boundingBox();
+  const e = await page.locator('.radius-handle.edge').first().boundingBox();
+  if (!c || !e) throw new Error('handles not found');
+  const cx = c.x + c.width / 2, cy = c.y + c.height / 2;
+  const ex = e.x + e.width / 2, ey = e.y + e.height / 2;
+  return 2 * Math.hypot(ex - cx, ey - cy);
+}
+
+// 9) A starter circle is drawn on load without any tap (geolocation granted + pinned → 1 mi),
+//    and it satisfies the ≥60px visibility rule.
+test('a default circle is drawn on load and is ≥60px across', async ({ page }) => {
+  await expect(page.locator('.radius-handle.center').first()).toBeVisible();
+  await expect(page.locator('.radius-handle.edge').first()).toBeVisible();
+  await expect(page.getByTestId('mwr-radius-value')).toHaveText('1.0'); // 1 mi
+  await expect(page.getByTestId('mwr-unit-mi')).toHaveAttribute('aria-pressed', 'true');
+
+  await page.waitForTimeout(900); // let the load fit-to-circle settle
+  expect(await onScreenDiameterPx(page)).toBeGreaterThanOrEqual(60);
+});
+
+// 10) The persistent radius pill is visible at rest and shows both units for the active circle.
+test('persistent radius label is visible at rest with both units', async ({ page }) => {
+  await page.waitForTimeout(900); // settle the load fit so the pill is framed on-screen
+  const label = page.locator('.radius-edge-label').first();
+  await expect(label).toBeVisible();
+  await expect(label).toBeInViewport(); // rendered on-screen, not just present in the DOM
+  await expect(label).toContainText('1.0 mi'); // active unit first
+  await expect(label).toContainText('1.6 km'); // active circle → both units
+});
+
+// 11) The persistent label updates after a (programmatic) radius change via the pill.
+test('persistent radius label updates after a radius change', async ({ page }) => {
+  await page.getByTestId('mwr-radius-pill').tap();
+  const input = page.getByTestId('mwr-radius-input');
+  await expect(input).toBeFocused();
+  await input.fill('7');
+  await input.press('Enter');
+  await expect(page.getByTestId('mwr-radius-value')).toHaveText('7.0');
+
+  const label = page.locator('.radius-edge-label').first();
+  await expect(label).toContainText('7.0 mi');
+  await expect(label).toContainText('11.3 km'); // 7 mi ≈ 11.27 km
 });

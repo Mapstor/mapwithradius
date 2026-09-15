@@ -25,9 +25,21 @@ interface RadiusMapWrapperProps {
   defaultUnit?: DistanceUnit;
   defaultRadius?: number;
   initialCenter?: { lat: number; lng: number };
+  /**
+   * Homepage-only: on load with no share-URL state and no initialCenter, draw a starter
+   * circle so the tool is immediately "alive". If geolocation is ALREADY granted we place a
+   * 1-unit circle at the user's location (never prompting); otherwise a `defaultRadius`
+   * circle at the default map center. The wrapper then owns load-time geolocation, so the
+   * inner map's auto-geolocation is skipped to avoid a double request / marker overlap.
+   */
+  defaultCircleOnLoad?: boolean;
 }
 
-export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius = 10, initialCenter }: RadiusMapWrapperProps) {
+// Geographic center of the contiguous US — the inner map's initial view. Used as the
+// fallback center for the default circle when geolocation isn't already granted.
+const DEFAULT_MAP_CENTER = { lat: 39.8283, lng: -98.5795 };
+
+export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius = 10, initialCenter, defaultCircleOnLoad = false }: RadiusMapWrapperProps) {
   const [circles, setCircles] = useState<RadiusCircle[]>([]);
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>(null);
   const [radius, setRadius] = useState(defaultRadius);
@@ -37,6 +49,11 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
   const [locationError, setLocationError] = useState<string | null>(null);
   const [isAddingCircle, setIsAddingCircle] = useState(true); // Start in "add mode"
   const [hasUrlParams, setHasUrlParams] = useState(false);
+  // Homepage only: gate the radar-pulse invite. It starts suppressed so the starter circle
+  // (which usually resolves in well under a second) replaces it with no flash; a short grace
+  // timer then re-enables it, so a slow geolocation fix shows the pulse as a "locating" state
+  // instead of a dead empty map, and it also returns if the user later clears every circle.
+  const [inviteAllowed, setInviteAllowed] = useState(!defaultCircleOnLoad);
   const [isDragging, setIsDragging] = useState(false);
   // Phase 2 UI state
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -132,9 +149,65 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
       markInteracted(); // prefilled center already has a circle → stop the desktop search glow
       setTimeout(() => fitToCircle(initialCenter.lat, initialCenter.lng, radiusMeters), 500);
     }
+
+    // Homepage starter circle — only when nothing else supplied one (no share URL, no
+    // initialCenter, no ?locate). Makes the tool immediately "alive" above the fold.
+    if (defaultCircleOnLoad && params.circles.length === 0 && !initialCenter && !params.locate) {
+      const place = (lat: number, lng: number, radiusInUnit: number) => {
+        const radiusMeters = toMeters(radiusInUnit, defaultUnit);
+        const newCircle: RadiusCircle = {
+          id: `circle-${Date.now()}`,
+          lat,
+          lng,
+          radiusMeters,
+          color: '#4285F4',
+          unit: defaultUnit,
+        };
+        setCircles([newCircle]);
+        setSelectedCircleId(newCircle.id);
+        setRadius(radiusInUnit);
+        setIsAddingCircle(false);
+        // Note: no markInteracted() — the default circle is auto-drawn, so the desktop
+        // search glow keeps inviting the user to search/interact.
+        setTimeout(() => fitToCircle(lat, lng, radiusMeters), 500);
+      };
+
+      // Permissions API ONLY — never prompt on load. Granted → a 1-unit circle at the
+      // user's location (getCurrentPosition won't prompt once granted); prompt/denied/
+      // unknown/unsupported → a defaultRadius circle at the default map center.
+      const permissions = (navigator as Navigator & { permissions?: Permissions }).permissions;
+      if (permissions?.query && navigator.geolocation) {
+        permissions
+          .query({ name: 'geolocation' as PermissionName })
+          .then((status) => {
+            if (status.state === 'granted') {
+              navigator.geolocation.getCurrentPosition(
+                (pos) => place(pos.coords.latitude, pos.coords.longitude, 1),
+                () => place(DEFAULT_MAP_CENTER.lat, DEFAULT_MAP_CENTER.lng, defaultRadius),
+                { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 }
+              );
+            } else {
+              place(DEFAULT_MAP_CENTER.lat, DEFAULT_MAP_CENTER.lng, defaultRadius);
+            }
+          })
+          .catch(() => place(DEFAULT_MAP_CENTER.lat, DEFAULT_MAP_CENTER.lng, defaultRadius));
+      } else {
+        place(DEFAULT_MAP_CENTER.lat, DEFAULT_MAP_CENTER.lng, defaultRadius);
+      }
+    }
   }, []);
 
-  // Helper to fit map to circle bounds - always zoom to show circle with ~40 miles context
+  // Homepage: re-enable the radar-pulse invite shortly after mount. The starter circle
+  // normally draws first (hiding the invite via circles.length), so this only surfaces the
+  // pulse when geolocation is still resolving — a "locating" state, never a dead empty map.
+  useEffect(() => {
+    if (!defaultCircleOnLoad) return;
+    const t = setTimeout(() => setInviteAllowed(true), 700);
+    return () => clearTimeout(t);
+  }, [defaultCircleOnLoad]);
+
+  // Frame the map to a circle: comfortable ~4× context, but never so far out that the
+  // drawn circle shrinks below the Phase-1 visibility floor of 60px across.
   const fitToCircle = useCallback((lat: number, lng: number, radiusMeters: number) => {
     if (!mapRef.current) return;
 
@@ -142,15 +215,18 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
     const map = mapRef.current;
     const center = L.latLng(lat, lng);
 
-    const viewMultiplier = 4;
-    const paddedBounds = center.toBounds(radiusMeters * viewMultiplier);
+    // Comfortable 4× context, capped so a large circle doesn't slam to street level…
+    const paddedBounds = center.toBounds(radiusMeters * 4);
+    const fitZoom = Math.min(14, map.getBoundsZoom(paddedBounds, false, L.point(40, 40)));
 
-    map.fitBounds(paddedBounds, {
-      padding: [40, 40],
-      animate: true,
-      duration: 0.3,
-      maxZoom: 14,
-    });
+    // …but zoom in further if needed so the circle is always ≥ 60px in diameter.
+    // meters/pixel at zoom z = C / 2^z, so diameter_px = 2·r·2^z / C ≥ 60 ⇒ z ≥ log2(30·C/r).
+    // Ceil to the next integer so zoom-snapping can't leave us a hair under the threshold.
+    const C = (40075016.686 * Math.cos((lat * Math.PI) / 180)) / 256; // meters/pixel at zoom 0
+    const minVisibleZoom = Math.ceil(Math.log2((30 * C) / radiusMeters));
+    const zoom = Math.min(map.getMaxZoom(), Math.max(fitZoom, minVisibleZoom));
+
+    map.setView(center, zoom, { animate: true, duration: 0.3 });
   }, []);
 
   // Update selected circle when radius/unit/color changes
@@ -421,7 +497,10 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
       }
     : null;
 
-  const showInvite = circles.length === 0 && !isMobileSearchOpen && toolInView;
+  // On the homepage the starter circle replaces the radar-pulse invite; it's suppressed
+  // until the grace timer elapses (see inviteAllowed) so there's no flash before the circle,
+  // yet a slow geolocation fix still surfaces the pulse and it returns after a "Clear all".
+  const showInvite = circles.length === 0 && !isMobileSearchOpen && toolInView && inviteAllowed;
 
   return (
     // #radius-tool marks the whole interactive tool (map + controls/sheet) as a Raptive
@@ -444,7 +523,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
         </div>
       )}
 
-      {/* Circle Info Card — desktop only (mobile uses the sheet's pill + stats + drag tooltip) */}
+      {/* Circle Info Card — desktop only (mobile uses the sheet's pill + stats + the map's persistent radius pill) */}
       {circleInfo && (
         <div className="hidden lg:block absolute left-4 bottom-20 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200 p-3 text-sm min-w-[200px]">
           <div className="flex items-center justify-between mb-2">
@@ -508,7 +587,9 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
             mapRef={mapRef}
-            skipAutoGeolocation={hasUrlParams}
+            // When the wrapper draws the starter circle it also owns load-time geolocation,
+            // so skip the inner map's auto-locate (avoids a second request + marker overlap).
+            skipAutoGeolocation={hasUrlParams || defaultCircleOnLoad}
           />
         </div>
 

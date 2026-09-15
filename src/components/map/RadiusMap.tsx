@@ -70,12 +70,11 @@ export default function RadiusMap({
   skipAutoGeolocation = false,
 }: RadiusMapProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const circleLayersRef = useRef<Map<string, { circle: L.Circle; centerMarker: L.Marker; edgeMarker: L.Marker }>>(new Map());
+  const circleLayersRef = useRef<Map<string, { circle: L.Circle; centerMarker: L.Marker; edgeMarker: L.Marker; label: L.Tooltip }>>(new Map());
   // Bearing (radians, 0 = north) where each circle's edge handle currently sits. The handle
   // stays wherever the finger left it instead of snapping back to north between gestures.
   const edgeBearingsRef = useRef<Map<string, number>>(new Map());
   const userLocationMarkerRef = useRef<L.Marker | null>(null);
-  const dragTooltipRef = useRef<L.Tooltip | null>(null);
   const lastSnapRef = useRef<number | null>(null);
   const [isMapReady, setIsMapReady] = useState(false);
 
@@ -126,15 +125,6 @@ export default function RadiusMap({
       crossOrigin: 'anonymous', // keep the PNG-export canvas untainted (toBlob)
     }).addTo(map);
 
-    // One reusable tooltip that rides the edge handle during a resize drag.
-    dragTooltipRef.current = L.tooltip({
-      direction: 'top',
-      offset: L.point(0, -10),
-      opacity: 1,
-      className: 'radius-drag-tip',
-      interactive: false,
-    });
-
     // Map clicks create/move circles — but never while a handle is being dragged.
     map.on('click', (e: L.LeafletMouseEvent) => {
       if (!isDraggingCenterRef.current && !isDraggingEdgeRef.current) {
@@ -179,7 +169,6 @@ export default function RadiusMap({
     return () => {
       map.remove();
       mapRef.current = null;
-      dragTooltipRef.current = null;
     };
   }, [mapRef, skipAutoGeolocation]);
 
@@ -211,6 +200,7 @@ export default function RadiusMap({
         layers.circle.remove();
         layers.centerMarker.remove();
         layers.edgeMarker.remove();
+        layers.label.remove();
         circleLayersRef.current.delete(id);
         edgeBearingsRef.current.delete(id);
       }
@@ -225,7 +215,8 @@ export default function RadiusMap({
         const isDraggingThis =
           isDraggingCenterRef.current === circleData.id || isDraggingEdgeRef.current === circleData.id;
 
-        // Skip repositioning if this circle is mid-drag (its handles drive the map directly)
+        // Skip repositioning if this circle is mid-drag (its handles + label are driven
+        // directly by the drag handlers, which own the live label content/position).
         if (!isDraggingThis) {
           existing.circle.setLatLng([circleData.lat, circleData.lng]);
           existing.circle.setRadius(radiusMeters);
@@ -234,6 +225,11 @@ export default function RadiusMap({
           const bearing = edgeBearingsRef.current.get(circleData.id) ?? DEFAULT_EDGE_BEARING;
           const edge = destinationPoint(circleData.lat, circleData.lng, radiusMeters, bearing);
           existing.edgeMarker.setLatLng([edge.lat, edge.lng]);
+
+          // Persistent radius pill rides the edge handle; active circle shows both units.
+          existing.label
+            .setLatLng([edge.lat, edge.lng])
+            .setContent(edgeLabelHtml(radiusMeters, currentUnitRef.current, circleData.id === selectedCircleId));
         }
 
         existing.circle.setStyle({
@@ -307,6 +303,7 @@ export default function RadiusMap({
           const bearing = edgeBearingsRef.current.get(id) ?? DEFAULT_EDGE_BEARING;
           const edge = destinationPoint(p.lat, p.lng, r, bearing);
           layers.edgeMarker.setLatLng([edge.lat, edge.lng]);
+          layers.label.setLatLng([edge.lat, edge.lng]); // pill follows the handle (radius unchanged)
           onCircleUpdateRef.current(id, p.lat, p.lng, r);
         });
         centerMarker.on('dragend', () => {
@@ -335,14 +332,6 @@ export default function RadiusMap({
           onDragStartRef.current?.();
           vibrate(8);
           edgeMarker.getElement()?.classList.add('dragging');
-          const layers = circleLayersRef.current.get(id);
-          const tip = dragTooltipRef.current;
-          if (layers && tip) {
-            tip
-              .setLatLng(layers.edgeMarker.getLatLng())
-              .setContent(edgeTooltipHtml(layers.circle.getRadius(), currentUnitRef.current))
-              .openOn(map);
-          }
         });
         edgeMarker.on('drag', () => {
           const layers = circleLayersRef.current.get(id);
@@ -385,11 +374,9 @@ export default function RadiusMap({
           onRadiusChangeRef.current(formatted);
           onCircleUpdateRef.current(id, center.lat, center.lng, clamped);
 
-          const tip = dragTooltipRef.current;
-          if (tip) {
-            tip.setLatLng(layers.edgeMarker.getLatLng());
-            tip.setContent(edgeTooltipHtml(clamped, unit));
-          }
+          // Live-update the persistent pill (a circle being resized is always the active one).
+          layers.label.setLatLng(layers.edgeMarker.getLatLng());
+          layers.label.setContent(edgeLabelHtml(clamped, unit, true));
         });
         edgeMarker.on('dragend', () => {
           const layers = circleLayersRef.current.get(id);
@@ -399,8 +386,6 @@ export default function RadiusMap({
             onCircleUpdateRef.current(id, center.lat, center.lng, r);
             layers.edgeMarker.getElement()?.classList.remove('dragging');
           }
-          const tip = dragTooltipRef.current;
-          if (tip) map.closeTooltip(tip);
           isDraggingEdgeRef.current = null;
           lastSnapRef.current = null;
           map.dragging.enable();
@@ -411,11 +396,25 @@ export default function RadiusMap({
           onCircleSelectRef.current(id);
         });
 
+        // Always-visible radius pill anchored to the edge handle (pointer-events:none so
+        // the handle still receives touches). Live during drag, visible at rest.
+        const label = L.tooltip({
+          permanent: true,
+          direction: 'top',
+          offset: L.point(0, -10),
+          opacity: 1,
+          className: 'radius-edge-label',
+          interactive: false,
+        })
+          .setLatLng([edgePoint.lat, edgePoint.lng])
+          .setContent(edgeLabelHtml(radiusMeters, currentUnitRef.current, id === selectedCircleId))
+          .addTo(map);
+
         setHandleColors(centerMarker, edgeMarker, circleData.color);
-        circleLayersRef.current.set(id, { circle, centerMarker, edgeMarker });
+        circleLayersRef.current.set(id, { circle, centerMarker, edgeMarker, label });
       }
     });
-  }, [circles, selectedCircleId, isMapReady, createPopupContent, mapRef]);
+  }, [circles, selectedCircleId, currentUnit, isMapReady, createPopupContent, mapRef]);
 
   // Dev/script-only framing hook for the SERP hero-shot generator
   // (scripts/generate-hero-shots.ts). It fits the map to the drawn circle(s) with
@@ -449,7 +448,7 @@ export default function RadiusMap({
     };
   }, [mapRef]);
 
-  // Injected styles for the circle handles + the resize drag tooltip
+  // Injected styles for the circle handles + the persistent radius pill
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -485,20 +484,25 @@ export default function RadiusMap({
         .radius-handle.dragging .radius-handle-dot { transform: none; }
       }
 
-      .leaflet-tooltip.radius-drag-tip {
+      /* Persistent radius pill anchored to the edge handle. Navy so it reads over any
+         tile; the 1px light ring adds separation over dark imagery. pointer-events:none
+         keeps the underlying 56px handle fully touchable. */
+      .leaflet-tooltip.radius-edge-label {
         background: #0f172a;
         color: #fff;
         border: 0;
-        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.35);
-        font-size: 14px;
-        font-weight: 700;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), 0 2px 8px rgba(15, 23, 42, 0.4);
+        font-size: 12.5px;
+        font-weight: 600;
+        line-height: 1;
         letter-spacing: 0.01em;
-        padding: 7px 12px;
-        border-radius: 12px;
+        padding: 4px 9px;
+        border-radius: 999px;
         white-space: nowrap;
+        pointer-events: none;
       }
-      .leaflet-tooltip.radius-drag-tip b { font-weight: 800; }
-      .leaflet-tooltip-top.radius-drag-tip::before { border-top-color: #0f172a; }
+      .leaflet-tooltip.radius-edge-label b { font-weight: 800; }
+      .leaflet-tooltip-top.radius-edge-label::before { border-top-color: #0f172a; }
 
       /* Keep the scale bar + attribution above the mobile bottom sheet (they used to
          render through it). The sheet publishes its visible height as --mwr-chrome-offset. */
@@ -544,14 +548,15 @@ function setHandleColors(centerMarker: L.Marker, edgeMarker: L.Marker, color: st
   if (eDot) eDot.style.borderColor = color;
 }
 
-// Tooltip content shown while resizing: both units, active unit bold. e.g. "12.4 mi · 20.0 km"
-function edgeTooltipHtml(radiusMeters: number, unit: DistanceUnit): string {
+// Persistent radius-pill content. Active unit first and bold. The active circle shows
+// both units ("7.3 mi · 11.7 km"); other circles show the active unit only ("7.3 mi").
+function edgeLabelHtml(radiusMeters: number, unit: DistanceUnit, showBoth: boolean): string {
   const mi = fromMeters(radiusMeters, 'miles');
   const km = fromMeters(radiusMeters, 'kilometers');
   const f = (v: number) => (v >= 100 ? Math.round(v).toLocaleString() : v.toFixed(1));
-  return unit === 'kilometers'
-    ? `<b>${f(km)} km</b> · ${f(mi)} mi`
-    : `<b>${f(mi)} mi</b> · ${f(km)} km`;
+  const primary = unit === 'kilometers' ? `${f(km)} km` : `${f(mi)} mi`;
+  const secondary = unit === 'kilometers' ? `${f(mi)} mi` : `${f(km)} km`;
+  return showBoth ? `<b>${primary}</b> · ${secondary}` : `<b>${primary}</b>`;
 }
 
 // Initial bearing from point 1 to point 2, radians, 0 = north, clockwise positive.
