@@ -273,3 +273,24 @@ test('persistent radius label updates after a radius change', async ({ page }) =
   await expect(label).toContainText('7.0 mi');
   await expect(label).toContainText('11.3 km'); // 7 mi ≈ 11.27 km
 });
+
+// ---- Phase 3 (homepage-ux): shared Esri tiles + map-chrome fixes -----------------------
+
+// 12) The scale bar and attribution are both visible (legally required) and don't overlap
+//     (chrome fixes a/b); the attribution comes from the shared Esri provider (tile swap).
+test('scale bar and attribution are both visible and do not overlap', async ({ page }) => {
+  const scale = page.locator('.leaflet-control-scale').first();
+  const attribution = page.locator('.leaflet-control-attribution').first();
+  await expect(scale).toBeVisible();
+  await expect(attribution).toBeVisible();
+  await expect(attribution).toContainText('Esri'); // shared Esri World Street provider is live
+
+  const s = await scale.boundingBox();
+  const a = await attribution.boundingBox();
+  expect(s).not.toBeNull();
+  expect(a).not.toBeNull();
+  // Two boxes overlap only if they intersect on BOTH axes; assert they don't share a box.
+  const dx = Math.min(s!.x + s!.width, a!.x + a!.width) - Math.max(s!.x, a!.x);
+  const dy = Math.min(s!.y + s!.height, a!.y + a!.height) - Math.max(s!.y, a!.y);
+  expect(dx <= 0 || dy <= 0).toBeTruthy();
+});
