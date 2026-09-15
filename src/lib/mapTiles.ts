@@ -26,7 +26,9 @@ export interface TileProvider {
  */
 export const ESRI_WORLD_STREET: TileProvider = {
   url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-  attribution: 'Tiles &copy; Esri &mdash; Esri, HERE, Garmin, OpenStreetMap contributors',
+  // Minimal single-line credit Esri's terms accept (a linked "© Esri"); kept short so it
+  // pins flush in the map's bottom-right corner instead of sprawling across the map body.
+  attribution: 'Tiles &copy; <a href="https://www.esri.com" target="_blank" rel="noopener">Esri</a>',
   maxZoom: 19,
 };
 
