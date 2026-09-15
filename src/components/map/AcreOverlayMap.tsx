@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
+import { createTileLayer } from '@/lib/mapTiles';
 import 'leaflet/dist/leaflet.css';
 import {
   OverlayShape,
@@ -214,10 +215,7 @@ export default function AcreOverlayMap({
     });
     L.control.zoom({ position: 'topleft' }).addTo(map);
     L.control.scale({ position: 'bottomleft', imperial: true, metric: true }).addTo(map);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19,
-    }).addTo(map);
+    createTileLayer(L).addTo(map);
 
     map.on('click', (e: L.LeafletMouseEvent) => {
       if (!isDraggingRef.current) onMapClickRef.current(e.latlng.lat, e.latlng.lng);

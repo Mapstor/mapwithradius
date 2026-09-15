@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { createTileLayer } from '@/lib/mapTiles';
 import { fromMeters, toMeters, DistanceUnit, calculateCircleArea, formatDistance, formatArea } from '@/lib/haversine';
 
 // Fix Leaflet default marker icon issue
@@ -119,11 +120,7 @@ export default function RadiusMap({
     L.control.zoom({ position: 'topleft' }).addTo(map);
     L.control.scale({ position: 'bottomleft', imperial: true, metric: true }).addTo(map);
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19,
-      crossOrigin: 'anonymous', // keep the PNG-export canvas untainted (toBlob)
-    }).addTo(map);
+    createTileLayer(L).addTo(map);
 
     // Map clicks create/move circles — but never while a handle is being dragged.
     map.on('click', (e: L.LeafletMouseEvent) => {

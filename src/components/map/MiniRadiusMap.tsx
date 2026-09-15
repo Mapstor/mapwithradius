@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
+import { createTileLayer } from '@/lib/mapTiles';
 import 'leaflet/dist/leaflet.css';
 
 interface MiniRadiusMapProps {
@@ -32,11 +33,8 @@ export default function MiniRadiusMap({
       attributionControl: true,
     });
 
-    // Add OpenStreetMap tiles
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      maxZoom: 19,
-    }).addTo(map);
+    // Shared basemap (Esri World Street) — one provider across every map tool.
+    createTileLayer(L).addTo(map);
 
     // Add circle
     const circle = L.circle(center, {
