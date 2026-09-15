@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import MapControls from './MapControls';
 import MobileBottomSheet from './MobileBottomSheet';
-import { DistanceUnit, toMeters, fromMeters, calculateCircleArea, formatDistance, formatArea } from '@/lib/haversine';
+import { DistanceUnit, toMeters, fromMeters, calculateCircleArea, formatArea } from '@/lib/haversine';
 import { downloadKML } from '@/lib/kmlExport';
 import { shareOrDownloadFile } from '@/lib/shareDownload';
 import { generateShareUrl, parseUrlParams, CircleParams } from '@/lib/urlParams';
@@ -484,16 +484,14 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
 
   const handleSearchOpenChange = useCallback((open: boolean) => setIsMobileSearchOpen(open), []);
 
-  // Get selected circle info for the desktop info card
-  const selectedCircle = selectedCircleId ? circles.find((c) => c.id === selectedCircleId) : null;
-  const infoCardCircle = selectedCircle || circles[0] || null;
-  const circleInfo = infoCardCircle
+  // Desktop Area caption data. Radius now lives in the map's persistent pill (the single
+  // source), so this keeps only the derived Area — not a duplicate Circle Info box.
+  const areaCircle = (selectedCircleId ? circles.find((c) => c.id === selectedCircleId) : null) || circles[0] || null;
+  const areaInfo = areaCircle
     ? {
-        radiusMiles: fromMeters(infoCardCircle.radiusMeters, 'miles'),
-        radiusKm: fromMeters(infoCardCircle.radiusMeters, 'kilometers'),
-        areaMiles: calculateCircleArea(fromMeters(infoCardCircle.radiusMeters, 'miles'), 'miles'),
-        areaKm: calculateCircleArea(fromMeters(infoCardCircle.radiusMeters, 'kilometers'), 'kilometers'),
-        color: infoCardCircle.color,
+        areaMiles: calculateCircleArea(fromMeters(areaCircle.radiusMeters, 'miles'), 'miles'),
+        areaKm: calculateCircleArea(fromMeters(areaCircle.radiusMeters, 'kilometers'), 'kilometers'),
+        color: areaCircle.color,
       }
     : null;
 
@@ -523,34 +521,17 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
         </div>
       )}
 
-      {/* Circle Info Card — desktop only (mobile uses the sheet's pill + stats + the map's persistent radius pill) */}
-      {circleInfo && (
-        <div className="hidden lg:block absolute left-4 bottom-20 z-[1000] bg-white/95 backdrop-blur-sm rounded-lg shadow-lg border border-slate-200 p-3 text-sm min-w-[200px]">
-          <div className="flex items-center justify-between mb-2">
-            <span className="font-semibold text-slate-900 text-sm">Circle Info</span>
-            <div
-              className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
-              style={{ backgroundColor: circleInfo.color }}
-            />
-          </div>
-          <div className="space-y-1.5 text-slate-600 text-sm">
-            <div className="flex justify-between gap-3">
-              <span>Radius:</span>
-              <span className="font-medium text-slate-900 text-right">
-                {formatDistance(circleInfo.radiusMiles, 'miles')}
-                <span className="text-slate-400 mx-1">/</span>
-                <span className="text-slate-900">{formatDistance(circleInfo.radiusKm, 'kilometers')}</span>
-              </span>
-            </div>
-            <div className="flex justify-between gap-3">
-              <span>Area:</span>
-              <span className="font-medium text-slate-900 text-right">
-                {formatArea(circleInfo.areaMiles, 'miles')}
-                <span className="text-slate-400 mx-1">/</span>
-                <span className="text-slate-900">{formatArea(circleInfo.areaKm, 'kilometers')}</span>
-              </span>
-            </div>
-          </div>
+      {/* Desktop-only Area caption. Radius is shown by the map's persistent pill (the single
+          source); this keeps just the derived Area as a compact line, not a duplicate box. */}
+      {areaInfo && (
+        <div className="hidden lg:flex items-center gap-2 absolute left-4 bottom-20 z-[1000] bg-white/85 backdrop-blur-sm rounded-md px-2.5 py-1.5 text-xs shadow-sm">
+          <span className="w-2.5 h-2.5 rounded-full border border-white shadow-sm" style={{ backgroundColor: areaInfo.color }} />
+          <span className="font-medium text-slate-500">Area</span>
+          <span className="text-slate-900 font-semibold tabular-nums">
+            {formatArea(areaInfo.areaMiles, 'miles')}
+            <span className="text-slate-400 mx-1">·</span>
+            {formatArea(areaInfo.areaKm, 'kilometers')}
+          </span>
         </div>
       )}
 
