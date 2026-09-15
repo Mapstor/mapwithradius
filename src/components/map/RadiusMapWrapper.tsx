@@ -8,6 +8,7 @@ import { DistanceUnit, toMeters, fromMeters, calculateCircleArea, formatArea } f
 import { downloadKML } from '@/lib/kmlExport';
 import { shareOrDownloadFile } from '@/lib/shareDownload';
 import { generateShareUrl, parseUrlParams, CircleParams } from '@/lib/urlParams';
+import { trackCircleInteraction } from '@/lib/analytics';
 import type { RadiusCircle } from './RadiusMap';
 import type L from 'leaflet';
 
@@ -33,13 +34,19 @@ interface RadiusMapWrapperProps {
    * inner map's auto-geolocation is skipped to avoid a double request / marker overlap.
    */
   defaultCircleOnLoad?: boolean;
+  /**
+   * Homepage-only: emit the GA4 "circle_interaction" event (action create|resize|move,
+   * radius_mi) when the user draws / resizes / moves a circle. Drag gestures fire once on
+   * release (never per-frame). Auto-drawn starter circle + programmatic changes don't count.
+   */
+  trackInteractions?: boolean;
 }
 
 // Geographic center of the contiguous US — the inner map's initial view. Used as the
 // fallback center for the default circle when geolocation isn't already granted.
 const DEFAULT_MAP_CENTER = { lat: 39.8283, lng: -98.5795 };
 
-export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius = 10, initialCenter, defaultCircleOnLoad = false }: RadiusMapWrapperProps) {
+export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius = 10, initialCenter, defaultCircleOnLoad = false, trackInteractions = false }: RadiusMapWrapperProps) {
   const [circles, setCircles] = useState<RadiusCircle[]>([]);
   const [selectedCircleId, setSelectedCircleId] = useState<string | null>(null);
   const [radius, setRadius] = useState(defaultRadius);
@@ -63,6 +70,12 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
   const [collapseSignal, setCollapseSignal] = useState(0); // ++ on map tap → sheet drops to peek
   const mapRef = useRef<L.Map | null>(null);
   const toolRef = useRef<HTMLDivElement>(null);
+  // Live refs to circle state so select/drag handlers can read the active circle without
+  // re-creating every frame (used by the homepage interaction analytics).
+  const circlesRef = useRef(circles);
+  const selectedIdRef = useRef(selectedCircleId);
+  useEffect(() => { circlesRef.current = circles; }, [circles]);
+  useEffect(() => { selectedIdRef.current = selectedCircleId; }, [selectedCircleId]);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const toastId = useRef(0);
 
@@ -129,7 +142,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
 
     // Handle locate param
     if (params.locate) {
-      handleUseMyLocation();
+      handleUseMyLocation(false); // load-time ?locate= placement is programmatic → not a tracked interaction
     }
 
     // Fallback to initialCenter prop if no URL circles were provided
@@ -280,6 +293,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
         setIsAddingCircle(false);
 
         fitToCircle(lat, lng, newCircle.radiusMeters);
+        if (trackInteractions) trackCircleInteraction('create', fromMeters(newCircle.radiusMeters, 'miles'));
       } else if (circles.length > 0) {
         // Move the existing circle (selected or first one)
         const targetId = selectedCircleId || circles[0].id;
@@ -292,10 +306,11 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
 
         if (targetCircle) {
           fitToCircle(lat, lng, targetCircle.radiusMeters);
+          if (trackInteractions) trackCircleInteraction('move', fromMeters(targetCircle.radiusMeters, 'miles'));
         }
       }
     },
-    [isAddingCircle, radius, unit, color, circles, selectedCircleId, fitToCircle, markInteracted, showToast]
+    [isAddingCircle, radius, unit, color, circles, selectedCircleId, fitToCircle, markInteracted, showToast, trackInteractions]
   );
 
   const handleCircleUpdate = useCallback((id: string, lat: number, lng: number, radiusMeters?: number) => {
@@ -316,6 +331,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
   const handleCircleSelect = useCallback(
     (id: string | null) => {
       setSelectedCircleId(id);
+      selectedIdRef.current = id; // sync now so a select-then-drag snapshots the right circle
       setIsAddingCircle(false);
       markInteracted();
 
@@ -350,7 +366,8 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
   );
 
   const handleLocationSearch = useCallback(
-    (lat: number, lng: number, displayName: string) => {
+    // fromUser=false suppresses analytics for the programmatic load-time ?locate= placement.
+    (lat: number, lng: number, displayName: string, fromUser = true) => {
       markInteracted();
 
       if (selectedCircleId && !isAddingCircle) {
@@ -360,6 +377,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
         );
         if (existingCircle) {
           fitToCircle(lat, lng, existingCircle.radiusMeters);
+          if (trackInteractions && fromUser) trackCircleInteraction('move', fromMeters(existingCircle.radiusMeters, 'miles'));
         }
       } else {
         const newRadiusMeters = toMeters(radius, unit);
@@ -375,12 +393,13 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
         setSelectedCircleId(newCircle.id);
         setIsAddingCircle(false);
         fitToCircle(lat, lng, newRadiusMeters);
+        if (trackInteractions && fromUser) trackCircleInteraction('create', fromMeters(newRadiusMeters, 'miles'));
       }
     },
-    [selectedCircleId, isAddingCircle, radius, unit, color, circles, fitToCircle, markInteracted]
+    [selectedCircleId, isAddingCircle, radius, unit, color, circles, fitToCircle, markInteracted, trackInteractions]
   );
 
-  const handleUseMyLocation = useCallback(() => {
+  const handleUseMyLocation = useCallback((fromUser = true) => {
     markInteracted();
     if (!navigator.geolocation) {
       setLocationError('Geolocation is not supported by your browser.');
@@ -393,7 +412,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        handleLocationSearch(latitude, longitude, 'Your location');
+        handleLocationSearch(latitude, longitude, 'Your location', fromUser);
         setIsLocating(false);
       },
       (error) => {
@@ -428,13 +447,36 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
     setIsAddingCircle(true);
   }, []);
 
+  // --- Interaction analytics (homepage only) -----------------------------------------
+  const dragSnapshotRef = useRef<{ lat: number; lng: number; meters: number } | null>(null);
+  const getActiveCircle = useCallback(
+    () => circlesRef.current.find((c) => c.id === selectedIdRef.current) ?? circlesRef.current[0] ?? null,
+    []
+  );
+
   const handleDragStart = useCallback(() => {
     setIsDragging(true);
-  }, []);
+    if (!trackInteractions) return;
+    const a = getActiveCircle();
+    dragSnapshotRef.current = a ? { lat: a.lat, lng: a.lng, meters: a.radiusMeters } : null;
+  }, [trackInteractions, getActiveCircle]);
 
   const handleDragEnd = useCallback(() => {
     setIsDragging(false);
-  }, []);
+    const snap = dragSnapshotRef.current;
+    dragSnapshotRef.current = null;
+    if (!trackInteractions || !snap) return;
+    // A handle/slider drag settles here → fire the GA4 event ONCE on release (never
+    // per-frame). Classify by what changed: the edge handle / slider change the radius
+    // (resize); the centre handle changes the centre (move). Tiny jitters are ignored.
+    const a = getActiveCircle();
+    if (!a) return;
+    if (Math.abs(a.radiusMeters - snap.meters) > 1) {
+      trackCircleInteraction('resize', fromMeters(a.radiusMeters, 'miles'));
+    } else if (Math.abs(a.lat - snap.lat) > 1e-5 || Math.abs(a.lng - snap.lng) > 1e-5) {
+      trackCircleInteraction('move', fromMeters(a.radiusMeters, 'miles'));
+    }
+  }, [trackInteractions, getActiveCircle]);
 
   const handleCopyLink = useCallback(() => {
     const circleParams: CircleParams[] = circles.map((c) => ({

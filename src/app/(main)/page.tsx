@@ -72,7 +72,7 @@ export default function HomePage() {
 
         {/* Map section */}
         <div className="max-w-[1600px] mx-auto">
-          <RadiusMapWrapper defaultUnit="miles" defaultCircleOnLoad />
+          <RadiusMapWrapper defaultUnit="miles" defaultCircleOnLoad trackInteractions />
         </div>
       </section>
 
