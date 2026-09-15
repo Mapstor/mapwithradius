@@ -52,6 +52,17 @@ async function createCircle(page: Page, fx = 0.5, fy = 0.32) {
   await page.waitForTimeout(900); // fit animation + marker settle
 }
 
+/**
+ * Collapse the sheet to peek so the map underneath is tappable. An expanded sheet (mid/full)
+ * covers the map full-width, so after tapping "New circle" (which does NOT collapse the sheet)
+ * a placement tap would land on the sheet, not the map — bring it down first. Tapping the grab
+ * handle toggles a non-peek detent straight to peek.
+ */
+async function collapseSheet(page: Page) {
+  await page.getByLabel('Drag to expand controls').tap();
+  await expect(page.getByTestId('mwr-sheet')).toHaveAttribute('data-detent', 'peek');
+}
+
 async function radiusValue(page: Page): Promise<number> {
   const txt = (await page.getByTestId('mwr-radius-value').textContent()) ?? '';
   return parseFloat(txt.replace(/,/g, ''));
@@ -148,8 +159,10 @@ test('empty ad slot collapses without reserving space and layout stays stable', 
   expect(cls).toBeLessThan(0.1);
 });
 
-// 6) Search: focus → sheet full → pick a result → circle placed, sheet returns to peek.
-test('search flow places a circle and returns the sheet to peek', async ({ page }) => {
+// 6) Search: focus → sheet full → pick a result → circle placed. With the Phase-1 starter
+//    circle present (hasCircle=true), search MOVES it and closeSearch() settles to 'mid'
+//    (not 'peek', which only happens on an empty start). Intended product behavior.
+test('search flow places a circle and returns the sheet to mid', async ({ page }) => {
   await page.route('**nominatim.openstreetmap.org/**', (route) =>
     route.fulfill({
       contentType: 'application/json',
@@ -167,7 +180,7 @@ test('search flow places a circle and returns the sheet to peek', async ({ page 
   await result.tap();
 
   await expect(page.getByTestId('mwr-sheet')).toHaveAttribute('data-search-open', 'false');
-  await expect(page.getByTestId('mwr-sheet')).toHaveAttribute('data-detent', 'peek');
+  await expect(page.getByTestId('mwr-sheet')).toHaveAttribute('data-detent', 'mid'); // starter circle present → 'mid'
   await expect(page.locator('.radius-handle.edge').first()).toBeVisible();
 });
 
@@ -184,7 +197,8 @@ test('selecting the first circle highlights its row', async ({ page }) => {
 
   await expand();
   await page.getByRole('button', { name: /New circle/ }).tap();
-  await tapMap(page, 0.62, 0.4); // circle 2; map-first collapses the sheet back to peek
+  await collapseSheet(page); // expanded sheet covers the map — drop it before placing
+  await tapMap(page, 0.62, 0.4); // circle 2 on the now-exposed map (map-first keeps it at peek)
   await page.waitForTimeout(900);
 
   await expand(); // re-open to reach the circle list
@@ -214,7 +228,8 @@ test('full-detent body scrolls to the KML button (reachable + clickable)', async
   for (const [fx, fy] of [[0.62, 0.26], [0.4, 0.52]] as const) {
     await expandFull(page);
     await page.getByRole('button', { name: /New circle/ }).tap();
-    await tapMap(page, fx, fy); // map-first collapses back to peek
+    await collapseSheet(page); // expanded sheet covers the map — drop it before placing
+    await tapMap(page, fx, fy); // place on the now-exposed map
     await page.waitForTimeout(900);
   }
   await expect(page.getByTestId('mwr-circle-row')).toHaveCount(3);
