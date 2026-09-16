@@ -37,6 +37,13 @@ const VALHALLA_ROUTE = 'https://valhalla1.openstreetmap.de/route';
 const SNAP_DEBOUNCE_MS = 300;
 const SNAP_TIMEOUT_MS = 6000;
 
+// Default framing: a walkable/runnable US spot (Central Park, NYC) at neighborhood zoom — a
+// route mapper is useless at whole-country zoom. If geolocation is already granted we recenter
+// on the user at street zoom (never prompting on load).
+const DEFAULT_CENTER: [number, number] = [40.7826, -73.9656];
+const DEFAULT_ZOOM = 13; // ~neighborhood, a few miles across
+const LOCATED_ZOOM = 14; // street level, ~3-5 miles across
+
 const parsePace = (s: string): number => {
   const v = parseFloat(s.replace(',', '.'));
   return Number.isFinite(v) && v > 0 ? v : 0;
@@ -116,8 +123,8 @@ export default function RouteDistanceMap() {
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
     const map = L.map(containerRef.current, {
-      center: [39.8283, -98.5795],
-      zoom: 4,
+      center: DEFAULT_CENTER,
+      zoom: DEFAULT_ZOOM,
       zoomControl: false,
     });
     L.control.zoom({ position: 'topleft' }).addTo(map);
@@ -126,6 +133,7 @@ export default function RouteDistanceMap() {
     map.on('click', (e: L.LeafletMouseEvent) => addPoint(e.latlng.lat, e.latlng.lng));
     mapRef.current = map;
 
+    let didSeed = false;
     if (!seededRef.current && typeof window !== 'undefined') {
       seededRef.current = true;
       const raw = new URLSearchParams(window.location.search).get('route');
@@ -137,7 +145,30 @@ export default function RouteDistanceMap() {
             return { lat: parseFloat(a), lng: parseFloat(b) };
           })
           .filter((p) => Number.isFinite(p.lat) && Number.isFinite(p.lng));
-        if (seeded.length) setPoints(seeded);
+        if (seeded.length) {
+          setPoints(seeded);
+          didSeed = true; // the markers effect fits to these — don't override with geolocation
+        }
+      }
+    }
+
+    // Geolocation-first framing: ONLY if permission is ALREADY granted (Permissions API — never
+    // prompts on load), recenter on the user at street zoom so they can start tracing right away.
+    // No share-URL route → nothing else to frame. Otherwise keep the neighborhood default view.
+    if (!didSeed && typeof navigator !== 'undefined') {
+      const perms = (navigator as Navigator & { permissions?: Permissions }).permissions;
+      if (perms?.query && navigator.geolocation) {
+        perms
+          .query({ name: 'geolocation' as PermissionName })
+          .then((status) => {
+            if (status.state !== 'granted') return;
+            navigator.geolocation.getCurrentPosition(
+              (pos) => mapRef.current?.setView([pos.coords.latitude, pos.coords.longitude], LOCATED_ZOOM),
+              () => {},
+              { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 }
+            );
+          })
+          .catch(() => {});
       }
     }
 
