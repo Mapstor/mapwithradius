@@ -59,7 +59,7 @@ export default function HomePage() {
             <div>
               <h1 className="text-lg lg:text-xl font-semibold text-white">Radius Map Tool</h1>
               <p className="text-slate-400 text-sm hidden sm:block">
-                Haversine-accurate circles on OpenStreetMap
+                Tap the map or search a place, then drag the edge to set your radius
               </p>
             </div>
             <div className="flex items-center gap-4 text-xs text-slate-400">
