@@ -323,3 +323,34 @@ test('scale bar and attribution are both visible and do not overlap', async ({ p
   const dy = Math.min(s!.y + s!.height, a!.y + a!.height) - Math.max(s!.y, a!.y);
   expect(dx <= 0 || dy <= 0).toBeTruthy();
 });
+
+// ---- loc-button: Use My Location in the peek row -----------------------------------------
+
+// 13) The peek-row location button is visible WITHOUT expanding the sheet, and tapping it
+//     invokes the geolocation flow (granted + pinned by the project config).
+test('peek-row Use My Location button is visible and triggers geolocation', async ({ page }) => {
+  // Sheet is at peek from load (beforeEach) — no expand needed.
+  await expect(page.getByTestId('mwr-sheet')).toHaveAttribute('data-detent', 'peek');
+  const locate = page.getByTestId('mwr-locate-btn');
+  await expect(locate).toBeVisible();
+  await expect(locate).toBeInViewport(); // actually on-screen in the always-visible peek row
+
+  // Spy on getCurrentPosition, reset after load, then tap → the button must invoke it.
+  await page.evaluate(() => {
+    const w = window as unknown as { __geo: number };
+    w.__geo = 0;
+    const g = navigator.geolocation;
+    const orig = g.getCurrentPosition.bind(g);
+    g.getCurrentPosition = (success, err, opts) => {
+      w.__geo += 1;
+      return orig(success, err, opts);
+    };
+  });
+  await locate.tap();
+  await expect
+    .poll(() => page.evaluate(() => (window as unknown as { __geo: number }).__geo || 0))
+    .toBeGreaterThan(0);
+
+  // Flow succeeds (granted + pinned) → the circle stays and no error banner appears.
+  await expect(page.locator('.radius-handle.edge').first()).toBeVisible();
+});

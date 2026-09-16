@@ -502,6 +502,24 @@ export default function MobileBottomSheet({
                 ))}
               </div>
 
+              {/* Use my location — button-triggered geolocation (never auto-prompts on load).
+                  Compact 44px icon so it reflows within the peek row (the flex-1 pill absorbs
+                  the width); same handler as the in-sheet button. */}
+              <button
+                type="button"
+                data-testid="mwr-locate-btn"
+                onClick={onUseMyLocation}
+                disabled={isLocating}
+                className="flex-none w-11 h-11 rounded-2xl bg-accent-100 active:bg-accent-200 grid place-items-center disabled:opacity-50"
+                aria-label="Use my location"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="12" cy="12" r="7" />
+                  <circle cx="12" cy="12" r="2" fill="#2563EB" stroke="none" />
+                  <path d="M12 3v2M12 19v2M3 12h2M19 12h2" />
+                </svg>
+              </button>
+
               {/* Search */}
               <button
                 type="button"
