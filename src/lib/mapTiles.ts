@@ -20,9 +20,10 @@ export interface TileProvider {
 }
 
 /**
- * Esri World Street Map — the active provider. Note Esri's tile path order is {z}/{y}/{x}
- * (y before x), unlike OSM's {z}/{x}/{y}. Attribution credits Esri and its data providers
- * per Esri's terms of use for the ArcGIS Online basemaps.
+ * Esri World Street Map — an available option, NOT currently active (kept for a future
+ * one-line switch; see ACTIVE_TILE_PROVIDER). Note Esri's tile path order is {z}/{y}/{x}
+ * (y before x), unlike OSM's {z}/{x}/{y}. Attribution credits Esri per its ArcGIS Online
+ * terms of use.
  */
 export const ESRI_WORLD_STREET: TileProvider = {
   url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
@@ -32,7 +33,7 @@ export const ESRI_WORLD_STREET: TileProvider = {
   maxZoom: 19,
 };
 
-/** OpenStreetMap — kept as a fallback constant for a one-line revert. */
+/** OpenStreetMap — the active provider. US traffic measuring US places gets English labels. */
 export const OSM: TileProvider = {
   url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -40,7 +41,7 @@ export const OSM: TileProvider = {
 };
 
 /** The provider the whole site renders with. Swap this line to change every map at once. */
-export const ACTIVE_TILE_PROVIDER: TileProvider = ESRI_WORLD_STREET;
+export const ACTIVE_TILE_PROVIDER: TileProvider = OSM;
 
 /**
  * Build the basemap tile layer for a Leaflet map. Callers pass their own Leaflet instance

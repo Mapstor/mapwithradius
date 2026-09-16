@@ -55,12 +55,21 @@ async function createCircle(page: Page, fx = 0.5, fy = 0.32) {
 /**
  * Collapse the sheet to peek so the map underneath is tappable. An expanded sheet (mid/full)
  * covers the map full-width, so after tapping "New circle" (which does NOT collapse the sheet)
- * a placement tap would land on the sheet, not the map — bring it down first. Tapping the grab
- * handle toggles a non-peek detent straight to peek.
+ * a placement tap would land on the sheet, not the map. A single grab-handle *tap* is
+ * unreliable — the synthetic click right after an expand drag gets swallowed by the sheet's
+ * post-drag click-suppression, leaving it at full. So DRAG the grab handle down to the bottom;
+ * a committed downward fling deterministically snaps to peek.
  */
 async function collapseSheet(page: Page) {
-  await page.getByLabel('Drag to expand controls').tap();
-  await expect(page.getByTestId('mwr-sheet')).toHaveAttribute('data-detent', 'peek');
+  const sheet = page.getByTestId('mwr-sheet');
+  if ((await sheet.getAttribute('data-detent')) === 'peek') return;
+  const grab = await page.getByLabel('Drag to expand controls').boundingBox();
+  if (!grab) throw new Error('no grab handle');
+  const x = grab.x + grab.width / 2;
+  const y = grab.y + grab.height / 2;
+  const size = page.viewportSize()!;
+  await touchDrag(page, { x, y }, { x, y: size.height - 24 }, { steps: 20, delay: 20 });
+  await expect(sheet).toHaveAttribute('data-detent', 'peek');
 }
 
 async function radiusValue(page: Page): Promise<number> {
@@ -88,7 +97,8 @@ test('edge handle resizes on the first touch drag', async ({ page }) => {
   const from = { x: edge!.x + edge!.width / 2, y: edge!.y + edge!.height / 2 };
   // The north handle sits above the centre; dragging it further up enlarges the radius.
   await touchDrag(page, from, { x: from.x, y: from.y - 80 }, { delay: 12 });
-  await page.waitForTimeout(200);
+  await page.waitForTimeout(400); // settle: let the radius pill reflect the drag before reading
+                                  // (guards the one-off 834×1194 delta-0 read race)
 
   const after = await radiusValue(page);
   expect(Math.abs(after - before)).toBeGreaterThan(0.2);
@@ -298,7 +308,7 @@ test('scale bar and attribution are both visible and do not overlap', async ({ p
   const attribution = page.locator('.leaflet-control-attribution').first();
   await expect(scale).toBeVisible();
   await expect(attribution).toBeVisible();
-  await expect(attribution).toContainText('Esri'); // shared Esri World Street provider is live
+  await expect(attribution).toContainText('OpenStreetMap'); // shared OSM provider is live
 
   const s = await scale.boundingBox();
   const a = await attribution.boundingBox();
