@@ -11,10 +11,11 @@ export interface ToolPageSchemaInput {
   name: string;
   /** Matches the page's meta description. */
   description: string;
-  /** Same-domain hero image path, e.g. '/images/km-radius-map-10-km-london.png'. */
-  image: string;
-  /** One-line image caption. */
-  imageCaption: string;
+  /** Same-domain hero image path, e.g. '/images/km-radius-map-10-km-london.png'. Omit for a
+   *  page with no hero image (the ImageObject node is then left out entirely). */
+  image?: string;
+  /** One-line image caption (only used when `image` is set). */
+  imageCaption?: string;
   /** Breadcrumb leaf label; omit on the homepage (breadcrumb is just Home). */
   breadcrumbName?: string;
   /** Optional WebApplication.featureList (schema.org Text[]) — quotable feature bullets. */
@@ -26,8 +27,8 @@ export interface ToolPageSchemaInput {
 /** Build the tool-page JSON-LD graph (WebPage + primary ImageObject + WebApplication + BreadcrumbList). */
 export function buildToolPageSchema(input: ToolPageSchemaInput) {
   const pageUrl = input.path ? `${BASE}${input.path}` : `${BASE}/`;
-  const imageUrl = `${BASE}${input.image}`;
   const imageId = `${pageUrl}#primaryimage`;
+  const hasImage = !!input.image;
 
   const breadcrumbItems: Array<Record<string, unknown>> = [
     { '@type': 'ListItem', position: 1, name: 'Home', item: BASE },
@@ -36,29 +37,32 @@ export function buildToolPageSchema(input: ToolPageSchemaInput) {
     breadcrumbItems.push({ '@type': 'ListItem', position: 2, name: input.breadcrumbName, item: pageUrl });
   }
 
-  return {
-    '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebPage',
-        '@id': `${pageUrl}#webpage`,
-        url: pageUrl,
-        name: input.name,
-        description: input.description,
-        isPartOf: { '@id': `${BASE}/#website` },
-        primaryImageOfPage: { '@id': imageId },
-        image: { '@id': imageId },
-      },
-      {
-        '@type': 'ImageObject',
-        '@id': imageId,
-        url: imageUrl,
-        contentUrl: imageUrl,
-        width: input.imageWidth ?? 1600,
-        height: input.imageHeight ?? 900,
-        caption: input.imageCaption,
-        representativeOfPage: true,
-      },
+  const graph: Array<Record<string, unknown>> = [
+    {
+      '@type': 'WebPage',
+      '@id': `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: input.name,
+      description: input.description,
+      isPartOf: { '@id': `${BASE}/#website` },
+      ...(hasImage ? { primaryImageOfPage: { '@id': imageId }, image: { '@id': imageId } } : {}),
+    },
+  ];
+
+  if (hasImage) {
+    graph.push({
+      '@type': 'ImageObject',
+      '@id': imageId,
+      url: `${BASE}${input.image}`,
+      contentUrl: `${BASE}${input.image}`,
+      width: input.imageWidth ?? 1600,
+      height: input.imageHeight ?? 900,
+      ...(input.imageCaption ? { caption: input.imageCaption } : {}),
+      representativeOfPage: true,
+    });
+  }
+
+  graph.push(
       {
         '@type': 'WebApplication',
         '@id': `${pageUrl}#webapp`,
@@ -76,7 +80,11 @@ export function buildToolPageSchema(input: ToolPageSchemaInput) {
         '@type': 'BreadcrumbList',
         '@id': `${pageUrl}#breadcrumb`,
         itemListElement: breadcrumbItems,
-      },
-    ],
+      }
+  );
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph': graph,
   };
 }

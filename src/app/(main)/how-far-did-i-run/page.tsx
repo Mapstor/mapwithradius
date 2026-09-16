@@ -1,14 +1,14 @@
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import ToolHeroImage from '@/components/content/ToolHeroImage';
 import { buildToolPageSchema } from '@/lib/toolSchema';
 
 const TITLE = 'How Far Did I Run? Draw a Route to Measure the Distance';
 const DESCRIPTION =
-  'How far did you run? Tap your route on the map to measure the distance point by point — plus run, walk, or cycle time at your pace. Free, no signup.';
-const HERO = '/images/how-far-did-i-run-central-park-loop.png';
+  'How far did you run? Trace your route on the map and it snaps to the paths you ran — measured in miles and km, plus run, walk, or cycle time at your pace. Free, no signup.';
 
+// Hero image intentionally omitted for now (the previous /images/how-far-did-i-run-central-park-loop.png
+// was never generated). openGraph/twitter inherit the site-default image from the root layout.
 export const metadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
@@ -17,20 +17,11 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
     url: 'https://mapwithradius.com/how-far-did-i-run',
-    images: [
-      {
-        url: HERO,
-        width: 1600,
-        height: 900,
-        alt: 'A running route traced point by point around Central Park, with the measured distance',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: TITLE,
     description: DESCRIPTION,
-    images: [HERO],
   },
 };
 
@@ -47,7 +38,7 @@ const RouteDistanceMap = dynamic(() => import('@/components/map/RouteDistanceMap
 const FAQS: Array<{ q: string; a: string }> = [
   {
     q: 'How do I figure out how far I ran without a watch?',
-    a: 'Retrace your route on the map: tap your start, then tap each turn and your finish. The tool adds up the straight-line distance between the points as you go, so the total is the length of the route you traced. Drag any point to fix it if you tapped slightly off.',
+    a: 'Retrace your route on the map: tap your start, then tap each turn and your finish. The tool snaps the route to the paths and roads between your points and adds up the distance as you go, so the total is the length of the route you actually ran. Drag any point to fix it if you tapped slightly off, or switch off Snap for a straight-line measure.',
   },
   {
     q: 'How far did I walk or cycle?',
@@ -55,11 +46,11 @@ const FAQS: Array<{ q: string; a: string }> = [
   },
   {
     q: 'Is this the same as my GPS or watch distance?',
-    a: 'Close, but not identical. A GPS watch samples your exact path continuously; here you approximate the route with straight segments between the points you tap, so the more points you place on curves the closer it gets. For a rough "how far did I go", a handful of points is usually within a few percent.',
+    a: 'Close, but not identical. A GPS watch samples your exact path continuously; here you tap the key points and the tool snaps between them to the actual paths and roads, so a handful of points usually lands within a few percent. Add points where the route could go more than one way so it picks the streets you took.',
   },
   {
     q: 'How accurate is tracing a route on a map?',
-    a: 'The distance between two points is exact (great-circle / haversine on the WGS 84 spheroid). The approximation is only in how well your tapped points follow the real path — straight segments cut corners, so add points on bends. Road-snapping that follows the streets is coming next.',
+    a: 'Good — the route snaps to the real walking/running paths (or cycleways) between the points you tap, using the same open routing engine as the drive-time tool, so it follows the streets rather than cutting corners. If a snap ever fails (the free routing server is momentarily unavailable) it falls back to a straight line for that trace and tells you. You can also switch Snap off any time for a deliberate straight-line measure.',
   },
   {
     q: 'Can I measure the route in kilometers?',
@@ -79,11 +70,10 @@ export default function HowFarDidIRunPage() {
               name: 'How Far Did I Run — Route Distance Tool',
               description: DESCRIPTION,
               breadcrumbName: 'How Far Did I Run',
-              image: HERO,
-              imageCaption: 'A running route traced point by point around Central Park, with its measured distance.',
               featureList: [
                 'Tap to trace a running, walking, or cycling route',
-                'Live cumulative distance in miles and kilometers',
+                'Snaps the route to real paths, sidewalks, and cycleways (or straight-line)',
+                'Live distance in miles and kilometers',
                 'Run, walk, cycle, or custom pace → time estimate',
                 'Drag points to adjust; undo or clear',
               ],
@@ -124,12 +114,6 @@ export default function HowFarDidIRunPage() {
       {/* Content */}
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ToolHeroImage
-            src={HERO}
-            alt="A running route traced point by point around Central Park, with the measured distance"
-            caption="A route traced around Central Park — tap each turn and the distance adds up as you go."
-          />
-
           {/* Instant answer */}
           <div className="mb-12">
             <h2 className="section-heading mb-6">How far did I run?</h2>
@@ -141,8 +125,9 @@ export default function HowFarDidIRunPage() {
                 or <strong>Cycle</strong> (or type your own pace) and it estimates the time too.
               </p>
               <p className="text-sm text-slate-500 mt-3">
-                Distance is measured straight-line between the points you tap — add a point on each bend so the
-                trace follows your real path.
+                By default the route <strong>snaps to the paths and roads</strong> between the points you tap, so
+                the distance follows where you actually ran. Add points to guide it around turns — or switch off
+                Snap for a straight-line “as the crow flies” measure.
               </p>
             </div>
           </div>
@@ -183,14 +168,15 @@ export default function HowFarDidIRunPage() {
             <h2 className="section-heading mb-3">Route distance calculator</h2>
             <p className="text-slate-700 mb-4">
               This is a multi-point <strong>route</strong> distance calculator — it measures a path with as many
-              turns as you like. Distances between points are exact (great-circle / haversine); the only
-              approximation is how closely your tapped points follow the real route, so add points on curves.
-              Road-snapping that follows the streets is coming next.
+              turns as you like. By default it <strong>snaps your route to the walkable/runnable paths</strong>{' '}
+              (or cycleways) between the points you tap, so the total follows the real streets and trails; add
+              points to guide it, or turn off Snap for a straight-line total.
             </p>
             <p className="text-slate-700">
               Just measuring between <strong>two exact points</strong> instead of a route? The{' '}
               <Link href="/distance-calculator" className="content-link">distance calculator</Link> is built for
-              A-to-B, with both straight-line and road distance.
+              A-to-B, with both straight-line and road distance. To turn a distance into a time at a set pace, see{' '}
+              <Link href="/miles-to-minutes" className="content-link">miles to minutes</Link>.
             </p>
           </div>
 
