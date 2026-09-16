@@ -434,7 +434,7 @@ export default function MobileBottomSheet({
           {!searchOpen && (
             <div
               data-testid="mwr-peek"
-              className="flex-none flex items-center gap-2.5 px-4 pb-3.5"
+              className="flex-none flex items-center gap-2 px-4 pb-3.5"
               style={{ touchAction: 'none' }}
               onPointerDown={startSheetDrag}
             >
@@ -503,21 +503,24 @@ export default function MobileBottomSheet({
               </div>
 
               {/* Use my location — button-triggered geolocation (never auto-prompts on load).
-                  Compact 44px icon so it reflows within the peek row (the flex-1 pill absorbs
-                  the width); same handler as the in-sheet button. */}
+                  Same handler as the in-sheet button. The "Locate" label shows from 390px up
+                  (labels the common iPhone/Android widths); below that it's icon-only so the
+                  peek row still fits on ONE line at 360px with no height change (the flex-1
+                  pill absorbs the width; min-w keeps a >=44px tap target when icon-only). */}
               <button
                 type="button"
                 data-testid="mwr-locate-btn"
                 onClick={onUseMyLocation}
                 disabled={isLocating}
-                className="flex-none w-11 h-11 rounded-2xl bg-accent-100 active:bg-accent-200 grid place-items-center disabled:opacity-50"
+                className="flex-none min-w-[44px] h-11 px-2.5 rounded-2xl bg-accent-100 active:bg-accent-200 flex items-center justify-center gap-1.5 disabled:opacity-50"
                 aria-label="Use my location"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" className="flex-none">
                   <circle cx="12" cy="12" r="7" />
                   <circle cx="12" cy="12" r="2" fill="#2563EB" stroke="none" />
                   <path d="M12 3v2M12 19v2M3 12h2M19 12h2" />
                 </svg>
+                <span className="hidden min-[390px]:inline text-[13px] font-bold text-accent-600 leading-none">Locate</span>
               </button>
 
               {/* Search */}
@@ -525,7 +528,7 @@ export default function MobileBottomSheet({
                 type="button"
                 data-testid="mwr-search-btn"
                 onClick={openSearch}
-                className="flex-none w-[52px] h-[52px] rounded-2xl bg-accent-100 active:bg-accent-200 grid place-items-center"
+                className="flex-none w-11 h-11 rounded-2xl bg-accent-100 active:bg-accent-200 grid place-items-center"
                 aria-label="Search location"
               >
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.2" strokeLinecap="round">

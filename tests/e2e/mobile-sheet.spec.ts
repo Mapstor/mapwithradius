@@ -335,6 +335,15 @@ test('peek-row Use My Location button is visible and triggers geolocation', asyn
   await expect(locate).toBeVisible();
   await expect(locate).toBeInViewport(); // actually on-screen in the always-visible peek row
 
+  // Accessible name is constant; the visible "Locate" label shows from 390px up (icon-only
+  // below, so the row still fits on one line at 360px).
+  await expect(locate).toHaveAccessibleName('Use my location');
+  if (page.viewportSize()!.width >= 390) {
+    await expect(locate).toContainText('Locate');
+  } else {
+    await expect(locate).not.toContainText('Locate');
+  }
+
   // Spy on getCurrentPosition, reset after load, then tap → the button must invoke it.
   await page.evaluate(() => {
     const w = window as unknown as { __geo: number };
