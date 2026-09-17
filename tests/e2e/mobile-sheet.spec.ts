@@ -336,12 +336,17 @@ test('peek-row Use My Location button is visible and triggers geolocation', asyn
   await expect(locate).toBeInViewport(); // actually on-screen in the always-visible peek row
 
   // Accessible name is constant; the visible "Locate" label shows from 390px up (icon-only
-  // below, so the row still fits on one line at 360px).
+  // below, so the row still fits on one line at 360px). Assert the label's VISIBILITY, not the
+  // button's text: toContainText reads textContent, which INCLUDES the display:none label, so it
+  // reports "Locate" even at 360px where the label is hidden. toBeVisible/toBeHidden respect the
+  // `hidden min-[390px]:inline` breakpoint correctly.
   await expect(locate).toHaveAccessibleName('Use my location');
+  const locateLabel = locate.locator('span'); // the "Locate" text label (the icon has no span)
   if (page.viewportSize()!.width >= 390) {
-    await expect(locate).toContainText('Locate');
+    await expect(locateLabel).toBeVisible();
+    await expect(locateLabel).toHaveText('Locate');
   } else {
-    await expect(locate).not.toContainText('Locate');
+    await expect(locateLabel).toBeHidden(); // icon-only below 390px
   }
 
   // Spy on getCurrentPosition, reset after load, then tap → the button must invoke it.
