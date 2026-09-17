@@ -274,6 +274,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
   const handleMapClick = useCallback(
     (lat: number, lng: number) => {
       markInteracted();
+      setLocationError(null); // drawing a circle by tapping is a successful recovery too
       setCollapseSignal((s) => s + 1); // map-first: collapse the mobile sheet to peek
 
       if (isAddingCircle) {
@@ -369,6 +370,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
     // fromUser=false suppresses analytics for the programmatic load-time ?locate= placement.
     (lat: number, lng: number, displayName: string, fromUser = true) => {
       markInteracted();
+      setLocationError(null); // a successful place clears any prior "location denied" notice
 
       if (selectedCircleId && !isAddingCircle) {
         const existingCircle = circles.find((c) => c.id === selectedCircleId);
@@ -402,7 +404,7 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
   const handleUseMyLocation = useCallback((fromUser = true) => {
     markInteracted();
     if (!navigator.geolocation) {
-      setLocationError('Geolocation is not supported by your browser.');
+      setLocationError('Geolocation isn’t supported by your browser. Search for an address below instead.');
       return;
     }
 
@@ -419,16 +421,16 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
         setIsLocating(false);
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            setLocationError('Location access denied. Please search for an address instead.');
+            setLocationError('Location access denied. Enable location in your browser settings, or search for an address below.');
             break;
           case error.POSITION_UNAVAILABLE:
-            setLocationError('Location information unavailable. Please search for an address.');
+            setLocationError('Location unavailable. Search for an address below instead.');
             break;
           case error.TIMEOUT:
-            setLocationError('Location request timed out. Please try again.');
+            setLocationError('Location request timed out. Try again, or search for an address below.');
             break;
           default:
-            setLocationError('Unable to get your location. Please search for an address.');
+            setLocationError('Couldn’t get your location. Search for an address below instead.');
         }
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
@@ -546,9 +548,14 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
     // #radius-tool marks the whole interactive tool (map + controls/sheet) as a Raptive
     // ad-exclusion zone so units are never auto-inserted into the touch surface.
     <div id="radius-tool" ref={toolRef} className="relative">
-      {/* Status / error message (top-center) */}
+      {/* Status / error message (top-center) — DESKTOP ONLY. On mobile the same error is shown
+          INSIDE the bottom sheet (see MobileBottomSheet), so a denial never leaves the user with
+          just a floating banner and no controls. */}
       {locationError && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm shadow-lg max-w-[90vw]">
+        <div
+          data-testid="mwr-location-error-desktop"
+          className="hidden lg:block absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm shadow-lg max-w-[90vw]"
+        >
           {locationError}
         </div>
       )}
@@ -664,6 +671,8 @@ export default function RadiusMapWrapper({ defaultUnit = 'miles', defaultRadius 
             onAdjustStart={handleDragStart}
             onAdjustEnd={handleDragEnd}
             collapseSignal={collapseSignal}
+            locationError={locationError}
+            onDismissLocationError={() => setLocationError(null)}
           />
         )}
       </div>

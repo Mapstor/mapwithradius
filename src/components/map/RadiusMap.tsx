@@ -501,12 +501,23 @@ export default function RadiusMap({
       .leaflet-tooltip.radius-edge-label b { font-weight: 800; }
       .leaflet-tooltip-top.radius-edge-label::before { border-top-color: #0f172a; }
 
-      /* Pin the scale bar + attribution just above the sheet's PEEK (~158px); capped so
-         they don't ride the sheet up into mid-map when it expands (the sheet then covers
-         them, which is fine — the map is covered too). The sheet publishes its height as
-         --mwr-chrome-offset. */
+      /* Scale bar (bottom-left) + attribution (bottom-right): pin them just above the sheet's
+         PEEK and FIXED to the viewport, so they never drift with page scroll — the map
+         container scrolls with the page while the sheet is viewport-fixed, so an absolute,
+         map-relative offset drifted the chrome up into mid-map on some scroll/viewport states.
+         z-index sits BELOW the sheet (z-[999]) so EXPANDING the sheet covers the chrome instead
+         of it floating on top (Leaflet defaults .leaflet-bottom to position:absolute; z-index:1000,
+         which is above the sheet — that was the "floats mid-map when expanded" bug). Gated on
+         data-mwr-detent, which the sheet sets on <html> only while it is mounted (tool in view),
+         so once the tool scrolls away the chrome reverts to Leaflet's normal in-map corner and
+         never lingers over the content below. 158px = peek height (150) + 8px gap; the safe-area
+         inset + anchor match the sheet's own bottom anchor so the chrome tracks the peek exactly. */
       @media (max-width: 1023px) {
-        #radius-tool .leaflet-bottom { bottom: min(var(--mwr-chrome-offset, 0px), 158px); }
+        :root[data-mwr-detent] #radius-tool .leaflet-bottom {
+          position: fixed;
+          z-index: 500;
+          bottom: calc(158px + env(safe-area-inset-bottom, 0px) + var(--mwr-anchor-h, 0px));
+        }
         /* Zoom control sits below the bottom sheet (z-[999]) instead of poking above it,
            and hides entirely once the sheet is expanded past peek. The sheet publishes its
            committed detent as data-mwr-detent on <html>. */

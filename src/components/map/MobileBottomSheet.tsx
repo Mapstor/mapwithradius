@@ -37,6 +37,14 @@ interface MobileBottomSheetProps {
   onAdjustEnd: () => void;
   /** Incrementing counter from the wrapper's map-tap handler → collapse the sheet to peek. */
   collapseSignal: number;
+  /**
+   * Geolocation error (e.g. after a denied "Use my location"). Rendered as an INLINE banner
+   * inside the sheet — never as a separate floating banner — so the sheet always stays present
+   * with its controls after a denial (the search fallback lives one tap away in the peek row).
+   */
+  locationError: string | null;
+  /** Clear the inline location error (dismiss "×"). */
+  onDismissLocationError: () => void;
 }
 
 const COLORS = ['#3B82F6', '#EF4444', '#22C55E', '#F59E0B', '#8B5CF6', '#0F172A'];
@@ -48,6 +56,10 @@ const BOUNDS = {
 };
 const FLING_VELOCITY = 0.55; // px/ms — above this, advance a detent
 const COMMIT_THRESHOLD = 10; // px of movement before a touch counts as a sheet drag
+// Keep the search-mode sheet clear of the sticky page header (h-16 = 64px, z-[1100] — it sits
+// ABOVE the sheet). Its top edge stays this far below the viewport top so the search field
+// always renders INSIDE the sheet, below the nav, never floating up under it.
+const SEARCH_TOP_GAP = 88;
 
 const vibrate = (ms: number) => {
   try {
@@ -84,6 +96,8 @@ export default function MobileBottomSheet({
   onAdjustStart,
   onAdjustEnd,
   collapseSignal,
+  locationError,
+  onDismissLocationError,
 }: MobileBottomSheetProps) {
   // Render only below the desktop breakpoint (1024px). ssr:false parent → window is safe here.
   const [isMobile, setIsMobile] = useState<boolean>(
@@ -183,6 +197,19 @@ export default function MobileBottomSheet({
     document.documentElement.dataset.mwrDetent = detent;
     return () => { delete document.documentElement.dataset.mwrDetent; };
   }, [detent, isMobile]);
+
+  // On a FRESH geolocation error (e.g. a denial), lift the sheet off peek so the inline
+  // recovery banner + the search control are fully visible. We never auto-reprompt — the
+  // user recovers via the search field, which stays one tap away in the peek row.
+  const prevLocationErrorRef = useRef<string | null>(null);
+  useEffect(() => {
+    const had = prevLocationErrorRef.current;
+    prevLocationErrorRef.current = locationError;
+    if (!isMobile) return;
+    if (locationError && !had && detentRef.current === 'peek' && !searchOpenRef.current) {
+      goToDetent('mid');
+    }
+  }, [locationError, isMobile, goToDetent]);
 
   // ---- Sheet drag (pointer events, 10px commit threshold, fling-to-detent) ----
   const dragRef = useRef<{
@@ -288,7 +315,11 @@ export default function MobileBottomSheet({
     goToDetent(hasCircle ? 'mid' : 'peek');
   }, [goToDetent, hasCircle, onSearchOpenChange]);
 
-  // While searching, lift the fixed sheet above the on-screen keyboard so the input stays visible.
+  // While searching, lift the fixed sheet above the on-screen keyboard so the input stays
+  // visible — but keep it a BOTTOM SHEET, never a full-screen panel. Its height is capped so
+  // the top edge stays SEARCH_TOP_GAP below the viewport top (clear of the sticky header),
+  // otherwise the sheet grew to the full viewport height with its top at y=0 and the search
+  // field rendered up under the page nav instead of inside the sheet.
   useEffect(() => {
     if (!searchOpen || typeof window === 'undefined' || !window.visualViewport) return;
     const vv = window.visualViewport;
@@ -297,7 +328,9 @@ export default function MobileBottomSheet({
       if (!el) return;
       const kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
       el.style.bottom = `${kb}px`;
-      el.style.height = `${vv.height}px`;
+      // Cap the height so the sheet top stays below the header: bottom(kb) + height leaves a
+      // SEARCH_TOP_GAP strip at the top. Holds with or without the keyboard up.
+      el.style.height = `${Math.max(260, vv.height - SEARCH_TOP_GAP)}px`;
       el.style.transform = 'translateY(0)';
     };
     onVV();
@@ -306,8 +339,16 @@ export default function MobileBottomSheet({
     return () => {
       vv.removeEventListener('resize', onVV);
       vv.removeEventListener('scroll', onVV);
+      // Defensive: leaving search must always restore a valid detent geometry, so a stale
+      // search layout (custom bottom/height) can never strand the sheet off-screen.
+      const el = sheetRef.current;
+      if (el) {
+        el.style.bottom = '';
+        el.style.height = '';
+      }
+      applySheet(detents()[detentRef.current]);
     };
-  }, [searchOpen]);
+  }, [searchOpen, applySheet, detents]);
 
   const runSearch = useCallback((q: string) => {
     setSearchQuery(q);
@@ -534,6 +575,43 @@ export default function MobileBottomSheet({
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.2" strokeLinecap="round">
                   <circle cx="11" cy="11" r="7" />
                   <path d="m20 20-3.8-3.8" />
+                </svg>
+              </button>
+            </div>
+          )}
+
+          {/* Inline location error (e.g. a denied "Use my location"). Lives INSIDE the sheet
+              so the controls always stay present after a denial — never a lone floating banner.
+              Guides recovery and offers a one-tap jump to the search fallback. */}
+          {!searchOpen && locationError && (
+            <div
+              data-testid="mwr-location-error"
+              className="flex-none mx-4 mb-3 flex items-start gap-2.5 rounded-2xl bg-red-50 border border-red-200 px-3.5 py-3"
+              role="alert"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" className="flex-none mt-0.5">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 8v5M12 16.5h.01" strokeLinecap="round" />
+              </svg>
+              <div className="min-w-0 flex-1">
+                <p className="text-[13.5px] leading-snug text-red-700 font-medium">{locationError}</p>
+                <button
+                  type="button"
+                  data-testid="mwr-location-error-search"
+                  onClick={openSearch}
+                  className="mt-1.5 text-[13.5px] font-bold text-accent-600 underline underline-offset-2"
+                >
+                  Search for an address
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={onDismissLocationError}
+                aria-label="Dismiss location error"
+                className="flex-none w-8 h-8 -mr-1 -mt-1 grid place-items-center rounded-lg text-red-400 active:bg-red-100"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                  <path d="M6 6l12 12M18 6L6 18" />
                 </svg>
               </button>
             </div>

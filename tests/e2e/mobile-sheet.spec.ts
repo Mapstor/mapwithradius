@@ -363,3 +363,110 @@ test('peek-row Use My Location button is visible and triggers geolocation', asyn
   // Flow succeeds (granted + pinned) → the circle stays and no error banner appears.
   await expect(page.locator('.radius-handle.edge').first()).toBeVisible();
 });
+
+// ---- denied geolocation: the sheet must survive + guide recovery -------------------------
+
+/** Force the next getCurrentPosition to fail with PERMISSION_DENIED, regardless of the
+ *  granted+pinned test permission. Drives the wrapper's denial path exactly. */
+async function denyGeolocation(page: Page) {
+  await page.evaluate(() => {
+    const g = navigator.geolocation;
+    g.getCurrentPosition = (
+      _success: PositionCallback,
+      error?: PositionErrorCallback | null
+    ) => {
+      error?.({
+        code: 1,
+        PERMISSION_DENIED: 1,
+        POSITION_UNAVAILABLE: 2,
+        TIMEOUT: 3,
+        message: 'User denied Geolocation',
+      } as GeolocationPositionError);
+    };
+  });
+}
+
+// 14) CRITICAL regression gate (bug 2 + 4): a denied "Use my location" must NOT tear down the
+//     sheet. The sheet + all its controls stay present, an inline recovery message appears,
+//     and the search fallback remains one tap away.
+test('denied geolocation keeps the sheet present with an inline recovery message', async ({ page }) => {
+  await denyGeolocation(page);
+
+  const sheet = page.getByTestId('mwr-sheet');
+  await expect(sheet).toBeVisible();
+
+  await page.getByTestId('mwr-locate-btn').tap();
+
+  // The sheet and its controls MUST remain — never reduced to a lone error banner.
+  await expect(sheet).toBeVisible();
+  await expect(page.getByTestId('mwr-peek')).toBeVisible();
+  await expect(page.getByTestId('mwr-search-btn')).toBeVisible();
+  await expect(page.getByTestId('mwr-locate-btn')).toBeVisible();
+
+  // Inline recovery banner appears (inside the sheet) and guides the user to search.
+  // toBeInViewport (not just toBeVisible) gates the auto-expand: a denial must lift the sheet
+  // off peek so the banner is actually on-screen, not merely present below the peek fold.
+  const err = page.getByTestId('mwr-location-error');
+  await expect(err).toBeInViewport();
+  await expect(err).toContainText(/denied/i);
+  await expect(err).toContainText(/search/i);
+
+  // The floating desktop banner must NOT stand in for the sheet on mobile (it's hidden < lg).
+  await expect(page.getByTestId('mwr-location-error-desktop')).toBeHidden();
+
+  // Search stays fully usable as the fallback — recovery affordance opens it inside the sheet.
+  await page.getByTestId('mwr-location-error-search').tap();
+  await expect(sheet).toHaveAttribute('data-search-open', 'true');
+  await expect(page.getByTestId('mwr-search-input')).toBeVisible();
+});
+
+// 15) Denial is dismissible and self-heals: picking a search result clears the inline error.
+test('the inline location error clears after a successful search', async ({ page }) => {
+  await page.route('**nominatim.openstreetmap.org/**', (route) =>
+    route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify([{ lat: '40.7128', lon: '-74.0060', display_name: 'New York, NY, USA' }]),
+    })
+  );
+  await denyGeolocation(page);
+
+  await page.getByTestId('mwr-locate-btn').tap();
+  await expect(page.getByTestId('mwr-location-error')).toBeVisible();
+
+  await page.getByTestId('mwr-search-btn').tap();
+  await page.getByTestId('mwr-search-input').fill('New York');
+  const result = page.getByText('New York, NY, USA');
+  await result.waitFor({ state: 'visible' });
+  await result.tap();
+
+  // Circle placed → the stale "denied" notice is gone.
+  await expect(page.getByTestId('mwr-location-error')).toHaveCount(0);
+});
+
+// ---- bug 3: search stays inside the sheet, below the sticky page header -------------------
+
+// 16) Opening search must render the field INSIDE the bottom sheet, below the sticky nav —
+//     not as a full-screen panel whose top collides with (or hides under) the header.
+test('search opens inside the sheet, below the page header', async ({ page }) => {
+  await page.getByTestId('mwr-search-btn').tap();
+  await expect(page.getByTestId('mwr-sheet')).toHaveAttribute('data-search-open', 'true');
+
+  const input = page.getByTestId('mwr-search-input');
+  await expect(input).toBeVisible();
+
+  const header = page.locator('header').first();
+  const hb = await header.boundingBox();
+  const ib = await input.boundingBox();
+  const sb = await page.getByTestId('mwr-sheet').boundingBox();
+  expect(hb).not.toBeNull();
+  expect(ib).not.toBeNull();
+  expect(sb).not.toBeNull();
+
+  // The search field renders BELOW the header, not overlapping/under it.
+  expect(ib!.y).toBeGreaterThanOrEqual(hb!.y + hb!.height - 1);
+  // …and the sheet's own top edge also clears the header (it's a bottom sheet, not full-screen).
+  expect(sb!.y).toBeGreaterThanOrEqual(hb!.y + hb!.height - 1);
+  // …and the field is contained within the sheet's box.
+  expect(ib!.y).toBeGreaterThanOrEqual(sb!.y - 1);
+  expect(ib!.y + ib!.height).toBeLessThanOrEqual(sb!.y + sb!.height + 1);
+});
