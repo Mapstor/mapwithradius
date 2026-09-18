@@ -34,9 +34,9 @@ const TIME_PRESETS = [5, 10, 15, 30, 45, 60, 90, 120];
 
 // Per-mode time ceilings. The free FOSSGIS Valhalla server reliably answers drive isochrones
 // up to 2h, but a pedestrian/bicycle isochrone over the dense walk/cycle graph gets far more
-// expensive per minute and starts failing well before that — so cap Walk/Cycle where it holds
-// up, and disable/clamp anything above rather than letting the request fail.
-const MODE_MAX_TIME: Record<TravelMode, number> = { auto: 120, pedestrian: 60, bicycle: 90 };
+// expensive per minute and frequently FAILS to compute past ~1h — so cap Walk and Cycle at 60
+// (a cap that reliably returns beats one that errors) and disable/clamp anything above.
+const MODE_MAX_TIME: Record<TravelMode, number> = { auto: 120, pedestrian: 60, bicycle: 60 };
 
 // Same free FOSSGIS Valhalla server /how-far-did-i-run uses (its /route). No key; fair-use →
 // one request per settled edit (debounced), aborted when a newer edit supersedes it.
@@ -635,19 +635,38 @@ export default function DriveTimeMap({
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-700 whitespace-nowrap">{time} min</span>
-          <input
-            type="range"
-            data-testid="dt-slider"
-            min="5"
-            max={maxTime}
-            step="5"
-            value={time}
-            onChange={(e) => setTime(parseInt(e.target.value))}
-            className="flex-1"
-          />
-          <span className="text-xs text-slate-400 whitespace-nowrap">max {maxTime}</span>
+        {/* Time presets — buttons are easier to tap than a slider on a phone. Same ladder as the
+            desktop panel; over-cap presets are disabled per mode. Wraps to two rows (grid-cols-4);
+            the panel scrolls if the content runs tall. */}
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-xs font-semibold text-slate-700">Travel time</span>
+          <span className="text-xs text-slate-400">max {maxTime} min</span>
+        </div>
+        <div className="grid grid-cols-4 gap-1.5">
+          {TIME_PRESETS.map((t) => {
+            const over = t > maxTime;
+            return (
+              <button
+                key={t}
+                data-testid={`dt-time-${t}`}
+                type="button"
+                onClick={() => setTime(t)}
+                disabled={over}
+                aria-disabled={over}
+                aria-pressed={time === t}
+                title={over ? `Too long for ${MODE_CONFIG[mode].label.toLowerCase()} on the free server` : undefined}
+                className={`min-h-[36px] px-1 text-xs font-semibold rounded-lg transition-colors ${
+                  over
+                    ? 'bg-slate-50 text-slate-300 cursor-not-allowed'
+                    : time === t
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-100 text-slate-700 active:bg-slate-200'
+                }`}
+              >
+                {t >= 60 ? `${t / 60}hr` : `${t}min`}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

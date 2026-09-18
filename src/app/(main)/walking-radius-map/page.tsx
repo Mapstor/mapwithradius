@@ -98,7 +98,7 @@ export default function WalkingRadiusMapPage() {
                 '@type': 'HowToStep',
                 position: 3,
                 name: 'Set the travel time',
-                text: 'Pick a time with the preset buttons or the slider (up to 60 minutes walking, 90 cycling) — the reachable area redraws automatically as you change it. There is no button to press.',
+                text: 'Pick a time with the preset buttons (up to 60 minutes walking or cycling) — the reachable area redraws automatically as you change it. There is no button to press.',
               },
               {
                 '@type': 'HowToStep',

@@ -6,7 +6,8 @@ import { test, expect, Page } from '@playwright/test';
 //
 // The drive page seeds a start on load (autoComputeDefault) — geolocation is granted+pinned in
 // the config, so a default drive isochrone fires without any click. The walking page renders the
-// same component WITHOUT that prop and must NOT auto-fire.
+// same component WITHOUT that prop and must NOT auto-fire. Mobile uses a tap-friendly time PRESET
+// ladder (no slider); the desktop panel keeps the fine-grained slider + presets.
 //
 // To run locally:
 //   npm i -D @playwright/test && npx playwright install chromium
@@ -59,7 +60,6 @@ async function mockIsochrone(page: Page, opts: { status?: number; delayMs?: numb
 }
 
 const state = (page: Page) => page.getByTestId('dt-state');
-const visibleSlider = (page: Page) => page.locator('[data-testid="dt-slider"]:visible');
 
 async function gotoTool(page: Page) {
   await page.goto('/drive-time-map');
@@ -71,7 +71,8 @@ async function waitForSeed(page: Page) {
   await expect(state(page)).toHaveAttribute('data-has-center', '1');
 }
 
-/** Fire N rapid slider input events (a synthetic "drag"), React-compatibly, on the visible slider. */
+/** Fire N rapid slider input events (a synthetic "drag"), React-compatibly, on the visible slider
+ *  (desktop panel only — mobile uses preset buttons). */
 async function dragSlider(page: Page, values: number[]) {
   await page.evaluate((vals) => {
     const sliders = Array.from(document.querySelectorAll('[data-testid="dt-slider"]')) as HTMLInputElement[];
@@ -142,49 +143,42 @@ test('switching travel mode re-fetches the isochrone with the new costing', asyn
   expect(calls.filter((c) => c.costing === 'pedestrian').length).toBe(pedBefore + 1);
 });
 
-// 2) A rapid slider "drag" collapses to ONE request on settle (debounce), not one per step.
-test('dragging the time slider fires exactly one request on settle', async ({ page }) => {
-  const calls = await mockIsochrone(page);
-  await gotoTool(page);
-  await waitForSeed(page);
-  await expect.poll(() => calls.length).toBeGreaterThan(0); // the seed request
-  await expect(state(page)).toHaveAttribute('data-loading', '0'); // …settled
-  const before = calls.length;
-
-  await dragSlider(page, [35, 40, 45, 50, 55, 60]); // six steps within the debounce window
-  await page.waitForTimeout(700); // past the 300ms debounce
-
-  expect(calls.length - before).toBe(1); // one request, not six
-  await expect(state(page)).toHaveAttribute('data-time', '60');
-});
-
-// 3) Time is capped per mode and clamps on switch (mobile slider max + value).
-test('travel time is capped per mode and clamps when switching down', async ({ page }) => {
+// 2) Mobile time PRESET ladder: all 8 presets render (tap-friendly, no slider), respect per-mode
+//    caps (Walk & Cycle max 60 → 90 and 120 disabled), a preset sets the time, and switching mode
+//    clamps the time down. This is the mobile-presets + cycle-cap-60 gate.
+test('mobile time presets render, respect per-mode caps (cycle 60), and clamp on switch', async ({ page }) => {
   await mockIsochrone(page);
   await gotoTool(page);
 
-  // Drive: max 120.
+  // All 8 presets render on mobile (2-row ladder, no slider).
+  for (const t of [5, 10, 15, 30, 45, 60, 90, 120]) {
+    await expect(page.locator(`[data-testid="dt-time-${t}"]:visible`)).toBeVisible();
+  }
+
+  // Drive: max 120 — every preset enabled; tapping the 2hr preset sets the time.
   await expect(state(page)).toHaveAttribute('data-mode', 'auto');
   await expect(state(page)).toHaveAttribute('data-max-time', '120');
-  await expect(visibleSlider(page)).toHaveAttribute('max', '120');
-
-  await dragSlider(page, [120]);
+  await expect(page.locator('[data-testid="dt-time-120"]:visible')).toBeEnabled();
+  await page.locator('[data-testid="dt-time-120"]:visible').click();
   await expect(state(page)).toHaveAttribute('data-time', '120');
 
-  // Walk: max 60 → the 120 clamps to 60.
+  // Walk: max 60 — 90 & 120 disabled; the 120 clamps down to 60.
   await page.locator('[data-testid="dt-mode-pedestrian"]:visible').click();
   await expect(state(page)).toHaveAttribute('data-max-time', '60');
-  await expect(visibleSlider(page)).toHaveAttribute('max', '60');
   await expect(state(page)).toHaveAttribute('data-time', '60');
+  await expect(page.locator('[data-testid="dt-time-90"]:visible')).toBeDisabled();
+  await expect(page.locator('[data-testid="dt-time-120"]:visible')).toBeDisabled();
+  await expect(page.locator('[data-testid="dt-time-60"]:visible')).toBeEnabled();
 
-  // Cycle: max 90 (time stays 60, no clamp up).
+  // Cycle: also max 60 now (lowered from 90 for free-server reliability) — 90 & 120 disabled.
   await page.locator('[data-testid="dt-mode-bicycle"]:visible').click();
-  await expect(state(page)).toHaveAttribute('data-max-time', '90');
-  await expect(visibleSlider(page)).toHaveAttribute('max', '90');
+  await expect(state(page)).toHaveAttribute('data-max-time', '60');
   await expect(state(page)).toHaveAttribute('data-time', '60');
+  await expect(page.locator('[data-testid="dt-time-90"]:visible')).toBeDisabled();
+  await expect(page.locator('[data-testid="dt-time-120"]:visible')).toBeDisabled();
 });
 
-// 4) A server error surfaces a mode-specific, mobile-visible recovery banner (not a generic one).
+// 3) A server error surfaces a mode-specific, mobile-visible recovery banner (not a generic one).
 test('a server error shows a walking-specific recovery banner', async ({ page }) => {
   await mockIsochrone(page, { status: 500 });
   await gotoTool(page);
@@ -199,11 +193,28 @@ test('a server error shows a walking-specific recovery banner', async ({ page })
   await expect(state(page)).toHaveAttribute('data-error', /walking/i);
 });
 
-// 5) Desktop presets: over-limit time buttons are disabled per mode (needs the desktop panel).
-test.describe('desktop time presets', () => {
+// Desktop panel keeps the fine-grained slider (+ the preset ladder). These run at a desktop width.
+test.describe('desktop panel (slider + presets)', () => {
   test.use({ viewport: { width: 1280, height: 900 } });
 
-  test('over-limit time presets are disabled per mode', async ({ page }) => {
+  // A rapid slider "drag" collapses to ONE request on settle (debounce), not one per step.
+  test('dragging the time slider fires exactly one request on settle', async ({ page }) => {
+    const calls = await mockIsochrone(page);
+    await gotoTool(page);
+    await waitForSeed(page);
+    await expect.poll(() => calls.length).toBeGreaterThan(0); // the seed request
+    await expect(state(page)).toHaveAttribute('data-loading', '0'); // …settled
+    const before = calls.length;
+
+    await dragSlider(page, [35, 40, 45, 50, 55, 60]); // six steps within the debounce window
+    await page.waitForTimeout(700); // past the 300ms debounce
+
+    expect(calls.length - before).toBe(1); // one request, not six
+    await expect(state(page)).toHaveAttribute('data-time', '60');
+  });
+
+  // Over-cap time presets are disabled per mode (Walk & Cycle both cap at 60).
+  test('over-cap time presets are disabled per mode', async ({ page }) => {
     await mockIsochrone(page);
     await gotoTool(page);
 
@@ -214,9 +225,10 @@ test.describe('desktop time presets', () => {
     await expect(page.locator('[data-testid="dt-time-120"]:visible')).toBeDisabled();
     await expect(page.locator('[data-testid="dt-time-60"]:visible')).toBeEnabled();
 
-    // Cycle (≤ 90): 120 disabled, 90 enabled.
+    // Cycle (≤ 60 now): 90 and 120 disabled, 60 enabled.
     await page.locator('[data-testid="dt-mode-bicycle"]:visible').click();
+    await expect(page.locator('[data-testid="dt-time-90"]:visible')).toBeDisabled();
     await expect(page.locator('[data-testid="dt-time-120"]:visible')).toBeDisabled();
-    await expect(page.locator('[data-testid="dt-time-90"]:visible')).toBeEnabled();
+    await expect(page.locator('[data-testid="dt-time-60"]:visible')).toBeEnabled();
   });
 });

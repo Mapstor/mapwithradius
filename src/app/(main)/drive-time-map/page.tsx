@@ -598,7 +598,7 @@ export default function DriveTimeMapPage() {
               </div>
               <div>
                 <dt className="text-slate-500">Max Time</dt>
-                <dd className="text-slate-900 font-medium">120 min drive · 90 cycle · 60 walk</dd>
+                <dd className="text-slate-900 font-medium">120 min drive · 60 walk · 60 cycle</dd>
               </div>
               <div>
                 <dt className="text-slate-500">Travel Modes</dt>
