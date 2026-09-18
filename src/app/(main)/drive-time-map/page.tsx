@@ -28,7 +28,7 @@ const DriveTimeMap = dynamic(() => import('@/components/map/DriveTimeMap'), {
   ssr: false,
   loading: () => (
     <div className="relative">
-      <div className="h-[60vh] lg:h-[75vh] bg-slate-100 animate-pulse" />
+      <div className="h-[74vh] lg:h-[75vh] bg-slate-100 animate-pulse" />
       <div className="absolute top-4 right-4 w-80 lg:w-96 h-[400px] bg-white rounded-xl shadow-lg animate-pulse hidden lg:block" />
     </div>
   ),

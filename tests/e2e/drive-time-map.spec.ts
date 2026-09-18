@@ -19,19 +19,24 @@ interface IsoCall {
   url: string;
 }
 
-const isoFeatureCollection = () => ({
-  type: 'FeatureCollection',
-  features: [
-    {
-      type: 'Feature',
-      properties: { contour: 30, metric: 'time' },
-      geometry: {
-        type: 'Polygon',
-        coordinates: [[[-77.05, 38.90], [-77.03, 38.92], [-77.01, 38.90], [-77.03, 38.88], [-77.05, 38.90]]],
+// A small diamond isochrone centred on the requested origin, so fitBounds frames around the
+// marker (lets us assert the origin ends up in the visible map area, not under the panel).
+const isoFeatureCollection = (lat = 38.9072, lon = -77.0369) => {
+  const d = 0.03;
+  return {
+    type: 'FeatureCollection',
+    features: [
+      {
+        type: 'Feature',
+        properties: { contour: 30, metric: 'time' },
+        geometry: {
+          type: 'Polygon',
+          coordinates: [[[lon - d, lat], [lon, lat + d], [lon + d, lat], [lon, lat - d], [lon - d, lat]]],
+        },
       },
-    },
-  ],
-});
+    ],
+  };
+};
 
 /** Intercept the Valhalla isochrone call, record each request's costing+time, and fulfil it.
  *  opts.status → error path; opts.delayMs → simulate a slow (heavy) isochrone compute. */
@@ -41,10 +46,14 @@ async function mockIsochrone(page: Page, opts: { status?: number; delayMs?: numb
     const raw = new URL(route.request().url()).searchParams.get('json') || '';
     let costing = '';
     let time = 0;
+    let lat: number | undefined;
+    let lon: number | undefined;
     try {
       const p = JSON.parse(raw);
       costing = p.costing;
       time = p.contours?.[0]?.time;
+      lat = p.locations?.[0]?.lat;
+      lon = p.locations?.[0]?.lon;
     } catch {
       /* ignore */
     }
@@ -53,7 +62,7 @@ async function mockIsochrone(page: Page, opts: { status?: number; delayMs?: numb
     if (opts.status && opts.status >= 400) {
       await route.fulfill({ status: opts.status, contentType: 'application/json', body: JSON.stringify({ error: 'server error' }) });
     } else {
-      await route.fulfill({ contentType: 'application/json', body: JSON.stringify(isoFeatureCollection()) });
+      await route.fulfill({ contentType: 'application/json', body: JSON.stringify(isoFeatureCollection(lat, lon)) });
     }
   });
   return calls;
@@ -128,6 +137,40 @@ test('a slow isochrone (>8s) still resolves and renders', async ({ page }) => {
   await expect(state(page)).toHaveAttribute('data-loading', '0', { timeout: 20000 }); // must resolve, not abort
   await expect(state(page)).toHaveAttribute('data-error', '');
   await expect(page.locator('.leaflet-overlay-pane path').first()).toBeVisible();
+});
+
+// D) The mobile map is tall enough (~74vh) to give the isochrone room above the controls panel.
+test('the mobile map is ~74vh tall (room above the panel)', async ({ page }) => {
+  await mockIsochrone(page);
+  await gotoTool(page);
+  const vh = page.viewportSize()!.height;
+  const box = await page.getByTestId('dt-map').boundingBox();
+  expect(box).not.toBeNull();
+  // ~74vh (clearly taller than the old 60vh), with slack for rounding.
+  expect(box!.height).toBeGreaterThan(vh * 0.7);
+  expect(box!.height).toBeLessThanOrEqual(vh * 0.78);
+});
+
+// E) After the default isochrone draws, the origin marker frames into the VISIBLE map area —
+//    above the mobile controls panel — instead of being pushed under it (fitBounds bottom-padding).
+test('the origin marker frames above the mobile controls panel', async ({ page }) => {
+  await mockIsochrone(page);
+  await gotoTool(page);
+  await waitForSeed(page);
+  await expect(state(page)).toHaveAttribute('data-loading', '0');
+
+  const marker = page.locator('.custom-center-marker').first();
+  await expect(marker).toBeVisible();
+  // The marker's centre must settle ABOVE the panel's top edge → visible, not hidden under the
+  // controls. Poll to ride out the fitBounds pan/zoom animation.
+  await expect
+    .poll(async () => {
+      const mBox = await marker.boundingBox();
+      const panelBox = await page.getByTestId('dt-mobile-panel').boundingBox();
+      if (!mBox || !panelBox) return false;
+      return mBox.y + mBox.height / 2 < panelBox.y;
+    })
+    .toBe(true);
 });
 
 // 1) Switching mode re-fetches the isochrone with the new costing — exactly one new request.

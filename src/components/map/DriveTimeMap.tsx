@@ -84,6 +84,9 @@ export default function DriveTimeMap({
   const isochroneLayerRef = useRef<L.GeoJSON | null>(null);
   const markerRef = useRef<L.Marker | null>(null);
   const circleLayerRef = useRef<L.Circle | null>(null);
+  // The mobile controls panel overlays the bottom of the map; its measured height is reserved
+  // as fitBounds bottom-padding so the isochrone frames into the VISIBLE area above it.
+  const mobilePanelRef = useRef<HTMLDivElement>(null);
   // Resilience refs: the debounce timer and the in-flight request's controller, so a newer
   // edit (or unmount) cancels the pending/running one instead of racing it.
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -276,7 +279,18 @@ export default function DriveTimeMap({
           isochroneLayerRef.current = layer;
 
           const bounds = layer.getBounds();
-          if (bounds.isValid()) map.fitBounds(bounds, { padding: [50, 50] });
+          if (bounds.isValid()) {
+            // On mobile the controls panel (position:absolute) covers the bottom of the map, so
+            // reserve its measured height as bottom padding — the whole isochrone then frames into
+            // the VISIBLE area above the panel instead of centering under it (origin hidden). On
+            // desktop the panel is display:none (offsetHeight 0) → symmetric padding, unchanged.
+            const panelH = mobilePanelRef.current?.offsetHeight ?? 0;
+            if (panelH > 0) {
+              map.fitBounds(bounds, { paddingTopLeft: [28, 28], paddingBottomRight: [28, panelH + 24] });
+            } else {
+              map.fitBounds(bounds, { padding: [50, 50] });
+            }
+          }
           setIsLoading(false);
         } catch (err) {
           clearTimeout(to);
@@ -413,7 +427,7 @@ export default function DriveTimeMap({
     // #drive-time-tool marks the whole interactive tool (map + controls) as a Raptive
     // ad-exclusion zone so units are never auto-inserted over the touch surface — matching
     // every other tool (#radius-tool, #how-far-did-i-run-tool, #area-tool, …).
-    <div id="drive-time-tool" data-testid="dt-tool" className="relative h-[60vh] lg:h-[75vh]">
+    <div id="drive-time-tool" data-testid="dt-tool" className="relative h-[74vh] lg:h-[75vh]">
       {/* Canonical, layout-independent state for tests/automation */}
       <div
         data-testid="dt-state"
@@ -595,7 +609,7 @@ export default function DriveTimeMap({
       </div>
 
       {/* Mobile Controls (bottom panel) */}
-      <div className="lg:hidden absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-4px_12px_-2px_rgba(15,23,42,0.08)] p-4 z-[1000]">
+      <div ref={mobilePanelRef} data-testid="dt-mobile-panel" className="lg:hidden absolute bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-[0_-4px_12px_-2px_rgba(15,23,42,0.08)] p-4 z-[1000]">
         <div className="flex gap-2 mb-2">
           <div className="flex-1">
             <LocationSearchInput
