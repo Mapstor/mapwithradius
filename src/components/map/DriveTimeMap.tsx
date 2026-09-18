@@ -104,8 +104,9 @@ export default function DriveTimeMap({
   // Initialize map
   useEffect(() => {
     if (!mapContainer.current || mapRef.current) return;
+    const container = mapContainer.current;
 
-    const map = L.map(mapContainer.current, {
+    const map = L.map(container, {
       center: defaultCenter,
       zoom: DEFAULT_ZOOM,
       zoomControl: false,
@@ -163,7 +164,30 @@ export default function DriveTimeMap({
       seedDefaultCity();
     }
 
+    // Fix the first-paint sizing race and keep the map correctly sized on any later container
+    // resize (mobile URL bar show/hide, rotation) WITHOUT recreating it. Leaflet caches the
+    // container's pixel size at init; on mobile that size isn't settled yet, so setView/fitBounds
+    // computed the center against a stale size and the origin marker landed off the visual centre.
+    // invalidateSize() recomputes it (re-centring the view); a ResizeObserver keeps it correct.
+    // Matches AcreOverlayMap / AreaMeasureMap.
+    let sizeRaf: number | null = null;
+    const invalidate = () => {
+      sizeRaf = null;
+      mapRef.current?.invalidateSize();
+    };
+    sizeRaf = requestAnimationFrame(invalidate);
+    const ro =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => {
+            if (sizeRaf != null) cancelAnimationFrame(sizeRaf);
+            sizeRaf = requestAnimationFrame(invalidate);
+          })
+        : null;
+    ro?.observe(container);
+
     return () => {
+      if (sizeRaf != null) cancelAnimationFrame(sizeRaf);
+      ro?.disconnect();
       map.remove();
       mapRef.current = null;
     };

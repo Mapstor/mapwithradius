@@ -101,6 +101,9 @@ test('a default drive isochrone is computed on load (drive page)', async ({ page
   await expect(state(page)).toHaveAttribute('data-loading', '0');
   await expect(state(page)).toHaveAttribute('data-error', '');
   await expect(page.locator('.leaflet-overlay-pane path').first()).toBeVisible();
+  // The origin (center) marker renders on the map. (Pixel-perfect centering is a real
+  // mobile-browser sizing artifact that headless Chromium doesn't reproduce — see device check.)
+  await expect(page.locator('.custom-center-marker').first()).toBeVisible();
 });
 
 // B) The walking page reuses the component but must NOT auto-compute on load.
