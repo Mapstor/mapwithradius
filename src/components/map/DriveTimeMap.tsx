@@ -30,13 +30,13 @@ interface DriveTimeMapProps {
   defaultCenter?: [number, number];
 }
 
-const TIME_PRESETS = [5, 10, 15, 30, 45, 60, 90, 120];
+const TIME_PRESETS = [5, 10, 15, 30, 45, 60];
 
-// Per-mode time ceilings. The free FOSSGIS Valhalla server reliably answers drive isochrones
-// up to 2h, but a pedestrian/bicycle isochrone over the dense walk/cycle graph gets far more
-// expensive per minute and frequently FAILS to compute past ~1h — so cap Walk and Cycle at 60
-// (a cap that reliably returns beats one that errors) and disable/clamp anything above.
-const MODE_MAX_TIME: Record<TravelMode, number> = { auto: 120, pedestrian: 60, bicycle: 60 };
+// Time ceiling per mode — all 60 min. The free FOSSGIS Valhalla server frequently FAILS to
+// compute isochrones past ~1h (drive included, under load), and a cap that reliably returns
+// beats one that errors, so every mode tops out at 60. Kept as a per-mode record so a mode
+// could diverge again later without touching the clamp/preset logic.
+const MODE_MAX_TIME: Record<TravelMode, number> = { auto: 60, pedestrian: 60, bicycle: 60 };
 
 // Same free FOSSGIS Valhalla server /how-far-did-i-run uses (its /route). No key; fair-use →
 // one request per settled edit (debounced), aborted when a newer edit supersedes it.
@@ -314,8 +314,9 @@ export default function DriveTimeMap({
     }
   }, [center, showRadiusCircle, time, mode]);
 
-  // Switching mode clamps the time down to the new mode's ceiling so we never fire (or leave
-  // selected) a time that mode can't compute — e.g. Drive @ 120 → Walk snaps to 60.
+  // Switching mode clamps the time down to the new mode's ceiling so we never leave a time that
+  // mode can't compute. (All modes cap at 60 today, so this is a no-op guard that keeps working
+  // if a per-mode cap is ever reintroduced.)
   const changeMode = useCallback((m: TravelMode) => {
     setMode(m);
     setTime((t) => Math.min(t, MODE_MAX_TIME[m]));
@@ -511,7 +512,7 @@ export default function DriveTimeMap({
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
               Travel Time: <span className="text-blue-600">{time} min</span>
-              <span className="text-slate-400 font-normal"> · max {maxTime} for {MODE_CONFIG[mode].label.toLowerCase()}</span>
+              <span className="text-slate-400 font-normal"> · up to {maxTime} min</span>
             </label>
             <div className="flex flex-wrap gap-2">
               {TIME_PRESETS.map((t) => {

@@ -143,39 +143,29 @@ test('switching travel mode re-fetches the isochrone with the new costing', asyn
   expect(calls.filter((c) => c.costing === 'pedestrian').length).toBe(pedBefore + 1);
 });
 
-// 2) Mobile time PRESET ladder: all 8 presets render (tap-friendly, no slider), respect per-mode
-//    caps (Walk & Cycle max 60 → 90 and 120 disabled), a preset sets the time, and switching mode
-//    clamps the time down. This is the mobile-presets + cycle-cap-60 gate.
-test('mobile time presets render, respect per-mode caps (cycle 60), and clamp on switch', async ({ page }) => {
+// 2) Mobile time PRESET ladder: exactly the 5–60 min buttons render (tap-friendly, no slider,
+//    no 1.5hr/2hr), every mode caps at 60, and tapping a preset sets the time.
+test('mobile time presets are 5-60 min only (no 1.5hr/2hr) for every mode', async ({ page }) => {
   await mockIsochrone(page);
   await gotoTool(page);
 
-  // All 8 presets render on mobile (2-row ladder, no slider).
-  for (const t of [5, 10, 15, 30, 45, 60, 90, 120]) {
+  // The ladder is exactly 5/10/15/30/45/60 — the 90 & 120 presets are gone entirely.
+  for (const t of [5, 10, 15, 30, 45, 60]) {
     await expect(page.locator(`[data-testid="dt-time-${t}"]:visible`)).toBeVisible();
   }
+  await expect(page.locator('[data-testid="dt-time-90"]')).toHaveCount(0);
+  await expect(page.locator('[data-testid="dt-time-120"]')).toHaveCount(0);
 
-  // Drive: max 120 — every preset enabled; tapping the 2hr preset sets the time.
-  await expect(state(page)).toHaveAttribute('data-mode', 'auto');
-  await expect(state(page)).toHaveAttribute('data-max-time', '120');
-  await expect(page.locator('[data-testid="dt-time-120"]:visible')).toBeEnabled();
-  await page.locator('[data-testid="dt-time-120"]:visible').click();
-  await expect(state(page)).toHaveAttribute('data-time', '120');
+  // Every mode caps at 60 min.
+  for (const m of ['auto', 'pedestrian', 'bicycle'] as const) {
+    await page.locator(`[data-testid="dt-mode-${m}"]:visible`).click();
+    await expect(state(page)).toHaveAttribute('data-mode', m);
+    await expect(state(page)).toHaveAttribute('data-max-time', '60');
+  }
 
-  // Walk: max 60 — 90 & 120 disabled; the 120 clamps down to 60.
-  await page.locator('[data-testid="dt-mode-pedestrian"]:visible').click();
-  await expect(state(page)).toHaveAttribute('data-max-time', '60');
+  // Tapping the 1hr preset sets the time.
+  await page.locator('[data-testid="dt-time-60"]:visible').click();
   await expect(state(page)).toHaveAttribute('data-time', '60');
-  await expect(page.locator('[data-testid="dt-time-90"]:visible')).toBeDisabled();
-  await expect(page.locator('[data-testid="dt-time-120"]:visible')).toBeDisabled();
-  await expect(page.locator('[data-testid="dt-time-60"]:visible')).toBeEnabled();
-
-  // Cycle: also max 60 now (lowered from 90 for free-server reliability) — 90 & 120 disabled.
-  await page.locator('[data-testid="dt-mode-bicycle"]:visible').click();
-  await expect(state(page)).toHaveAttribute('data-max-time', '60');
-  await expect(state(page)).toHaveAttribute('data-time', '60');
-  await expect(page.locator('[data-testid="dt-time-90"]:visible')).toBeDisabled();
-  await expect(page.locator('[data-testid="dt-time-120"]:visible')).toBeDisabled();
 });
 
 // 3) A server error surfaces a mode-specific, mobile-visible recovery banner (not a generic one).
@@ -213,22 +203,16 @@ test.describe('desktop panel (slider + presets)', () => {
     await expect(state(page)).toHaveAttribute('data-time', '60');
   });
 
-  // Over-cap time presets are disabled per mode (Walk & Cycle both cap at 60).
-  test('over-cap time presets are disabled per mode', async ({ page }) => {
+  // The desktop ladder is 5–60 (no 1.5hr/2hr) and the fine-grained slider caps at 60.
+  test('desktop time ladder is 5-60 and the slider caps at 60', async ({ page }) => {
     await mockIsochrone(page);
     await gotoTool(page);
 
-    // Walk (≤ 60): 90 and 120 disabled, 60 enabled.
-    await page.locator('[data-testid="dt-mode-pedestrian"]:visible').click();
-    await expect(state(page)).toHaveAttribute('data-mode', 'pedestrian');
-    await expect(page.locator('[data-testid="dt-time-90"]:visible')).toBeDisabled();
-    await expect(page.locator('[data-testid="dt-time-120"]:visible')).toBeDisabled();
-    await expect(page.locator('[data-testid="dt-time-60"]:visible')).toBeEnabled();
-
-    // Cycle (≤ 60 now): 90 and 120 disabled, 60 enabled.
-    await page.locator('[data-testid="dt-mode-bicycle"]:visible').click();
-    await expect(page.locator('[data-testid="dt-time-90"]:visible')).toBeDisabled();
-    await expect(page.locator('[data-testid="dt-time-120"]:visible')).toBeDisabled();
-    await expect(page.locator('[data-testid="dt-time-60"]:visible')).toBeEnabled();
+    for (const t of [5, 10, 15, 30, 45, 60]) {
+      await expect(page.locator(`[data-testid="dt-time-${t}"]:visible`)).toBeVisible();
+    }
+    await expect(page.locator('[data-testid="dt-time-90"]')).toHaveCount(0);
+    await expect(page.locator('[data-testid="dt-time-120"]')).toHaveCount(0);
+    await expect(page.locator('[data-testid="dt-slider"]:visible')).toHaveAttribute('max', '60');
   });
 });

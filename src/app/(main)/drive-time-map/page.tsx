@@ -83,7 +83,7 @@ export default function DriveTimeMapPage() {
             step: [
               { '@type': 'HowToStep', position: 1, name: 'Set your starting point', text: 'Type an address or tap directly on the map to place your start point.' },
               { '@type': 'HowToStep', position: 2, name: 'Choose a travel mode', text: 'Pick Drive, Walk, or Cycle to match how you are travelling.' },
-              { '@type': 'HowToStep', position: 3, name: 'Set the travel time', text: 'Use the time buttons or the slider (up to 120 minutes driving) — the reachable area redraws automatically from real road data. No button to press.' },
+              { '@type': 'HowToStep', position: 3, name: 'Set the travel time', text: 'Pick a time with the preset buttons (up to 60 minutes) — the reachable area redraws automatically from real road data. There is no button to press.' },
             ],
           }),
         }}
@@ -427,22 +427,6 @@ export default function DriveTimeMapPage() {
                     <td>12.0 mi</td>
                     <td>3.0 mi</td>
                   </tr>
-                  <tr>
-                    <td className="font-medium">90 min</td>
-                    <td>97.5 mi</td>
-                    <td>60.0 mi</td>
-                    <td>22.5 mi</td>
-                    <td>18.0 mi</td>
-                    <td>4.5 mi</td>
-                  </tr>
-                  <tr>
-                    <td className="font-medium">120 min</td>
-                    <td>130.0 mi</td>
-                    <td>80.0 mi</td>
-                    <td>30.0 mi</td>
-                    <td>24.0 mi</td>
-                    <td>6.0 mi</td>
-                  </tr>
                 </tbody>
               </table>
             </div>
@@ -598,7 +582,7 @@ export default function DriveTimeMapPage() {
               </div>
               <div>
                 <dt className="text-slate-500">Max Time</dt>
-                <dd className="text-slate-900 font-medium">120 min drive · 60 walk · 60 cycle</dd>
+                <dd className="text-slate-900 font-medium">60 minutes (all modes)</dd>
               </div>
               <div>
                 <dt className="text-slate-500">Travel Modes</dt>
