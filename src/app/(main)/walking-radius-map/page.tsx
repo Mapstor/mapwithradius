@@ -98,7 +98,7 @@ export default function WalkingRadiusMapPage() {
                 '@type': 'HowToStep',
                 position: 3,
                 name: 'Set the travel time',
-                text: 'Choose a time limit: 5, 10, 15, 20, or 30 minutes. The map will calculate how far you can travel.',
+                text: 'Pick a time with the preset buttons or the slider (up to 60 minutes walking, 90 cycling) — the reachable area redraws automatically as you change it. There is no button to press.',
               },
               {
                 '@type': 'HowToStep',
@@ -954,7 +954,7 @@ export default function WalkingRadiusMapPage() {
             </li>
           </ul>
           <p className="text-slate-500 text-sm mt-4">
-            Isochrone calculation uses OpenStreetMap data via OSRM/Valhalla routing engines.
+            Isochrone calculation uses OpenStreetMap data via the Valhalla routing engine.
             Routes are shortest-path approximations; they don&apos;t account for crossing wait
             times, real-time signal phases, or perceived-safety detours. Use the radius value as
             a planning input, not a guarantee of accessibility.

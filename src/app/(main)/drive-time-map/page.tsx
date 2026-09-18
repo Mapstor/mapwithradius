@@ -81,11 +81,9 @@ export default function DriveTimeMapPage() {
             name: 'How to Create a Drive Time Map',
             description: 'Create an isochrone map showing how far you can travel by car, bike, or foot within a specific time limit.',
             step: [
-              { '@type': 'HowToStep', position: 1, name: 'Enter Your Starting Location', text: 'Type an address or click directly on the map to set your starting point' },
-              { '@type': 'HowToStep', position: 2, name: 'Select Travel Mode', text: 'Choose between Drive, Walk, or Cycle to match your transportation method' },
-              { '@type': 'HowToStep', position: 3, name: 'Set Travel Time', text: 'Use the slider or input field to set your time limit (5 to 120 minutes)' },
-              { '@type': 'HowToStep', position: 4, name: 'Generate Isochrone', text: 'Click Generate to calculate the reachable area based on actual road networks' },
-              { '@type': 'HowToStep', position: 5, name: 'Analyze and Export', text: 'Review the coverage area and export as PNG or share the link' },
+              { '@type': 'HowToStep', position: 1, name: 'Set your starting point', text: 'Type an address or tap directly on the map to place your start point.' },
+              { '@type': 'HowToStep', position: 2, name: 'Choose a travel mode', text: 'Pick Drive, Walk, or Cycle to match how you are travelling.' },
+              { '@type': 'HowToStep', position: 3, name: 'Set the travel time', text: 'Use the time buttons or the slider (up to 120 minutes driving) — the reachable area redraws automatically from real road data. No button to press.' },
             ],
           }),
         }}
@@ -113,13 +111,15 @@ export default function DriveTimeMapPage() {
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="section-heading mb-8 text-center">How to Use This Drive Time Map</h2>
-          <div className="grid md:grid-cols-5 gap-4">
+          <p className="text-center text-slate-600 mb-8 max-w-2xl mx-auto">
+            There is no &ldquo;generate&rdquo; button — set a start point, then change the mode or time and the
+            travel-time area redraws automatically.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
             {[
-              { step: '1', title: 'Enter Location', desc: 'Type an address or click on the map' },
-              { step: '2', title: 'Select Mode', desc: 'Choose Drive, Walk, or Cycle' },
-              { step: '3', title: 'Set Time', desc: 'Select 5 to 120 minutes' },
-              { step: '4', title: 'Generate', desc: 'Click to calculate the area' },
-              { step: '5', title: 'Export', desc: 'Save as PNG or share link' },
+              { step: '1', title: 'Set your start', desc: 'Type an address or tap the map to drop your start point' },
+              { step: '2', title: 'Pick a mode', desc: 'Drive, Walk, or Cycle' },
+              { step: '3', title: 'Set the time', desc: 'Use the time buttons or slider — the area redraws automatically' },
             ].map((item) => (
               <div key={item.step} className="text-center">
                 <div className="w-12 h-12 bg-accent text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-3">
@@ -587,23 +587,23 @@ export default function DriveTimeMapPage() {
               </div>
               <div>
                 <dt className="text-slate-500">Routing Engine</dt>
-                <dd className="text-slate-900 font-medium">OSRM / Valhalla</dd>
+                <dd className="text-slate-900 font-medium">Valhalla</dd>
               </div>
               <div>
                 <dt className="text-slate-500">Update Frequency</dt>
                 <dd className="text-slate-900 font-medium">Weekly road data</dd>
               </div>
               <div>
-                <dt className="text-slate-500">Max Time Limit</dt>
-                <dd className="text-slate-900 font-medium">120 minutes</dd>
+                <dt className="text-slate-500">Max Time</dt>
+                <dd className="text-slate-900 font-medium">120 min drive · 90 cycle · 60 walk</dd>
               </div>
               <div>
                 <dt className="text-slate-500">Travel Modes</dt>
                 <dd className="text-slate-900 font-medium">Drive, Walk, Cycle</dd>
               </div>
               <div>
-                <dt className="text-slate-500">Export Formats</dt>
-                <dd className="text-slate-900 font-medium">PNG, Share Link</dd>
+                <dt className="text-slate-500">Cost</dt>
+                <dd className="text-slate-900 font-medium">Free — no signup</dd>
               </div>
             </div>
           </div>
@@ -653,7 +653,7 @@ export default function DriveTimeMapPage() {
               </summary>
               <div className="faq-content">
                 Currently, the tool shows one isochrone at a time. For comparing multiple starting points,
-                you can generate one isochrone, note the area, then change the starting point. A future update
+                map one area, note it, then move the start point to compare. A future update
                 may add multi-origin support.
               </div>
             </details>
@@ -695,9 +695,9 @@ export default function DriveTimeMapPage() {
                 </svg>
               </summary>
               <div className="faq-content">
-                Yes. You can export the map as a PNG image and use it in presentations, reports, or marketing
-                materials. The share link also allows you to send the exact isochrone view to colleagues. For
-                commercial applications with higher volume needs, contact us about our API access.
+                Yes — the map is free to use for commercial planning. Take a screenshot of the travel-time area to
+                drop into presentations, reports, or marketing materials. For higher-volume or automated needs, a
+                dedicated routing API is a better fit than this free tool.
               </div>
             </details>
 
@@ -760,7 +760,7 @@ export default function DriveTimeMapPage() {
                     name: 'Can I see drive time from multiple locations?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: 'Currently, the tool shows one isochrone at a time. For comparing multiple starting points, you can generate one isochrone, note the area, then change the starting point.',
+                      text: 'Currently, the tool shows one isochrone at a time. For comparing multiple starting points, map one area, note it, then move the start point to compare.',
                     },
                   },
                   {
@@ -784,7 +784,7 @@ export default function DriveTimeMapPage() {
                     name: 'Can I use this for business planning and presentations?',
                     acceptedAnswer: {
                       '@type': 'Answer',
-                      text: 'Yes. You can export the map as a PNG image and use it in presentations, reports, or marketing materials.',
+                      text: 'Yes. The map is free for commercial planning — take a screenshot of the travel-time area for presentations, reports, or marketing materials.',
                     },
                   },
                   {
