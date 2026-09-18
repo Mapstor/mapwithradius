@@ -4,9 +4,9 @@ import { test, expect, Page } from '@playwright/test';
 // tests are deterministic offline; a hidden data-testid="dt-state" element exposes the tool's
 // state (mode / time / max-time / has-center / loading / error) layout-independently.
 //
-// Gates: mode-switch re-fetches with the new costing; a slider "drag" debounces to ONE request;
-// time is capped per mode (Walk ≤ 60, Cycle ≤ 90) with over-limit presets disabled; a server
-// error surfaces a mode-specific recovery banner (mobile-visible).
+// The drive page seeds a start on load (autoComputeDefault) — geolocation is granted+pinned in
+// the config, so a default drive isochrone fires without any click. The walking page renders the
+// same component WITHOUT that prop and must NOT auto-fire.
 //
 // To run locally:
 //   npm i -D @playwright/test && npx playwright install chromium
@@ -32,9 +32,9 @@ const isoFeatureCollection = () => ({
   ],
 });
 
-/** Intercept the Valhalla isochrone call, record each request's costing+time, and fulfil it
- *  (200 + a minimal polygon FeatureCollection, or `status` when given for the error path). */
-async function mockIsochrone(page: Page, opts: { status?: number } = {}): Promise<IsoCall[]> {
+/** Intercept the Valhalla isochrone call, record each request's costing+time, and fulfil it.
+ *  opts.status → error path; opts.delayMs → simulate a slow (heavy) isochrone compute. */
+async function mockIsochrone(page: Page, opts: { status?: number; delayMs?: number } = {}): Promise<IsoCall[]> {
   const calls: IsoCall[] = [];
   await page.route('**valhalla1.openstreetmap.de/isochrone**', async (route) => {
     const raw = new URL(route.request().url()).searchParams.get('json') || '';
@@ -48,6 +48,7 @@ async function mockIsochrone(page: Page, opts: { status?: number } = {}): Promis
       /* ignore */
     }
     calls.push({ costing, time, url: route.request().url() });
+    if (opts.delayMs) await new Promise((r) => setTimeout(r, opts.delayMs));
     if (opts.status && opts.status >= 400) {
       await route.fulfill({ status: opts.status, contentType: 'application/json', body: JSON.stringify({ error: 'server error' }) });
     } else {
@@ -65,11 +66,8 @@ async function gotoTool(page: Page) {
   await expect(page.getByTestId('dt-map')).toBeVisible();
 }
 
-/** Tap the bare map (clear of the top status overlay and the bottom mobile panel) to set a start. */
-async function setStart(page: Page) {
-  const box = await page.getByTestId('dt-map').boundingBox();
-  if (!box) throw new Error('no map box');
-  await page.touchscreen.tap(box.x + box.width / 2, box.y + Math.min(120, box.height * 0.28));
+/** The drive page auto-seeds a start on load → wait until center is set (no click needed). */
+async function waitForSeed(page: Page) {
   await expect(state(page)).toHaveAttribute('data-has-center', '1');
 }
 
@@ -86,27 +84,61 @@ async function dragSlider(page: Page, values: number[]) {
   }, values);
 }
 
-// 1) Switching mode (mobile) re-fetches the isochrone with the new costing. This is the mobile
-//    mode-switch regression gate — the buttons drive state and the single effect re-fetches.
-test('switching travel mode re-fetches the isochrone with the new costing', async ({ page }) => {
+// A) Default isochrone draws on load — no click. Users see a result, not an empty map.
+test('a default drive isochrone is computed on load (drive page)', async ({ page }) => {
   const calls = await mockIsochrone(page);
   await gotoTool(page);
 
-  // The tool carries the Raptive ad-exclusion root id (fix 1+5) — the missing id was what let
-  // the mobile ad overlay intercept mode-button taps. Every other tool root has one.
+  // Carries the Raptive ad-exclusion root id (fix 1+5).
   await expect(page.getByTestId('dt-tool')).toHaveAttribute('id', 'drive-time-tool');
 
-  await setStart(page);
-  // First request uses the default Drive costing.
+  // Seeded + a default DRIVE request fired, all without any interaction.
+  await waitForSeed(page);
+  await expect(state(page)).toHaveAttribute('data-mode', 'auto');
   await expect.poll(() => calls.filter((c) => c.costing === 'auto').length).toBeGreaterThan(0);
-  const pedBefore = calls.filter((c) => c.costing === 'pedestrian').length; // 0 before the switch
+  // …and it rendered (no error, spinner cleared, polygon painted).
+  await expect(state(page)).toHaveAttribute('data-loading', '0');
+  await expect(state(page)).toHaveAttribute('data-error', '');
+  await expect(page.locator('.leaflet-overlay-pane path').first()).toBeVisible();
+});
 
+// B) The walking page reuses the component but must NOT auto-compute on load.
+test('walking-radius-map does NOT auto-compute an isochrone on load', async ({ page }) => {
+  const calls = await mockIsochrone(page);
+  await page.goto('/walking-radius-map');
+  await expect(page.getByTestId('dt-map')).toBeVisible();
+
+  await page.waitForTimeout(1500); // give any (unwanted) auto-seed time to fire
+  expect(calls.length).toBe(0);
+  await expect(state(page)).toHaveAttribute('data-has-center', '0');
+});
+
+// C) A slow (>8s) isochrone still SUCCEEDS — the raised, cost-scaled timeout no longer aborts
+//    valid heavy computes (this exact request would have errored under the old flat 8s timeout).
+test('a slow isochrone (>8s) still resolves and renders', async ({ page }) => {
+  const calls = await mockIsochrone(page, { delayMs: 9000 }); // 9s: over the old 8s, under the new timeout
+  await gotoTool(page);
+  await waitForSeed(page);
+
+  await expect.poll(() => calls.length).toBeGreaterThan(0);
+  await expect(state(page)).toHaveAttribute('data-loading', '0', { timeout: 20000 }); // must resolve, not abort
+  await expect(state(page)).toHaveAttribute('data-error', '');
+  await expect(page.locator('.leaflet-overlay-pane path').first()).toBeVisible();
+});
+
+// 1) Switching mode re-fetches the isochrone with the new costing — exactly one new request.
+test('switching travel mode re-fetches the isochrone with the new costing', async ({ page }) => {
+  const calls = await mockIsochrone(page);
+  await gotoTool(page);
+  await waitForSeed(page);
+  await expect.poll(() => calls.filter((c) => c.costing === 'auto').length).toBeGreaterThan(0);
+
+  const pedBefore = calls.filter((c) => c.costing === 'pedestrian').length; // 0 before the switch
   await page.locator('[data-testid="dt-mode-pedestrian"]:visible').click();
   await expect(state(page)).toHaveAttribute('data-mode', 'pedestrian');
 
-  // Exactly ONE new pedestrian request fires — re-fetch on switch, and no double-fire.
   await expect.poll(() => calls.filter((c) => c.costing === 'pedestrian').length).toBe(pedBefore + 1);
-  await page.waitForTimeout(500); // …and it stays one (no delayed second request)
+  await page.waitForTimeout(500); // …and it stays one (no double-fire)
   expect(calls.filter((c) => c.costing === 'pedestrian').length).toBe(pedBefore + 1);
 });
 
@@ -114,9 +146,9 @@ test('switching travel mode re-fetches the isochrone with the new costing', asyn
 test('dragging the time slider fires exactly one request on settle', async ({ page }) => {
   const calls = await mockIsochrone(page);
   await gotoTool(page);
-
-  await setStart(page);
-  await expect.poll(() => calls.length).toBeGreaterThan(0); // initial settle
+  await waitForSeed(page);
+  await expect.poll(() => calls.length).toBeGreaterThan(0); // the seed request
+  await expect(state(page)).toHaveAttribute('data-loading', '0'); // …settled
   const before = calls.length;
 
   await dragSlider(page, [35, 40, 45, 50, 55, 60]); // six steps within the debounce window
@@ -156,10 +188,10 @@ test('travel time is capped per mode and clamps when switching down', async ({ p
 test('a server error shows a walking-specific recovery banner', async ({ page }) => {
   await mockIsochrone(page, { status: 500 });
   await gotoTool(page);
+  await waitForSeed(page); // the auto-seed (drive) already errored; switch to walk for its message
 
   await page.locator('[data-testid="dt-mode-pedestrian"]:visible').click();
   await expect(state(page)).toHaveAttribute('data-mode', 'pedestrian');
-  await setStart(page);
 
   const err = page.getByTestId('dt-error');
   await expect(err).toBeVisible();

@@ -103,7 +103,10 @@ export default function DriveTimeMapPage() {
 
         {/* Map section */}
         <div className="max-w-[1600px] mx-auto map-tool-page">
-          <DriveTimeMap />
+          {/* autoComputeDefault: seed a start on load so a default 30-min drive isochrone draws
+              immediately (user's location if already granted, else Washington DC). The walking
+              page renders the same component WITHOUT this prop, so it never auto-fires. */}
+          <DriveTimeMap autoComputeDefault />
         </div>
       </section>
 

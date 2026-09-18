@@ -20,6 +20,14 @@ type TravelMode = 'auto' | 'pedestrian' | 'bicycle';
 interface DriveTimeMapProps {
   defaultMode?: TravelMode;
   showDrivingOption?: boolean;
+  /**
+   * Seed a start point on mount so a default isochrone draws immediately (users see a result,
+   * not an empty map). Prefers the user's location when geolocation is ALREADY granted, else the
+   * default city. Off by default — the walking page reuses this component and must NOT auto-draw.
+   */
+  autoComputeDefault?: boolean;
+  /** Initial map view + fallback seed center when geolocation isn't already granted. Defaults to DC. */
+  defaultCenter?: [number, number];
 }
 
 const TIME_PRESETS = [5, 10, 15, 30, 45, 60, 90, 120];
@@ -34,7 +42,14 @@ const MODE_MAX_TIME: Record<TravelMode, number> = { auto: 120, pedestrian: 60, b
 // one request per settled edit (debounced), aborted when a newer edit supersedes it.
 const VALHALLA_ISOCHRONE = 'https://valhalla1.openstreetmap.de/isochrone';
 const FETCH_DEBOUNCE_MS = 300; // collapse a slider drag into ONE request on settle
-const FETCH_TIMEOUT_MS = 8000; // give up on a slow isochrone rather than hang forever
+// Isochrone is a HEAVY compute — Valhalla expands the whole reachable network before it sends
+// headers, routinely many seconds, unlike how-far's quick /route lookup. A flat 8s (copied from
+// /route) aborted valid slow requests and showed "Couldn't calculate". Give it real headroom,
+// scaled by the contour time, with a bit more per minute for the denser walk/cycle graphs. ~20–30s.
+function isochroneTimeoutMs(mode: TravelMode, timeMin: number): number {
+  const perMin = mode === 'auto' ? 100 : 150;
+  return Math.min(30000, 20000 + timeMin * perMin);
+}
 
 // Neighborhood-level default view: a real, walkable US city (Washington, DC) at ~zoom 12,
 // not the whole-country view. If geolocation is ALREADY granted we recenter on the user at
@@ -60,7 +75,9 @@ function errorForMode(mode: TravelMode): string {
 
 export default function DriveTimeMap({
   defaultMode = 'auto',
-  showDrivingOption = true
+  showDrivingOption = true,
+  autoComputeDefault = false,
+  defaultCenter = DEFAULT_CENTER,
 }: DriveTimeMapProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -89,7 +106,7 @@ export default function DriveTimeMap({
     if (!mapContainer.current || mapRef.current) return;
 
     const map = L.map(mapContainer.current, {
-      center: DEFAULT_CENTER,
+      center: defaultCenter,
       zoom: DEFAULT_ZOOM,
       zoomControl: false,
     });
@@ -107,30 +124,50 @@ export default function DriveTimeMap({
 
     mapRef.current = map;
 
-    // Geolocation-first framing: ONLY if permission is ALREADY granted (Permissions API — never
-    // prompts on load), recenter the VIEW on the user at street zoom so they start in their area.
-    // We do NOT set a start point here — nothing computes an isochrone until the user asks.
+    // Start framing (Permissions API only — never prompts on load). Recenter the VIEW on the user
+    // when geolocation is ALREADY granted, else the default city. On auto-compute pages we ALSO
+    // seed that point as the start so a default isochrone draws immediately; on other pages (e.g.
+    // walking) we only move the view — nothing computes until the user acts.
+    const applyStart = (lat: number, lon: number, name: string, located: boolean) => {
+      mapRef.current?.setView([lat, lon], located ? LOCATED_ZOOM : DEFAULT_ZOOM);
+      if (autoComputeDefault) {
+        setLocationName(name);
+        setCenter([lat, lon]);
+      }
+    };
+    const seedDefaultCity = () => {
+      if (autoComputeDefault) applyStart(defaultCenter[0], defaultCenter[1], 'Washington, DC', false);
+    };
+
     if (typeof navigator !== 'undefined') {
       const perms = (navigator as Navigator & { permissions?: Permissions }).permissions;
       if (perms?.query && navigator.geolocation) {
         perms
           .query({ name: 'geolocation' as PermissionName })
           .then((status) => {
-            if (status.state !== 'granted') return;
-            navigator.geolocation.getCurrentPosition(
-              (pos) => mapRef.current?.setView([pos.coords.latitude, pos.coords.longitude], LOCATED_ZOOM),
-              () => {},
-              { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 }
-            );
+            if (status.state === 'granted') {
+              navigator.geolocation.getCurrentPosition(
+                (pos) => applyStart(pos.coords.latitude, pos.coords.longitude, 'Your location', true),
+                () => seedDefaultCity(), // granted but the read failed → default city
+                { enableHighAccuracy: false, timeout: 5000, maximumAge: 300000 }
+              );
+            } else {
+              seedDefaultCity(); // prompt/denied → default city (auto-compute pages only)
+            }
           })
-          .catch(() => {});
+          .catch(() => seedDefaultCity());
+      } else {
+        seedDefaultCity(); // no Permissions API → default city (auto-compute pages only)
       }
+    } else {
+      seedDefaultCity();
     }
 
     return () => {
       map.remove();
       mapRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Update marker when center changes (marker only — the isochrone has its own effect below).
@@ -177,7 +214,7 @@ export default function DriveTimeMap({
       const to = setTimeout(() => {
         timedOut = true;
         ac.abort();
-      }, FETCH_TIMEOUT_MS);
+      }, isochroneTimeoutMs(reqMode, reqTime));
 
       (async () => {
         try {
