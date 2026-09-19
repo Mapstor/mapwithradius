@@ -216,4 +216,39 @@ test.describe('map interactions', () => {
     await page.locator('[data-testid="acre-preset"][data-value="40"]').tap();
     await expect(label).toContainText('40 acres');
   });
+
+  // 11) CRITICAL: resizing grows/shrinks around a FIXED centre — the centre pixel must not
+  //     move while the resize handle is dragged. Forced into the OVERLAP state (zoomed out so
+  //     the move + resize 56px hit areas overlap) — the exact condition under which a touch
+  //     used to be stolen by the move handle and translate the overlay. Guards the z-order:
+  //     with the move handle on top, this drag would MOVE and the centre-box assertion goes red.
+  test('resize keeps the centre fixed (handles overlapping)', async ({ page }) => {
+    await placeOverlay(page);
+    // Zoom out so the two handles overlap around the (tiny) 1-acre overlay.
+    const zoomOut = page.locator('.leaflet-control-zoom-out');
+    for (let i = 0; i < 4; i++) {
+      await zoomOut.click();
+      await page.waitForTimeout(320);
+    }
+
+    const centre = page.locator('.acre-handle.move');
+    const before = await centre.boundingBox();
+    expect(before).not.toBeNull();
+    const beforeArea = await overlayAreaSqM(page);
+
+    const resize = page.locator('.acre-handle.resize');
+    const rbox = await resize.boundingBox();
+    expect(rbox).not.toBeNull();
+    const from = { x: rbox!.x + rbox!.width / 2, y: rbox!.y + rbox!.height / 2 };
+    await touchDrag(page, from, { x: from.x + 80, y: from.y - 80 }, { steps: 22, delay: 25 });
+    await page.waitForTimeout(300);
+
+    const after = await centre.boundingBox();
+    expect(after).not.toBeNull();
+    // Centre pixel stable (a few px of tolerance for sub-pixel handle rounding).
+    expect(Math.abs(after!.x - before!.x)).toBeLessThan(10);
+    expect(Math.abs(after!.y - before!.y)).toBeLessThan(10);
+    // …while the size genuinely changed (a resize, not a translate).
+    expect(await overlayAreaSqM(page)).toBeGreaterThan(beforeArea * 1.15);
+  });
 });

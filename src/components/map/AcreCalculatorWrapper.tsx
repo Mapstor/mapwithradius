@@ -32,10 +32,12 @@ const PRESETS = [0.25, 0.5, 1, 2, 5, 10, 40, 100, 640];
 const roundForUnit = (v: number, u: AreaUnit) =>
   u === 'sqft' || u === 'sqm' ? Math.round(v) : Math.round(v * 1000) / 1000;
 
-// Default centre used only when the dimensions calculator asks to reflect a size on
-// the map and nothing has been placed yet (US geographic centre; the overlay is
-// drawn to true scale wherever it lands and fitBounds zooms to it).
-const SEED_DEFAULT_CENTER = { lat: 39.8283, lng: -98.5795 };
+// Default demo centre: an acre over the Manhattan street grid — a size most people can
+// picture, which makes the acre comparison land. Used as the on-load demo overlay and as
+// the fallback when the dimensions calculator reflects a size before a place is picked.
+// Keep in sync with DEMO_CENTER in AcreOverlayMap.
+const MANHATTAN_DEMO = { lat: 40.7484, lng: -73.9857 };
+const SEED_DEFAULT_CENTER = MANHATTAN_DEMO;
 
 interface AcreCalculatorWrapperProps {
   /** A size (m²) pushed from the dimensions calculator, reflected as the overlay. */
@@ -52,7 +54,6 @@ export default function AcreCalculatorWrapper({ seed = null, onSizeChange }: Acr
   const [shape, setShape] = useState<OverlayShape>('square');
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
-  const [hasUrlParams, setHasUrlParams] = useState(false);
   const [searchValue, setSearchValue] = useState('');
 
   // Mobile UI state (mirrors the radius tool)
@@ -187,12 +188,15 @@ export default function AcreCalculatorWrapper({ seed = null, onSizeChange }: Acr
     if (typeof window === 'undefined') return;
     const { params, locate } = parseAcreParams(new URLSearchParams(window.location.search));
     if (params) {
-      setHasUrlParams(true);
       setCenter({ lat: params.lat, lng: params.lng });
       setArea(params.area);
       setUnit(params.unit);
       setShape(params.shape);
       markInteracted();
+    } else if (!locate) {
+      // No shared view and not asked to locate → show the default 1-acre demo over
+      // Manhattan so the tool is immediately useful (not an empty map).
+      setCenter(MANHATTAN_DEMO);
     }
     if (locate) handleUseMyLocation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -221,8 +225,10 @@ export default function AcreCalculatorWrapper({ seed = null, onSizeChange }: Acr
   return (
     // #acre-tool marks the whole interactive tool as a Raptive ad-exclusion zone.
     <div id="acre-tool" ref={toolRef} className="relative">
+      {/* Desktop-only floating banner. On mobile the error renders INLINE inside the bottom
+          sheet (next to the controls the user just tapped), never as a lone floating banner. */}
       {locationError && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm shadow-lg max-w-[90vw]">
+        <div className="hidden lg:block absolute top-4 left-1/2 -translate-x-1/2 z-[1000] bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm shadow-lg max-w-[90vw]">
           {locationError}
         </div>
       )}
@@ -264,7 +270,7 @@ export default function AcreCalculatorWrapper({ seed = null, onSizeChange }: Acr
             onCenterChange={handleCenterChange}
             onAreaSqMChange={handleResize}
             mapRef={mapRef}
-            skipAutoGeolocation={hasUrlParams}
+            skipAutoGeolocation
           />
         </div>
 
@@ -281,8 +287,18 @@ export default function AcreCalculatorWrapper({ seed = null, onSizeChange }: Acr
                 placeholder="Search address, city, or zip…"
                 inputClassName={`w-full pr-3 py-2.5 border rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent outline-none border-slate-200 ${hasInteracted ? '' : 'mwr-search-glow'}`}
               />
-              <button type="button" onClick={handleUseMyLocation} disabled={isLocating} className="btn-secondary w-full mt-2 text-sm">
-                {isLocating ? 'Locating…' : '📍 Use my location'}
+              <button
+                type="button"
+                onClick={handleUseMyLocation}
+                disabled={isLocating}
+                className="w-full mt-2 flex items-center justify-center gap-2 min-h-[44px] rounded-lg text-sm font-semibold bg-accent-100 text-accent-600 border border-accent-200 hover:bg-accent-200 active:scale-[0.99] disabled:opacity-50 transition-colors"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="flex-none">
+                  <circle cx="12" cy="12" r="7" />
+                  <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none" />
+                  <path d="M12 3v2M12 19v2M3 12h2M19 12h2" />
+                </svg>
+                {isLocating ? 'Locating…' : 'Use my location'}
               </button>
             </div>
 
@@ -382,6 +398,8 @@ export default function AcreCalculatorWrapper({ seed = null, onSizeChange }: Acr
             onToast={showToast}
             onSearchOpenChange={handleSearchOpenChange}
             isLocating={isLocating}
+            locationError={locationError}
+            onDismissLocationError={() => setLocationError(null)}
             collapseSignal={collapseSignal}
           />
         )}

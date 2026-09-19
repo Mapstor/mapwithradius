@@ -143,12 +143,8 @@ export default function AcreCalculatorPage() {
       {/* Instant answer (featured-snippet target) */}
       <section className="section-white py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ToolHeroImage
-            src="/images/5-acre-lot-overlay-suburban.png"
-            alt="5 acre square overlay placed over a suburban street grid to show how big 5 acres is"
-            caption="A 5-acre square overlaid on a suburban lot grid — sized to scale with the acre calculator above."
-          />
-
+          {/* Order: the tool (above) → this explainer text → the photo, so the answer comes
+              before the illustration. */}
           <h2 className="section-heading mb-6">How big is an acre?</h2>
           <div className="bg-green-50 border border-green-200 rounded-xl p-6">
             <p className="text-lg text-slate-800 leading-relaxed">
@@ -166,6 +162,14 @@ export default function AcreCalculatorPage() {
             <Link href="/glossary#acre" className="content-link">acre glossary entry</Link> for the definition, or the{' '}
             <Link href="/use-cases" className="content-link">use cases</Link> for where this comes in handy.
           </p>
+
+          <div className="mt-8">
+            <ToolHeroImage
+              src="/images/5-acre-lot-overlay-suburban.png"
+              alt="5 acre square overlay placed over a suburban street grid to show how big 5 acres is"
+              caption="A 5-acre square overlaid on a suburban lot grid — sized to scale with the acre calculator above."
+            />
+          </div>
         </div>
       </section>
 

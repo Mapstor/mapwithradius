@@ -42,6 +42,10 @@ const DEFAULT_COLOR = '#16a34a';
 const RESIZE_BEARING = Math.PI / 4; // NE — where the resize handle rests
 const MIN_AREA_SQM = 20;            // ~4.5 m square; keeps the overlay grabbable
 const MAX_AREA_SQM = 5e8;           // ~123k acres; a generous ceiling
+// Default demo view: an acre over the Manhattan street grid — a size most people can
+// picture. Keep in sync with MANHATTAN_DEMO in AcreCalculatorWrapper.
+const DEMO_CENTER: [number, number] = [40.7484, -73.9857];
+const DEMO_ZOOM = 16;
 
 // A drag handle: 20px visual dot inside a 56px invisible, draggable hit area. `move`
 // is a hollow dot (like the radius tool's centre); `resize` is filled (grab to resize).
@@ -121,6 +125,9 @@ export default function AcreOverlayMap({
   const onDragEndRef = useRef(onDragEnd);
   const isDraggingRef = useRef(false);   // centre (move) drag
   const isResizingRef = useRef(false);   // edge (resize) drag
+  // Centre FROZEN at resize dragstart so the overlay grows/shrinks around a fixed point
+  // (the resize must never translate the centre).
+  const resizeCenterRef = useRef<L.LatLng | null>(null);
   const skipNextFitRef = useRef(false);
   const skipGeoRef = useRef(skipAutoGeolocation);
 
@@ -214,7 +221,12 @@ export default function AcreOverlayMap({
         icon: acreHandleIcon('move', colorRef.current),
         draggable: true,
         keyboard: false,
-        zIndexOffset: 1000,
+        // Resize sits ABOVE move (see the resize marker). On a small/zoomed-out overlay the
+        // two 56px hit areas overlap; letting resize win an overlapping touch is what keeps a
+        // resize-handle drag from being stolen by the move handle and translating the overlay.
+        // Move stays available on any normally-sized overlay (handles separated) and via a map
+        // tap to re-place.
+        zIndexOffset: 800,
       }).addTo(map);
 
       marker.bindTooltip(acreLabelHtml(areaRef.current, unitRef.current, sh), {
@@ -263,32 +275,43 @@ export default function AcreOverlayMap({
         icon: acreHandleIcon('resize', colorRef.current),
         draggable: true,
         keyboard: false,
-        zIndexOffset: 900,
+        // ABOVE the move handle (800): where the two hit areas overlap, an overlapping touch
+        // must start a RESIZE, not steal the move handle and translate the overlay.
+        zIndexOffset: 1000,
       }).addTo(map);
 
       rMarker.on('dragstart', () => {
         isResizingRef.current = true;
+        // FREEZE the centre for the whole gesture. Every frame redraws the shape around this
+        // fixed point, so the resize only changes the size — the centre pixel never moves.
+        resizeCenterRef.current = centerMarkerRef.current?.getLatLng() ?? null;
         map.dragging.disable();
         onDragStartRef.current?.();
         rMarker.getElement()?.classList.add('dragging');
       });
       rMarker.on('drag', () => {
-        const c = centerMarkerRef.current?.getLatLng();
+        const c = resizeCenterRef.current;
         if (!c) return;
         const h = rMarker.getLatLng();
-        const d = c.distanceTo(h);
+        const d = c.distanceTo(h); // distance from the FIXED centre to the finger
         const area = Math.max(MIN_AREA_SQM, Math.min(MAX_AREA_SQM, areaFromHandleDistance(d, shapeRef.current)));
         areaRef.current = area;
+        // Redraw around the frozen centre. Let the handle follow the finger (do NOT snap it
+        // back every frame — that fought Leaflet's Draggable). It snaps to the edge on release.
         setShapeGeometry(c.lat, c.lng, area);
-        // Snap the handle back onto the shape's NE edge for the new size.
-        const p = resizeHandlePoint(c.lat, c.lng, area, shapeRef.current);
-        rMarker.setLatLng([p.lat, p.lng]);
         updateLabel(area);
         publishArea(c.lat, c.lng);
         onAreaSqMChangeRef.current(area);
       });
       rMarker.on('dragend', () => {
         isResizingRef.current = false;
+        const c = resizeCenterRef.current;
+        if (c) {
+          // Settle the handle onto the shape's NE edge for the final size, around the fixed centre.
+          const p = resizeHandlePoint(c.lat, c.lng, areaRef.current, shapeRef.current);
+          rMarker.setLatLng([p.lat, p.lng]);
+        }
+        resizeCenterRef.current = null;
         // Deliberately do NOT arm skipNextFitRef: a resize keeps the centre fixed and the
         // committing setArea is a no-op (the last live frame already set that value), so the
         // draw effect never runs to consume the flag — arming it would leave it stuck true
@@ -331,8 +354,8 @@ export default function AcreOverlayMap({
     const container = containerRef.current;
 
     const map = L.map(container, {
-      center: [39.8283, -98.5795],
-      zoom: 4,
+      center: DEMO_CENTER,
+      zoom: DEMO_ZOOM,
       zoomControl: false,
     });
     L.control.zoom({ position: 'topleft' }).addTo(map);
