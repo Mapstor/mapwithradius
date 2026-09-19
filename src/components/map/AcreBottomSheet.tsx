@@ -33,6 +33,10 @@ interface AcreBottomSheetProps {
   onToast: (message: string) => void;
   onSearchOpenChange: (open: boolean) => void;
   isLocating: boolean;
+  /** Geolocation error (e.g. a denied "Use my location") — shown INLINE in the sheet. */
+  locationError: string | null;
+  /** Dismiss the inline location error. */
+  onDismissLocationError: () => void;
   collapseSignal: number;
 }
 
@@ -40,6 +44,10 @@ const UNITS: AreaUnit[] = ['acres', 'hectares', 'sqft', 'sqm'];
 const PRESETS = [0.25, 0.5, 1, 2, 5, 10, 40, 100, 640];
 const FLING_VELOCITY = 0.55;
 const COMMIT_THRESHOLD = 10;
+// Keep the search-mode sheet clear of the sticky page header (it sits ABOVE the sheet).
+// The sheet top stays this far below the viewport top so the search field always renders
+// INSIDE the sheet, below the nav — never floating up under it.
+const SEARCH_TOP_GAP = 88;
 
 const vibrate = (ms: number) => {
   try {
@@ -64,6 +72,8 @@ export default function AcreBottomSheet({
   onToast,
   onSearchOpenChange,
   isLocating,
+  locationError,
+  onDismissLocationError,
   collapseSignal,
 }: AcreBottomSheetProps) {
   const [isMobile, setIsMobile] = useState<boolean>(
@@ -144,6 +154,20 @@ export default function AcreBottomSheet({
     if (collapseSignal > 0) goToDetent('peek');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collapseSignal]);
+
+  // On a FRESH geolocation error (e.g. a denial), lift the sheet off peek so the inline
+  // recovery banner + the search control are fully visible. We never auto-reprompt — the
+  // user recovers via the search field, which stays one tap away in the peek row.
+  const prevLocationErrorRef = useRef<string | null>(null);
+  useEffect(() => {
+    const had = prevLocationErrorRef.current;
+    prevLocationErrorRef.current = locationError;
+    if (!isMobile) return;
+    if (locationError && !had && detentRef.current === 'peek' && !searchOpenRef.current) {
+      goToDetent('mid');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locationError, isMobile, goToDetent]);
 
   // ---- Sheet drag ----
   const dragRef = useRef<{
@@ -247,6 +271,11 @@ export default function AcreBottomSheet({
     goToDetent(hasOverlay ? 'mid' : 'peek');
   }, [goToDetent, hasOverlay, onSearchOpenChange]);
 
+  // While searching, lift the fixed sheet above the on-screen keyboard so the input stays
+  // visible — but keep it a BOTTOM SHEET, never a full-screen panel. Its height is capped so
+  // the top edge stays SEARCH_TOP_GAP below the viewport top (clear of the sticky header);
+  // otherwise the sheet grew to the full viewport height with its top at y=0 and the search
+  // field rendered up under the page nav instead of inside the sheet.
   useEffect(() => {
     if (!searchOpen || typeof window === 'undefined' || !window.visualViewport) return;
     const vv = window.visualViewport;
@@ -255,7 +284,7 @@ export default function AcreBottomSheet({
       if (!el) return;
       const kb = Math.max(0, window.innerHeight - vv.height - vv.offsetTop);
       el.style.bottom = `${kb}px`;
-      el.style.height = `${vv.height}px`;
+      el.style.height = `${Math.max(260, vv.height - SEARCH_TOP_GAP)}px`;
       el.style.transform = 'translateY(0)';
     };
     onVV();
@@ -264,8 +293,16 @@ export default function AcreBottomSheet({
     return () => {
       vv.removeEventListener('resize', onVV);
       vv.removeEventListener('scroll', onVV);
+      // Defensive: leaving search must always restore a valid detent geometry, so a stale
+      // search layout (custom bottom/height) can never strand the sheet off-screen.
+      const el = sheetRef.current;
+      if (el) {
+        el.style.bottom = '';
+        el.style.height = '';
+      }
+      applySheet(detents()[detentRef.current]);
     };
-  }, [searchOpen]);
+  }, [searchOpen, applySheet, detents]);
 
   const runSearch = useCallback((q: string) => {
     setSearchQuery(q);
@@ -383,12 +420,12 @@ export default function AcreBottomSheet({
                   type="button"
                   data-testid="acre-pill"
                   onClick={beginEdit}
-                  className="flex-1 min-w-0 flex items-center gap-1.5 bg-slate-100 border-[1.5px] border-slate-200 active:border-accent rounded-2xl px-4 min-h-[52px] text-left"
+                  className="flex-1 min-w-0 flex items-center gap-1.5 overflow-hidden bg-slate-100 border-[1.5px] border-slate-200 active:border-accent rounded-2xl px-4 min-h-[52px] text-left"
                 >
-                  <span data-testid="acre-value" className="text-[24px] font-extrabold tracking-tight text-primary-900 tabular-nums leading-none">
+                  <span data-testid="acre-value" className="min-w-0 truncate text-[24px] font-extrabold tracking-tight text-primary-900 tabular-nums leading-none">
                     {fmtNum(area)}
                   </span>
-                  <span className="text-sm font-semibold text-slate-500">{UNIT_SHORT[unit]}</span>
+                  <span className="flex-none text-sm font-semibold text-slate-500">{UNIT_SHORT[unit]}</span>
                   <svg className="ml-auto flex-none text-slate-400" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M15 5l4 4L8 20H4v-4L15 5Z" />
                   </svg>
@@ -411,7 +448,7 @@ export default function AcreBottomSheet({
                   type="button"
                   data-testid={`acre-unit-${u}`}
                   onClick={() => changeUnit(u)}
-                  className={`px-2 min-h-[46px] rounded-[10px] text-[12.5px] font-bold transition-colors ${
+                  className={`px-1.5 min-h-[46px] rounded-[10px] text-[12.5px] font-bold transition-colors ${
                     unit === u ? 'bg-white text-accent-600 shadow-sm' : 'text-slate-500'
                   }`}
                   aria-pressed={unit === u}
@@ -421,17 +458,70 @@ export default function AcreBottomSheet({
               ))}
             </div>
 
+            {/* Use my location — prominent in the peek row (users tap it often, so it is not
+                buried in the search sheet). */}
+            <button
+              type="button"
+              data-testid="acre-locate-btn"
+              onClick={onUseMyLocation}
+              disabled={isLocating}
+              className="flex-none w-11 h-11 rounded-2xl bg-accent-100 active:bg-accent-200 grid place-items-center disabled:opacity-50"
+              aria-label="Use my location"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round">
+                <circle cx="12" cy="12" r="7" />
+                <circle cx="12" cy="12" r="2" fill="#2563EB" stroke="none" />
+                <path d="M12 3v2M12 19v2M3 12h2M19 12h2" />
+              </svg>
+            </button>
+
             {/* Search */}
             <button
               type="button"
               data-testid="acre-search-btn"
               onClick={openSearch}
-              className="flex-none w-[52px] h-[52px] rounded-2xl bg-accent-100 active:bg-accent-200 grid place-items-center"
+              className="flex-none w-11 h-11 rounded-2xl bg-accent-100 active:bg-accent-200 grid place-items-center"
               aria-label="Search location"
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2.2" strokeLinecap="round">
                 <circle cx="11" cy="11" r="7" />
                 <path d="m20 20-3.8-3.8" />
+              </svg>
+            </button>
+          </div>
+        )}
+
+        {/* Inline location error (e.g. a denied "Use my location"). Lives INSIDE the sheet so
+            the controls stay present after a denial — never a lone floating banner. Offers a
+            one-tap jump to the search fallback. */}
+        {!searchOpen && locationError && (
+          <div
+            data-testid="acre-location-error"
+            className="flex-none mx-4 mb-3 flex items-start gap-2.5 rounded-2xl bg-red-50 border border-red-200 px-3.5 py-3"
+            role="alert"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" className="flex-none mt-0.5">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 8v5M12 16.5h.01" strokeLinecap="round" />
+            </svg>
+            <div className="min-w-0 flex-1">
+              <p className="text-[13.5px] leading-snug text-red-700 font-medium">{locationError}</p>
+              <button
+                type="button"
+                onClick={openSearch}
+                className="mt-1.5 text-[13.5px] font-bold text-accent-600 underline underline-offset-2"
+              >
+                Search for an address
+              </button>
+            </div>
+            <button
+              type="button"
+              onClick={onDismissLocationError}
+              aria-label="Dismiss location error"
+              className="flex-none w-8 h-8 -mr-1 -mt-1 grid place-items-center rounded-lg text-red-400 active:bg-red-100"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                <path d="M6 6l12 12M18 6L6 18" />
               </svg>
             </button>
           </div>

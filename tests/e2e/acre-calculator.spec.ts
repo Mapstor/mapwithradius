@@ -29,16 +29,19 @@ async function touchDrag(
   await client.detach();
 }
 
-/** Tap an empty part of the map, well above the peek sheet and clear of the zoom control. */
-async function tapMap(page: Page, fx = 0.5, fy = 0.3) {
-  const size = page.viewportSize()!;
-  await page.touchscreen.tap(size.width * fx, size.height * fy);
-}
-
-/** Place the overlay by tapping the map, then wait for it to be drawn + the fit animation. */
+/** Place the overlay by tapping the map, then wait for it to be drawn + the fit animation.
+ *  The dimensions calculator now sits above the map, so scroll the map into view first and
+ *  tap its upper-centre — clear of the top-left zoom control and the fixed bottom sheet. */
 async function placeOverlay(page: Page) {
-  await tapMap(page);
-  await expect(page.getByTestId('acre-overlay')).toHaveAttribute('data-overlay-present', 'true');
+  const map = page.getByTestId('acre-overlay');
+  await map.scrollIntoViewIfNeeded();
+  const box = await map.boundingBox();
+  expect(box).not.toBeNull();
+  const vp = page.viewportSize()!;
+  const x = box!.x + box!.width / 2;
+  const y = Math.min(Math.max(box!.y + 90, 90), vp.height * 0.35);
+  await page.touchscreen.tap(x, y);
+  await expect(map).toHaveAttribute('data-overlay-present', 'true');
   await page.waitForTimeout(900);
 }
 
@@ -62,6 +65,11 @@ async function openSheet(page: Page) {
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/acre-calculator');
+  // The dimensions calculator now sits above the map, so on short viewports the map can
+  // start below the fold. The mobile sheet only mounts while the map is on-screen (by
+  // design — it is the map's control surface), so bring the map into view before
+  // asserting the sheet is present.
+  await page.getByTestId('acre-overlay').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('acre-sheet')).toBeVisible();
 });
 
@@ -124,4 +132,123 @@ test('full-detent body scrolls to the last control (reachable + clickable)', asy
   await copy.scrollIntoViewIfNeeded();
   await expect(copy).toBeInViewport({ ratio: 1 });
   await copy.click({ trial: true });
+});
+
+// --- Dimensions calculator: the primary "acre calculator" intent (length × width). ---
+
+test.describe('dimensions calculator', () => {
+  // 6) Length × width converts to the correct acreage across units.
+  test('length × width computes correct acres', async ({ page }) => {
+    const len = page.getByTestId('acre-dims-length');
+    const wid = page.getByTestId('acre-dims-width');
+    const out = page.getByTestId('acre-dims-acres');
+
+    // 43,560 sq ft is exactly 1 acre.
+    await len.fill('43560');
+    await wid.fill('1');
+    await expect(out).toHaveText('1 acres');
+    await expect(page.getByTestId('acre-dims-breakdown')).toContainText('43,560 sq ft');
+
+    // 660 × 660 ft = 435,600 sq ft = 10 acres.
+    await len.fill('660');
+    await wid.fill('660');
+    await expect(out).toHaveText('10 acres');
+
+    // Metres: 100 × 100 m = 10,000 m² = 1 hectare ≈ 2.471 acres.
+    await page.getByTestId('acre-dims-unit-m').tap();
+    await len.fill('100');
+    await wid.fill('100');
+    await expect(out).toHaveText('2.471 acres');
+  });
+
+  // 7) Empty / non-positive input shows a dash rather than a bogus number.
+  test('invalid dimensions show a dash', async ({ page }) => {
+    const len = page.getByTestId('acre-dims-length');
+    const out = page.getByTestId('acre-dims-acres');
+    await len.fill('');
+    await expect(out).toHaveText('—');
+    await len.fill('200');
+    await expect(out).not.toHaveText('—');
+  });
+
+  // 8) The "Show N acres on the map" button reflects the computed size onto the overlay.
+  test('reflects the computed size onto the map overlay', async ({ page }) => {
+    // Default 200 × 300 ft = 60,000 sq ft = 5,574.18 m².
+    await page.getByTestId('acre-dims-show').tap();
+    const map = page.getByTestId('acre-overlay');
+    await expect(map).toHaveAttribute('data-overlay-present', 'true');
+    await page.waitForTimeout(900);
+    const sqm = await overlayAreaSqM(page);
+    const expected = 60000 * 0.09290304; // sq ft → m²
+    expect(Math.abs(sqm - expected) / expected).toBeLessThan(0.01);
+  });
+});
+
+// --- Map interactions: drag-to-resize + on-map labels. ---
+
+test.describe('map interactions', () => {
+  // 9) Dragging the resize handle outward grows the acreage.
+  test('drag the resize handle changes the acreage', async ({ page }) => {
+    await placeOverlay(page);
+    const before = await overlayAreaSqM(page);
+
+    const handle = page.locator('.acre-handle.resize');
+    await expect(handle).toBeVisible();
+    const box = await handle.boundingBox();
+    expect(box).not.toBeNull();
+    const from = { x: box!.x + box!.width / 2, y: box!.y + box!.height / 2 };
+    // Pull the NE handle further out (up + right) to grow the square.
+    await touchDrag(page, from, { x: from.x + 80, y: from.y - 80 }, { steps: 22, delay: 25 });
+    await page.waitForTimeout(300);
+
+    const after = await overlayAreaSqM(page);
+    expect(after).toBeGreaterThan(before * 1.15);
+  });
+
+  // 10) The on-map area label renders and updates when the size changes.
+  test('on-map area label renders and updates', async ({ page }) => {
+    await placeOverlay(page);
+    const label = page.locator('.acre-area-label');
+    await expect(label).toBeVisible();
+    await expect(label).toContainText('acre'); // default overlay is ~1 acre
+
+    await openSheet(page);
+    await page.locator('[data-testid="acre-preset"][data-value="40"]').tap();
+    await expect(label).toContainText('40 acres');
+  });
+
+  // 11) CRITICAL: resizing grows/shrinks around a FIXED centre — the centre pixel must not
+  //     move while the resize handle is dragged. Forced into the OVERLAP state (zoomed out so
+  //     the move + resize 56px hit areas overlap) — the exact condition under which a touch
+  //     used to be stolen by the move handle and translate the overlay. Guards the z-order:
+  //     with the move handle on top, this drag would MOVE and the centre-box assertion goes red.
+  test('resize keeps the centre fixed (handles overlapping)', async ({ page }) => {
+    await placeOverlay(page);
+    // Zoom out so the two handles overlap around the (tiny) 1-acre overlay.
+    const zoomOut = page.locator('.leaflet-control-zoom-out');
+    for (let i = 0; i < 4; i++) {
+      await zoomOut.click();
+      await page.waitForTimeout(320);
+    }
+
+    const centre = page.locator('.acre-handle.move');
+    const before = await centre.boundingBox();
+    expect(before).not.toBeNull();
+    const beforeArea = await overlayAreaSqM(page);
+
+    const resize = page.locator('.acre-handle.resize');
+    const rbox = await resize.boundingBox();
+    expect(rbox).not.toBeNull();
+    const from = { x: rbox!.x + rbox!.width / 2, y: rbox!.y + rbox!.height / 2 };
+    await touchDrag(page, from, { x: from.x + 80, y: from.y - 80 }, { steps: 22, delay: 25 });
+    await page.waitForTimeout(300);
+
+    const after = await centre.boundingBox();
+    expect(after).not.toBeNull();
+    // Centre pixel stable (a few px of tolerance for sub-pixel handle rounding).
+    expect(Math.abs(after!.x - before!.x)).toBeLessThan(10);
+    expect(Math.abs(after!.y - before!.y)).toBeLessThan(10);
+    // …while the size genuinely changed (a resize, not a translate).
+    expect(await overlayAreaSqM(page)).toBeGreaterThan(beforeArea * 1.15);
+  });
 });
