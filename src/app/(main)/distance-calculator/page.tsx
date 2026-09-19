@@ -3,7 +3,9 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { OG_IMAGES } from '@/lib/og';
 
-const TITLE = 'Distance Between 2 Points: A-to-B Distance (+ Map)';
+// CTR fix: lead with the head term "Distance Calculator" + the differentiator (driving distance).
+// ≤60 chars. Marko may finalize exact wording from SERP analysis.
+const TITLE = 'Distance Calculator: Driving & Straight-Line Distance + Map';
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -88,32 +90,27 @@ export default function DistanceCalculatorPage() {
             '@context': 'https://schema.org',
             '@type': 'HowTo',
             name: 'How to Measure Distance Between Two Points on a Map',
-            description: 'Learn how to calculate both straight-line and road distance between any two locations.',
+            description: 'Calculate both straight-line and road driving distance between any two locations.',
             step: [
               {
                 '@type': 'HowToStep',
-                name: 'Set Your First Point',
-                text: 'Click anywhere on the map or type an address to set your starting point.',
+                name: 'Set Point A',
+                text: 'Type a place in the Point A field, or click the map, to set your start.',
               },
               {
                 '@type': 'HowToStep',
-                name: 'Set Your Second Point',
-                text: 'Click another location on the map or enter a second address for your destination.',
+                name: 'Set Point B',
+                text: 'Type your destination in the Point B field, or click the map.',
               },
               {
                 '@type': 'HowToStep',
-                name: 'View Both Distances',
-                text: 'See the straight-line distance (as the crow flies) and road distance calculated automatically.',
+                name: 'See both distances',
+                text: 'The straight-line (as the crow flies) and road driving distance, plus drive time, are shown automatically.',
               },
               {
                 '@type': 'HowToStep',
-                name: 'Add More Points (Optional)',
-                text: 'Click additional points to create a multi-stop route with cumulative distance.',
-              },
-              {
-                '@type': 'HowToStep',
-                name: 'Share or Export',
-                text: 'Copy a shareable link or export your distance measurement.',
+                name: 'Add stops (optional)',
+                text: 'Add more points (C, D…) for a multi-stop route with cumulative distance.',
               },
             ],
           }),
@@ -126,8 +123,8 @@ export default function DistanceCalculatorPage() {
         <div className="bg-primary-900 py-3 lg:py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">Distance Between Two Points</h1>
-            <p className="text-slate-300 hidden lg:block">
-              Click two points on the map to measure the distance between them — straight line and by road.
+            <p className="text-slate-300 text-sm lg:text-base">
+              Straight-line and driving distance between any two places — plus drive time.
             </p>
           </div>
         </div>
@@ -143,13 +140,12 @@ export default function DistanceCalculatorPage() {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="section-heading mb-8">How to Measure Distance on the Map</h2>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5 mb-8">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
             {[
-              { step: 1, title: 'Click First Point', desc: 'Click map or enter address' },
-              { step: 2, title: 'Click Second Point', desc: 'Set your destination' },
-              { step: 3, title: 'View Distances', desc: 'See straight-line & road' },
-              { step: 4, title: 'Add More Points', desc: 'Create multi-stop route' },
-              { step: 5, title: 'Share Result', desc: 'Copy link or export' },
+              { step: 1, title: 'Set Point A', desc: 'Type a place or click the map' },
+              { step: 2, title: 'Set Point B', desc: 'Your destination' },
+              { step: 3, title: 'See Distances', desc: 'Straight-line + road + drive time' },
+              { step: 4, title: 'Add Stops', desc: 'Optional — Point C, D… up to 10' },
             ].map((item) => (
               <div key={item.step} className="flex flex-col items-center text-center p-4 bg-slate-50 rounded-lg">
                 <div className="w-10 h-10 bg-accent text-white rounded-full flex items-center justify-center font-bold mb-3">
@@ -165,6 +161,48 @@ export default function DistanceCalculatorPage() {
             Just wondering how far a distance like 10 miles actually is — or how long it takes to drive or walk —
             rather than the gap between two points? Try{' '}
             <Link href="/miles-to-minutes" className="content-link">Miles to Minutes</Link> instead.
+          </p>
+        </div>
+      </section>
+
+      {/* Popular city-to-city distances — surfaced high (the exact "distance from X to Y" answer) */}
+      <section className="section-gray py-12 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="section-heading mb-3">Popular Distances Between US Cities</h2>
+          <p className="text-slate-600 mb-6">
+            Straight-line and driving distance for common routes — or type your own two places in the tool above.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm border border-slate-200 rounded-lg overflow-hidden">
+              <thead className="bg-slate-100">
+                <tr>
+                  <th className="px-4 py-3 text-left font-semibold">Route</th>
+                  <th className="px-4 py-3 text-right font-semibold">Straight-Line</th>
+                  <th className="px-4 py-3 text-right font-semibold">Driving</th>
+                  <th className="px-4 py-3 text-right font-semibold">Drive Time</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white">
+                {[
+                  { route: 'New York → Los Angeles', straight: '2,451 mi', road: '2,790 mi', drive: '40-42 hrs' },
+                  { route: 'New York → Chicago', straight: '713 mi', road: '790 mi', drive: '11-12 hrs' },
+                  { route: 'Los Angeles → San Francisco', straight: '347 mi', road: '382 mi', drive: '5-6 hrs' },
+                  { route: 'Miami → New York', straight: '1,090 mi', road: '1,280 mi', drive: '18-19 hrs' },
+                  { route: 'Dallas → Houston', straight: '225 mi', road: '239 mi', drive: '3-4 hrs' },
+                  { route: 'Boston → Washington DC', straight: '394 mi', road: '440 mi', drive: '7-8 hrs' },
+                ].map((row) => (
+                  <tr key={row.route} className="border-t border-slate-100">
+                    <td className="px-4 py-3 font-medium">{row.route}</td>
+                    <td className="px-4 py-3 text-right text-blue-600">{row.straight}</td>
+                    <td className="px-4 py-3 text-right text-purple-600">{row.road}</td>
+                    <td className="px-4 py-3 text-right text-slate-600">{row.drive}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-sm text-slate-500 mt-4">
+            More US routes, international flight distances, and mile/km conversions are further down the page.
           </p>
         </div>
       </section>
