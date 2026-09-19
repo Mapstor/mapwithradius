@@ -9,13 +9,13 @@ const TITLE = 'Distance Calculator: Driving & Straight-Line Distance + Map';
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
-  description: 'Measure the straight-line or driving distance between any two points on a map. Shows both "as the crow flies" and road distance.',
+  description: 'Free distance calculator: driving distance and straight-line ("as the crow flies") distance between two cities or places, plus drive time.',
   alternates: {
     canonical: '/distance-calculator',
   },
   openGraph: {
     title: TITLE,
-    description: 'Measure the straight-line or driving distance between any two points on a map.',
+    description: 'Driving distance and straight-line distance between two cities or places, on a map — plus drive time.',
     url: 'https://mapwithradius.com/distance-calculator',
   },
   twitter: {
@@ -713,6 +713,35 @@ Where:
           <div className="space-y-4">
             <details className="faq-card">
               <summary>
+                How do I find the distance between two cities?
+                <svg className="w-5 h-5 faq-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div className="faq-content">
+                Type each city into the Point A and Point B fields (or click the map). The tool shows the
+                straight-line &ldquo;as the crow flies&rdquo; distance and the driving distance by road, plus the
+                estimated drive time — for example, New York to Los Angeles is about 2,451 miles straight-line
+                and 2,790 miles by road.
+              </div>
+            </details>
+
+            <details className="faq-card">
+              <summary>
+                What&apos;s the difference between driving distance and straight-line distance?
+                <svg className="w-5 h-5 faq-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div className="faq-content">
+                Straight-line (&ldquo;as the crow flies&rdquo;) is the shortest distance between two points, ignoring
+                roads. Driving distance follows the road network and is always longer — typically 20&ndash;40% more,
+                and much more where mountains, water, or indirect roads get in the way. This tool shows both.
+              </div>
+            </details>
+
+            <details className="faq-card">
+              <summary>
                 Is this more accurate than Google Maps?
                 <svg className="w-5 h-5 faq-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -836,6 +865,22 @@ Where:
                 '@context': 'https://schema.org',
                 '@type': 'FAQPage',
                 mainEntity: [
+                  {
+                    '@type': 'Question',
+                    name: 'How do I find the distance between two cities?',
+                    acceptedAnswer: {
+                      '@type': 'Answer',
+                      text: 'Type each city into the Point A and Point B fields (or click the map). The tool shows the straight-line "as the crow flies" distance and the driving distance by road, plus the estimated drive time.',
+                    },
+                  },
+                  {
+                    '@type': 'Question',
+                    name: "What's the difference between driving distance and straight-line distance?",
+                    acceptedAnswer: {
+                      '@type': 'Answer',
+                      text: 'Straight-line ("as the crow flies") is the shortest distance between two points, ignoring roads. Driving distance follows the road network and is always longer — typically 20–40% more. This tool shows both.',
+                    },
+                  },
                   {
                     '@type': 'Question',
                     name: 'Is this more accurate than Google Maps?',
