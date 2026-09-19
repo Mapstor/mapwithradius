@@ -94,6 +94,51 @@ test('the Point B marker is not red', async ({ page }) => {
   expect(bg).toBe('rgb(59, 130, 246)'); // blue (#3B82F6)
 });
 
+// 5) On-map labels: a distance label is rendered on the map (not just in the side panel).
+test('shows an on-map distance label and marker name tags', async ({ page }) => {
+  await gotoTool(page);
+
+  const straightLabel = page.locator('.dc-label-straight');
+  await expect(straightLabel).toBeVisible();
+  await expect(straightLabel).toContainText(/mi/);
+
+  // The Point A marker carries an "A: Washington, DC" name tag.
+  await expect(page.locator('.dc-marker-label').filter({ hasText: /washington/i })).toBeVisible();
+});
+
+// 6) Desktop: the control panel overlays the map's top-right; BOTH markers must frame into the
+//    open area, not under the panel (fitBounds reserves the panel's width).
+test.describe('desktop framing (panel overlays the map)', () => {
+  test.use({ viewport: { width: 1280, height: 900 } });
+
+  test('both A and B markers are visible in the open map area, not under the panel', async ({ page }) => {
+    await gotoTool(page);
+
+    const map = await page.getByTestId('dc-map').boundingBox();
+    const panel = await page.getByTestId('dc-panel').boundingBox();
+    expect(map).not.toBeNull();
+    expect(panel).not.toBeNull();
+    await expect(page.locator('[data-point-label="A"]').first()).toBeVisible();
+    await expect(page.locator('[data-point-label="B"]').first()).toBeVisible();
+
+    // Poll to ride out the fitBounds pan/zoom animation, then assert both markers frame into the
+    // open map area and Point B (destination, east) is clear of the overlay panel.
+    const within = (mk: { x: number; y: number; width: number; height: number }) => {
+      const cx = mk.x + mk.width / 2;
+      const cy = mk.y + mk.height / 2;
+      return cx >= map!.x - 1 && cx <= map!.x + map!.width + 1 && cy >= map!.y - 1 && cy <= map!.y + map!.height + 1;
+    };
+    await expect
+      .poll(async () => {
+        const a = await page.locator('[data-point-label="A"]').first().boundingBox();
+        const b = await page.locator('[data-point-label="B"]').first().boundingBox();
+        if (!a || !b) return false;
+        return within(a) && within(b) && b.x + b.width / 2 < panel!.x;
+      })
+      .toBe(true);
+  });
+});
+
 // 4) invalidateSize + ResizeObserver: the map survives a viewport resize and stays functional.
 test('the map survives a viewport resize (invalidateSize/ResizeObserver)', async ({ page }) => {
   await gotoTool(page);

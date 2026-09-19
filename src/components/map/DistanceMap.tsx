@@ -40,6 +40,33 @@ const pointColor = (i: number) => POINT_COLORS[i % POINT_COLORS.length];
 const DEFAULT_A = { lat: 38.9072, lng: -77.0369, name: 'Washington, DC' };
 const DEFAULT_B = { lat: 40.7128, lng: -74.006, name: 'New York City' };
 
+// Midpoint along a polyline by arc length (planar approx — fine for placing an on-map label).
+function polylineMidpoint(pts: [number, number][]): [number, number] {
+  if (pts.length <= 1) return pts[0] ?? [0, 0];
+  const seg: number[] = [];
+  let total = 0;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const d = Math.hypot(pts[i + 1][0] - pts[i][0], pts[i + 1][1] - pts[i][1]);
+    seg.push(d);
+    total += d;
+  }
+  let half = total / 2;
+  for (let i = 0; i < seg.length; i++) {
+    if (half <= seg[i]) {
+      const t = seg[i] === 0 ? 0 : half / seg[i];
+      return [pts[i][0] + (pts[i + 1][0] - pts[i][0]) * t, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * t];
+    }
+    half -= seg[i];
+  }
+  return pts[pts.length - 1];
+}
+
+const formatDurationShort = (seconds: number): string => {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.round((seconds % 3600) / 60);
+  return h > 0 ? `${h}h ${m}m` : `${m}m`;
+};
+
 export default function DistanceMap() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
@@ -59,7 +86,33 @@ export default function DistanceMap() {
   const markersRef = useRef<L.Marker[]>([]);
   const straightLineRef = useRef<L.Polyline | null>(null);
   const roadLineRef = useRef<L.Polyline | null>(null);
+  const straightLabelRef = useRef<L.Tooltip | null>(null);
+  const roadLabelRef = useRef<L.Tooltip | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
   const seededRef = useRef(false);
+
+  // fitBounds padding that reserves the controls panel's footprint over the map, so BOTH markers
+  // frame into the open area (desktop panel overlays top-right; mobile panel is below → no reserve).
+  const computeFitPadding = useCallback((): L.FitBoundsOptions => {
+    const base = 40;
+    let padLeft = base;
+    let padTop = base;
+    let padRight = base;
+    let padBottom = base;
+    const mapEl = containerRef.current;
+    const panelEl = panelRef.current;
+    if (mapEl && panelEl) {
+      const m = mapEl.getBoundingClientRect();
+      const p = panelEl.getBoundingClientRect();
+      const vOverlap = Math.min(m.bottom, p.bottom) - Math.max(m.top, p.top);
+      const hOverlap = Math.min(m.right, p.right) - Math.max(m.left, p.left);
+      if (p.width > 0 && p.height > 0 && vOverlap > 0 && hOverlap > 0) {
+        if (p.left > m.left + m.width / 2) padRight = Math.max(base, Math.round(m.right - p.left) + 16);
+        if (p.top > m.top + m.height / 2) padBottom = Math.max(base, Math.round(m.bottom - p.top) + 16);
+      }
+    }
+    return { paddingTopLeft: [padLeft, padTop], paddingBottomRight: [padRight, padBottom] };
+  }, []);
 
   const addPoint = useCallback((lat: number, lng: number, name?: string) => {
     setPoints((prev) => (prev.length >= MAX_POINTS ? prev : [...prev, { lat, lng, label: labelFor(prev.length), name }]));
@@ -138,6 +191,24 @@ export default function DistanceMap() {
     });
   }, []);
 
+  // Injected styles for the on-map labels (distance pills + marker name tags). pointer-events:none
+  // so they never block map interaction; the tooltip arrow is hidden for a clean pill.
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      .leaflet-tooltip.dc-map-label { color:#fff; border:0; box-shadow:0 1px 5px rgba(15,23,42,.4); font-size:12px; font-weight:700; padding:3px 9px; border-radius:999px; white-space:nowrap; opacity:1; pointer-events:none; }
+      .leaflet-tooltip.dc-map-label::before { display:none; }
+      .leaflet-tooltip.dc-label-straight { background:#2563EB; }
+      .leaflet-tooltip.dc-label-road { background:#7C3AED; }
+      .leaflet-tooltip.dc-marker-label { background:rgba(15,23,42,.9); color:#fff; border:0; box-shadow:0 1px 4px rgba(15,23,42,.35); font-size:11.5px; font-weight:600; padding:2px 7px; border-radius:8px; white-space:nowrap; opacity:1; pointer-events:none; }
+      .leaflet-tooltip.dc-marker-label::before { display:none; }
+    `;
+    document.head.appendChild(style);
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   // Keep the A/B input text in sync with the actual points.
   useEffect(() => {
     setPointAQuery(points[0] ? points[0].name ?? `${points[0].lat.toFixed(4)}, ${points[0].lng.toFixed(4)}` : '');
@@ -158,6 +229,14 @@ export default function DistanceMap() {
     if (roadLineRef.current) {
       roadLineRef.current.remove();
       roadLineRef.current = null;
+    }
+    if (straightLabelRef.current) {
+      straightLabelRef.current.remove();
+      straightLabelRef.current = null;
+    }
+    if (roadLabelRef.current) {
+      roadLabelRef.current.remove();
+      roadLabelRef.current = null;
     }
 
     points.forEach((point, index) => {
@@ -196,6 +275,15 @@ export default function DistanceMap() {
         </div>
       `);
 
+      // Always-on name tag above the marker (e.g. "A: Washington, DC"). Non-interactive.
+      marker.bindTooltip(`${point.label}: ${point.name ?? `${point.lat.toFixed(4)}, ${point.lng.toFixed(4)}`}`, {
+        permanent: true,
+        direction: 'top',
+        className: 'dc-marker-label',
+        offset: [0, -10],
+        opacity: 1,
+      });
+
       markersRef.current.push(marker);
     });
 
@@ -215,8 +303,16 @@ export default function DistanceMap() {
       }
       setStraightLineDistance(totalDistance);
 
+      // On-map straight-line distance label at the path midpoint (e.g. "203.6 mi").
+      const sMid = polylineMidpoint(latLngs);
+      straightLabelRef.current = L.tooltip({ permanent: true, direction: 'top', className: 'dc-map-label dc-label-straight', interactive: false, opacity: 1 })
+        .setLatLng(sMid)
+        .setContent(formatDistance(totalDistance, 'miles'))
+        .addTo(map);
+
+      // Frame BOTH markers into the open map area (reserve the panel's footprint).
       const bounds = L.latLngBounds(latLngs);
-      map.fitBounds(bounds, { padding: [50, 50] });
+      map.fitBounds(bounds, computeFitPadding());
 
       fetchRoute(points);
     } else {
@@ -246,8 +342,19 @@ export default function DistanceMap() {
 
         if (mapRef.current) {
           if (roadLineRef.current) roadLineRef.current.remove();
+          if (roadLabelRef.current) {
+            roadLabelRef.current.remove();
+            roadLabelRef.current = null;
+          }
           const latLngs = geometry.map(([lng, lat]) => [lat, lng] as [number, number]);
           roadLineRef.current = L.polyline(latLngs, { color: '#8B5CF6', weight: 4, opacity: 0.9 }).addTo(mapRef.current);
+
+          // On-map road label at the route midpoint (e.g. "225.7 mi · 4h 48m"). Non-interactive.
+          const rMid = polylineMidpoint(latLngs);
+          roadLabelRef.current = L.tooltip({ permanent: true, direction: 'bottom', className: 'dc-map-label dc-label-road', interactive: false, opacity: 1 })
+            .setLatLng(rMid)
+            .setContent(`${formatDistance(route.distance / 1609.344, 'miles')} · ${formatDurationShort(route.duration)}`)
+            .addTo(mapRef.current);
         }
       } else {
         setRoadDistance(null);
@@ -345,7 +452,9 @@ export default function DistanceMap() {
     'w-full pr-3 py-2.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-accent focus:border-accent outline-none transition-all duration-200 hover:border-slate-300';
 
   return (
-    <div data-testid="dc-tool" className="relative">
+    // #distance-tool marks the whole interactive tool as a Raptive ad-exclusion zone (matches
+    // every other tool — #radius-tool, #drive-time-tool, …). Register the selector in Raptive.
+    <div id="distance-tool" data-testid="dc-tool" className="relative">
       {/* Instruction banner (only when the user has cleared the default route) */}
       {points.length < 2 && (
         <div className="absolute top-4 left-1/2 lg:left-1/3 -translate-x-1/2 z-[1000] bg-primary-900/95 text-white px-4 py-2.5 rounded-lg text-sm shadow-lg backdrop-blur-sm">
@@ -360,7 +469,7 @@ export default function DistanceMap() {
         </div>
 
         {/* Controls Panel */}
-        <div className="lg:absolute lg:top-4 lg:right-4 lg:w-80 lg:z-[500] mt-4 lg:mt-0 px-4 lg:px-0">
+        <div ref={panelRef} data-testid="dc-panel" className="lg:absolute lg:top-4 lg:right-4 lg:w-80 lg:z-[500] mt-4 lg:mt-0 px-4 lg:px-0">
           <div className="controls-panel controls-overlay">
             {/* Route: Point A / Point B — the primary way to set the two points */}
             <div>
