@@ -29,16 +29,19 @@ async function touchDrag(
   await client.detach();
 }
 
-/** Tap an empty part of the map, well above the peek sheet and clear of the zoom control. */
-async function tapMap(page: Page, fx = 0.5, fy = 0.3) {
-  const size = page.viewportSize()!;
-  await page.touchscreen.tap(size.width * fx, size.height * fy);
-}
-
-/** Place the overlay by tapping the map, then wait for it to be drawn + the fit animation. */
+/** Place the overlay by tapping the map, then wait for it to be drawn + the fit animation.
+ *  The dimensions calculator now sits above the map, so scroll the map into view first and
+ *  tap its upper-centre — clear of the top-left zoom control and the fixed bottom sheet. */
 async function placeOverlay(page: Page) {
-  await tapMap(page);
-  await expect(page.getByTestId('acre-overlay')).toHaveAttribute('data-overlay-present', 'true');
+  const map = page.getByTestId('acre-overlay');
+  await map.scrollIntoViewIfNeeded();
+  const box = await map.boundingBox();
+  expect(box).not.toBeNull();
+  const vp = page.viewportSize()!;
+  const x = box!.x + box!.width / 2;
+  const y = Math.min(Math.max(box!.y + 90, 90), vp.height * 0.35);
+  await page.touchscreen.tap(x, y);
+  await expect(map).toHaveAttribute('data-overlay-present', 'true');
   await page.waitForTimeout(900);
 }
 
@@ -62,6 +65,11 @@ async function openSheet(page: Page) {
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/acre-calculator');
+  // The dimensions calculator now sits above the map, so on short viewports the map can
+  // start below the fold. The mobile sheet only mounts while the map is on-screen (by
+  // design — it is the map's control surface), so bring the map into view before
+  // asserting the sheet is present.
+  await page.getByTestId('acre-overlay').scrollIntoViewIfNeeded();
   await expect(page.getByTestId('acre-sheet')).toBeVisible();
 });
 
@@ -124,4 +132,54 @@ test('full-detent body scrolls to the last control (reachable + clickable)', asy
   await copy.scrollIntoViewIfNeeded();
   await expect(copy).toBeInViewport({ ratio: 1 });
   await copy.click({ trial: true });
+});
+
+// --- Dimensions calculator: the primary "acre calculator" intent (length × width). ---
+
+test.describe('dimensions calculator', () => {
+  // 6) Length × width converts to the correct acreage across units.
+  test('length × width computes correct acres', async ({ page }) => {
+    const len = page.getByTestId('acre-dims-length');
+    const wid = page.getByTestId('acre-dims-width');
+    const out = page.getByTestId('acre-dims-acres');
+
+    // 43,560 sq ft is exactly 1 acre.
+    await len.fill('43560');
+    await wid.fill('1');
+    await expect(out).toHaveText('1 acres');
+    await expect(page.getByTestId('acre-dims-breakdown')).toContainText('43,560 sq ft');
+
+    // 660 × 660 ft = 435,600 sq ft = 10 acres.
+    await len.fill('660');
+    await wid.fill('660');
+    await expect(out).toHaveText('10 acres');
+
+    // Metres: 100 × 100 m = 10,000 m² = 1 hectare ≈ 2.471 acres.
+    await page.getByTestId('acre-dims-unit-m').tap();
+    await len.fill('100');
+    await wid.fill('100');
+    await expect(out).toHaveText('2.471 acres');
+  });
+
+  // 7) Empty / non-positive input shows a dash rather than a bogus number.
+  test('invalid dimensions show a dash', async ({ page }) => {
+    const len = page.getByTestId('acre-dims-length');
+    const out = page.getByTestId('acre-dims-acres');
+    await len.fill('');
+    await expect(out).toHaveText('—');
+    await len.fill('200');
+    await expect(out).not.toHaveText('—');
+  });
+
+  // 8) "See a square this size on the map" reflects the computed size onto the overlay.
+  test('reflects the computed size onto the map overlay', async ({ page }) => {
+    // Default 200 × 300 ft = 60,000 sq ft = 5,574.18 m².
+    await page.getByRole('button', { name: /See a square this size/ }).tap();
+    const map = page.getByTestId('acre-overlay');
+    await expect(map).toHaveAttribute('data-overlay-present', 'true');
+    await page.waitForTimeout(900);
+    const sqm = await overlayAreaSqM(page);
+    const expected = 60000 * 0.09290304; // sq ft → m²
+    expect(Math.abs(sqm - expected) / expected).toBeLessThan(0.01);
+  });
 });

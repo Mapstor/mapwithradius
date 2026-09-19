@@ -32,7 +32,17 @@ const PRESETS = [0.25, 0.5, 1, 2, 5, 10, 40, 100, 640];
 const roundForUnit = (v: number, u: AreaUnit) =>
   u === 'sqft' || u === 'sqm' ? Math.round(v) : Math.round(v * 1000) / 1000;
 
-export default function AcreCalculatorWrapper() {
+// Default centre used only when the dimensions calculator asks to reflect a size on
+// the map and nothing has been placed yet (US geographic centre; the overlay is
+// drawn to true scale wherever it lands and fitBounds zooms to it).
+const SEED_DEFAULT_CENTER = { lat: 39.8283, lng: -98.5795 };
+
+interface AcreCalculatorWrapperProps {
+  /** A size (m²) pushed from the dimensions calculator, reflected as the overlay. */
+  seed?: { areaSqM: number; token: number } | null;
+}
+
+export default function AcreCalculatorWrapper({ seed = null }: AcreCalculatorWrapperProps) {
   const [center, setCenter] = useState<{ lat: number; lng: number } | null>(null);
   const [area, setArea] = useState(1);
   const [unit, setUnit] = useState<AreaUnit>('acres');
@@ -172,6 +182,19 @@ export default function AcreCalculatorWrapper() {
     if (locate) handleUseMyLocation();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Reflect a size pushed from the dimensions calculator: set the overlay area (kept
+  // as sq ft so the readout matches what was computed) and place it on the map,
+  // reusing the current centre when one already exists.
+  const seedTokenRef = useRef(0);
+  useEffect(() => {
+    if (!seed || seed.token === seedTokenRef.current) return;
+    seedTokenRef.current = seed.token;
+    setUnit('sqft');
+    setArea(Math.max(1, Math.round(sqMToArea(seed.areaSqM, 'sqft'))));
+    setCenter((c) => c ?? SEED_DEFAULT_CENTER);
+    markInteracted();
+  }, [seed, markInteracted]);
 
   const hasOverlay = center !== null;
   const showInvite = !hasOverlay && !isMobileSearchOpen && toolInView;

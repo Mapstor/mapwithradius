@@ -1,12 +1,11 @@
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import type { Metadata } from 'next';
 import ToolHeroImage from '@/components/content/ToolHeroImage';
 import { buildToolPageSchema } from '@/lib/toolSchema';
 
-const TITLE = 'Acre Calculator: See How Big 1, 5, 10 Acres Is on a Map';
+const TITLE = 'Acre Calculator: Length × Width to Acres + Visual Map';
 const DESCRIPTION =
-  'See exactly how big an acre is. Draw a true-scale acre overlay on any real map — 1, 5, 10, 40, even 640 acres — as a square or circle, in acres, hectares, square feet, or m². Free, no signup.';
+  'Acre calculator: enter a lot’s length × width to get acres, plus square feet, hectares & m². See any acre size drawn to scale on a real map.';
 
 export const metadata: Metadata = {
   title: { absolute: TITLE },
@@ -35,19 +34,27 @@ export const metadata: Metadata = {
   },
 };
 
-const AcreCalculatorWrapper = dynamic(() => import('@/components/map/AcreCalculatorWrapper'), {
-  ssr: false,
-  loading: () => (
-    <div className="relative">
-      <div className="h-[60vh] lg:h-[75vh] bg-slate-100 animate-pulse" />
-      <div className="absolute top-4 right-4 w-80 h-[420px] bg-white rounded-xl shadow-lg animate-pulse hidden lg:block" />
-    </div>
-  ),
-});
+// The tool section (length × width calculator + map overlay) is a client island.
+// It is imported directly (not ssr:false) so the calculator's copy is server-rendered
+// and crawlable; the Leaflet map inside it stays client-only.
+import AcreCalculatorSection from '@/components/map/AcreCalculatorSection';
 
 // Single source of truth: the visible FAQ and the FAQPage schema are both generated
-// from this array, so they can never drift apart.
+// from this array, so they can never drift apart. Dimensional intent leads, since
+// "acre calculator" searchers usually have a length × width in hand.
 const FAQS: Array<{ q: string; a: string }> = [
+  {
+    q: 'How do I calculate acres from length and width?',
+    a: 'Multiply length by width to get the area in square feet, then divide by 43,560 (the number of square feet in an acre). For example, a 200 ft × 300 ft lot is 60,000 sq ft ÷ 43,560 ≈ 1.38 acres. The calculator above does this instantly in feet, meters, or yards.',
+  },
+  {
+    q: 'How many square feet are in an acre?',
+    a: 'One acre is exactly 43,560 square feet. To convert square feet to acres, divide by 43,560; to go from acres to square feet, multiply by 43,560. An acre is also 4,046.86 m² or 0.4047 hectares.',
+  },
+  {
+    q: 'How do I calculate the acreage of a lot?',
+    a: 'For a rectangular lot, measure the length and width, multiply them for the area, then divide square feet by 43,560 to get acres. For an irregular or many-sided lot, trace the boundary point-by-point on our Area Calculator, which sums the true area for any shape.',
+  },
   {
     q: 'How big is 1 acre?',
     a: 'One acre is 43,560 square feet — 4,046.86 m², or 0.4047 hectares. As a square that is about 208.7 feet on each side, and it covers roughly 76% of an American football field including the end zones.',
@@ -125,14 +132,12 @@ export default function AcreCalculatorPage() {
         <div className="bg-primary-900 py-3 lg:py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">Acre Calculator</h1>
-            <p className="text-slate-300 hidden lg:block">
-              See how big an acre really is — drop a true-scale acre overlay on any map, as a square or a circle.
+            <p className="text-slate-300 text-sm lg:text-base">
+              Turn a lot&rsquo;s length &times; width into acres — then see any acre size drawn to scale on a real map.
             </p>
           </div>
         </div>
-        <div className="max-w-[1600px] mx-auto map-tool-page">
-          <AcreCalculatorWrapper />
-        </div>
+        <AcreCalculatorSection />
       </section>
 
       {/* Instant answer (featured-snippet target) */}
@@ -156,8 +161,8 @@ export default function AcreCalculatorPage() {
             </p>
           </div>
           <p className="text-slate-600 text-sm mt-4">
-            The map above draws that area to true scale wherever you place it, so you can compare an acre against a
-            block, a parking lot, or a field you already know. See the{' '}
+            The interactive map on this page draws that area to true scale wherever you place it, so you can compare an
+            acre against a block, a parking lot, or a field you already know. See the{' '}
             <Link href="/glossary#acre" className="content-link">acre glossary entry</Link> for the definition, or the{' '}
             <Link href="/use-cases" className="content-link">use cases</Link> for where this comes in handy.
           </p>
@@ -167,7 +172,16 @@ export default function AcreCalculatorPage() {
       {/* How to */}
       <section className="section-gray py-12 lg:py-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="section-heading mb-8">How to visualize acres on the map</h2>
+          <h2 className="section-heading mb-4">How to calculate acres from a lot&rsquo;s size</h2>
+          <p className="text-slate-700 mb-6">
+            Enter your plot&rsquo;s <strong>length and width</strong> in the calculator at the top of the page — in
+            feet, meters, or yards — and it multiplies them, then divides by 43,560 to give the area in acres, along
+            with square feet, hectares, and m². A 200 ft × 300 ft lot, for example, is 60,000 sq ft ÷ 43,560 ≈ 1.38
+            acres. That works for any rectangular parcel; for an irregular or multi-sided plot, trace it point-by-point
+            on the <Link href="/area-calculator" className="content-link">Area Calculator</Link>.
+          </p>
+
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">See any acre size on the map</h3>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {[
               { step: 1, title: 'Find a place', desc: 'Search an address or tap the map' },
