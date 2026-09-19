@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import AcreDimensionsCalculator from './AcreDimensionsCalculator';
@@ -19,20 +19,29 @@ const AcreCalculatorWrapper = dynamic(() => import('./AcreCalculatorWrapper'), {
 });
 
 export default function AcreCalculatorSection() {
+  // dims calculator → map overlay (the "Show on map" button)
   const [seed, setSeed] = useState<{ areaSqM: number; token: number } | null>(null);
-  const tokenRef = useRef(0);
+  const seedTokenRef = useRef(0);
+  // map overlay → dims calculator (preset / drag-resize mirrored back into the inputs)
+  const [reflected, setReflected] = useState<{ areaSqM: number; token: number } | null>(null);
+  const reflectTokenRef = useRef(0);
   const mapRef = useRef<HTMLDivElement>(null);
 
-  const showOnMap = (areaSqM: number) => {
-    tokenRef.current += 1;
-    setSeed({ areaSqM, token: tokenRef.current });
+  const showOnMap = useCallback((areaSqM: number) => {
+    seedTokenRef.current += 1;
+    setSeed({ areaSqM, token: seedTokenRef.current });
     mapRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
+  }, []);
+
+  const handleMapSize = useCallback((areaSqM: number) => {
+    reflectTokenRef.current += 1;
+    setReflected({ areaSqM, token: reflectTokenRef.current });
+  }, []);
 
   return (
     <>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-5 lg:py-6">
-        <AcreDimensionsCalculator onShowOnMap={showOnMap} />
+        <AcreDimensionsCalculator onShowOnMap={showOnMap} reflectedAreaSqM={reflected} />
 
         {/* Cross-link: length × width only works for rectangles. Irregular plots
             belong on the Area Calculator's point-by-point tool. */}
@@ -49,7 +58,7 @@ export default function AcreCalculatorSection() {
       </div>
 
       <div ref={mapRef} className="max-w-[1600px] mx-auto map-tool-page scroll-mt-4">
-        <AcreCalculatorWrapper seed={seed} />
+        <AcreCalculatorWrapper seed={seed} onSizeChange={handleMapSize} />
       </div>
     </>
   );

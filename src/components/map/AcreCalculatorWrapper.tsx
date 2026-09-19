@@ -40,9 +40,12 @@ const SEED_DEFAULT_CENTER = { lat: 39.8283, lng: -98.5795 };
 interface AcreCalculatorWrapperProps {
   /** A size (m²) pushed from the dimensions calculator, reflected as the overlay. */
   seed?: { areaSqM: number; token: number } | null;
+  /** Reports a size change ORIGINATING on the map (preset, panel input, or drag-resize)
+   *  so the dimensions calculator can mirror it. Not fired for dims-driven seeds. */
+  onSizeChange?: (areaSqM: number) => void;
 }
 
-export default function AcreCalculatorWrapper({ seed = null }: AcreCalculatorWrapperProps) {
+export default function AcreCalculatorWrapper({ seed = null, onSizeChange }: AcreCalculatorWrapperProps) {
   const [center, setCenter] = useState<{ lat: number; lng: number } | null>(null);
   const [area, setArea] = useState(1);
   const [unit, setUnit] = useState<AreaUnit>('acres');
@@ -98,9 +101,12 @@ export default function AcreCalculatorWrapper({ seed = null }: AcreCalculatorWra
   }, []);
 
   const handleAreaChange = useCallback((value: number) => {
-    if (value > 0) setArea(value);
+    if (value > 0) {
+      setArea(value);
+      onSizeChange?.(areaToSqM(value, unit));
+    }
     markInteracted();
-  }, [markInteracted]);
+  }, [markInteracted, unit, onSizeChange]);
 
   const handleUnitChange = useCallback(
     (target: AreaUnit) => {
@@ -121,8 +127,17 @@ export default function AcreCalculatorWrapper({ seed = null }: AcreCalculatorWra
   const handlePreset = useCallback((acres: number) => {
     setUnit('acres');
     setArea(acres);
+    onSizeChange?.(areaToSqM(acres, 'acres'));
     markInteracted();
-  }, [markInteracted]);
+  }, [markInteracted, onSizeChange]);
+
+  // Drag-to-resize on the map reports the new area (m²); keep it in the active unit and
+  // mirror it to the dimensions calculator.
+  const handleResize = useCallback((newAreaSqM: number) => {
+    setArea(roundForUnit(sqMToArea(newAreaSqM, unit), unit));
+    onSizeChange?.(newAreaSqM);
+    markInteracted();
+  }, [unit, markInteracted, onSizeChange]);
 
   const handleLocationSearch = useCallback((lat: number, lng: number) => {
     markInteracted();
@@ -183,15 +198,16 @@ export default function AcreCalculatorWrapper({ seed = null }: AcreCalculatorWra
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Reflect a size pushed from the dimensions calculator: set the overlay area (kept
-  // as sq ft so the readout matches what was computed) and place it on the map,
-  // reusing the current centre when one already exists.
+  // Reflect a size pushed from the dimensions calculator: set the overlay area in acres
+  // (so the map label matches the "Show N acres" button) and place it on the map, reusing
+  // the current centre when one already exists. Does NOT report back via onSizeChange —
+  // the dimensions calculator is the source of this size, so mirroring it would be circular.
   const seedTokenRef = useRef(0);
   useEffect(() => {
     if (!seed || seed.token === seedTokenRef.current) return;
     seedTokenRef.current = seed.token;
-    setUnit('sqft');
-    setArea(Math.max(1, Math.round(sqMToArea(seed.areaSqM, 'sqft'))));
+    setUnit('acres');
+    setArea(roundForUnit(sqMToArea(seed.areaSqM, 'acres'), 'acres'));
     setCenter((c) => c ?? SEED_DEFAULT_CENTER);
     markInteracted();
   }, [seed, markInteracted]);
@@ -243,8 +259,10 @@ export default function AcreCalculatorWrapper({ seed = null }: AcreCalculatorWra
             center={center}
             areaSqM={areaSqM}
             shape={shape}
+            unit={unit}
             onMapClick={handleMapClick}
             onCenterChange={handleCenterChange}
+            onAreaSqMChange={handleResize}
             mapRef={mapRef}
             skipAutoGeolocation={hasUrlParams}
           />

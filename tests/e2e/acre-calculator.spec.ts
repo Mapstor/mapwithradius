@@ -171,15 +171,49 @@ test.describe('dimensions calculator', () => {
     await expect(out).not.toHaveText('—');
   });
 
-  // 8) "See a square this size on the map" reflects the computed size onto the overlay.
+  // 8) The "Show N acres on the map" button reflects the computed size onto the overlay.
   test('reflects the computed size onto the map overlay', async ({ page }) => {
     // Default 200 × 300 ft = 60,000 sq ft = 5,574.18 m².
-    await page.getByRole('button', { name: /See a square this size/ }).tap();
+    await page.getByTestId('acre-dims-show').tap();
     const map = page.getByTestId('acre-overlay');
     await expect(map).toHaveAttribute('data-overlay-present', 'true');
     await page.waitForTimeout(900);
     const sqm = await overlayAreaSqM(page);
     const expected = 60000 * 0.09290304; // sq ft → m²
     expect(Math.abs(sqm - expected) / expected).toBeLessThan(0.01);
+  });
+});
+
+// --- Map interactions: drag-to-resize + on-map labels. ---
+
+test.describe('map interactions', () => {
+  // 9) Dragging the resize handle outward grows the acreage.
+  test('drag the resize handle changes the acreage', async ({ page }) => {
+    await placeOverlay(page);
+    const before = await overlayAreaSqM(page);
+
+    const handle = page.locator('.acre-handle.resize');
+    await expect(handle).toBeVisible();
+    const box = await handle.boundingBox();
+    expect(box).not.toBeNull();
+    const from = { x: box!.x + box!.width / 2, y: box!.y + box!.height / 2 };
+    // Pull the NE handle further out (up + right) to grow the square.
+    await touchDrag(page, from, { x: from.x + 80, y: from.y - 80 }, { steps: 22, delay: 25 });
+    await page.waitForTimeout(300);
+
+    const after = await overlayAreaSqM(page);
+    expect(after).toBeGreaterThan(before * 1.15);
+  });
+
+  // 10) The on-map area label renders and updates when the size changes.
+  test('on-map area label renders and updates', async ({ page }) => {
+    await placeOverlay(page);
+    const label = page.locator('.acre-area-label');
+    await expect(label).toBeVisible();
+    await expect(label).toContainText('acre'); // default overlay is ~1 acre
+
+    await openSheet(page);
+    await page.locator('[data-testid="acre-preset"][data-value="40"]').tap();
+    await expect(label).toContainText('40 acres');
   });
 });
