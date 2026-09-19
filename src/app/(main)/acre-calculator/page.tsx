@@ -60,6 +60,10 @@ const FAQS: Array<{ q: string; a: string }> = [
     a: 'One acre is 43,560 square feet — 4,046.86 m², or 0.4047 hectares. As a square that is about 208.7 feet on each side, and it covers roughly 76% of an American football field including the end zones.',
   },
   {
+    q: 'Is an acre 200 by 200 feet?',
+    a: 'No — a one-acre square is about 208.7 feet on each side, not 200. A 200 × 200 ft lot is 40,000 square feet, which is roughly 0.92 acre — about 8% short of a full acre (43,560 sq ft). You need about 208.7 × 208.7 feet to make exactly one acre as a square.',
+  },
+  {
     q: 'What does 5 acres look like?',
     a: '5 acres is 217,800 square feet — a square about 467 feet on each side, or close to 3.8 American football fields laid side by side.',
   },
